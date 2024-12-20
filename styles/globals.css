@@ -14,8 +14,350 @@
   }
 }
 
-body {
+body,
+html {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  padding: 0;
+  margin: 0;
+  scroll-behavior: smooth;
+  font-family: "Plus Jakarta Sans";
+}
+
+/* Navbar Css */
+
+.nav-switch-text {
+  color: #525866;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+.nav-switch-button {
+  border-radius: 8px;
+  border: 1px solid #e2e4e9;
+  background: #fff;
+  box-shadow: 0px 1px 2px 0px rgba(82, 88, 102, 0.06);
+  padding: 6px;
+  color: #525866;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+
+/* Seller/Buyer Form CSS */
+
+.create-account-text {
+  color: #0a0d14;
+  font-family: "Plus Jakarta Sans";
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 32px;
+}
+.create-account-sub-text {
+  color: #525866;
+  font-family: "Plus Jakarta Sans";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: -0.176px;
+}
+
+/* Tabs CSS */
+
+.sb-tab-active {
+  padding: 4px 2px;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0px 6px 10px 0px rgba(27, 28, 29, 0.06),
+    0px 2px 4px 0px rgba(27, 28, 29, 0.02);
+  color: #e93a7d;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+
+.sb-tab-non-active {
+  color: #475467;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+
+/* Footer CSS */
+
+.footer-text {
+  color: #525866;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+
+/* Form CSS */
+
+.sb-form-label {
+  color: #0a0d14;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+
+.sb-form-input-field {
+  padding: 8px 8px 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #e2e4e9;
+  background: #fff;
+  box-shadow: 0px 1px 2px 0px rgba(228, 229, 231, 0.24);
+  color: #0a0d14;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+
+.sb-form-submit-button-non-active {
+  padding: 10px 8px;
+  border-radius: 8px;
+  background: #e2e4e9;
+  color: #868c98;
+  text-align: center;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+.sb-form-submit-button-active {
+  padding: 10px 8px;
+  border-radius: 8px;
+  border: 1px solid #fff;
+  background: #e93a7d;
+  color: #fff;
+  text-align: center;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+
+.sb-form-or-text {
+  color: #868c98;
+  font-family: "Plus Jakarta Sans";
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 12px;
+  letter-spacing: 0.22px;
+  text-transform: uppercase;
+}
+
+.sb-form-or-button1 {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid #e93a7d;
+  box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+  color: #e93a7d;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 20px;
+}
+.sb-form-or-button2 {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid #2ca01c;
+  box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+  color: #2ca01c;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 20px;
+}
+.sb-form-or-button3 {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid #111;
+  box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+  color: #111;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 20px;
+}
+.sb-form-right-text {
+  color: #101828;
+  font-family: "Plus Jakarta Sans";
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 32px;
+  letter-spacing: -0.36px;
+}
+.sb-form-right-sub-text {
+  color: #344054;
+  font-family: "Plus Jakarta Sans";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: -0.176px;
+}
+/* Password Validation CSS */
+
+.password-status-text {
+  color: #525866;
+  font-family: "Plus Jakarta Sans";
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 16px;
+}
+
+.password-li-text {
+  color: #525866;
+  font-family: "Plus Jakarta Sans";
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 16px;
+}
+
+/* OTP Verification CSS */
+
+.otp-top-text {
+  color: #0a0d14;
+  font-family: "Plus Jakarta Sans";
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 32px;
+}
+.otp-top-sub-text {
+  color: #525866;
+  font-family: "Plus Jakarta Sans";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: -0.176px;
+}
+.otp-top-email-text {
+  color: #0a0d14;
+  font-family: "Plus Jakarta Sans";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: -0.176px;
+  text-decoration-line: underline;
+}
+.MuiOtpInput-Box .MuiInputBase-input {
+  padding: 16px 8px !important;
+  border-radius: 10px !important;
+  border: 1px solid #e2e4e9 !important;
+  background: #fff !important;
+  box-shadow: 0px 1px 2px 0px rgba(228, 229, 231, 0.24) !important;
+  color: #0a0d14 !important;
+  text-align: center !important;
+  font-family: "Plus Jakarta Sans" !important;
+  font-size: 24px !important;
+  font-style: normal !important;
+  font-weight: 500 !important;
+  line-height: 32px !important;
+  letter-spacing: -0.36px !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Hover state */
+.MuiOtpInput-Box .MuiInputBase-input:hover {
+  border-color: #e93a7d !important; /* Change border color on hover */
+  background-color: #fff !important; /* Optional background color */
+  border-radius: 10px !important;
+}
+
+/* Focus state */
+.MuiOtpInput-Box .MuiInputBase-input:focus {
+  border-color: #e9307d !important; /* Highlight border color on focus */
+  outline: none !important; /* Remove default focus outline */
+  border-radius: 10px !important;
+}
+
+/* Typing state (input with a value) */
+.MuiOtpInput-Box .MuiInputBase-input:not(:placeholder-shown) {
+  border: 1px solid #e2e4e9 !important; /* Change border color when input has a value */
+  background-color: #fff !important; /* Optional background color when typing */
+  border-radius: 10px !important;
+}
+
+/* Fieldset styles (optional for visual refinement) */
+.MuiOtpInput-Box .MuiOutlinedInput-notchedOutline {
+  border-color: transparent !important; /* Hide original fieldset border */
+  border-radius: 10px !important;
+}
+
+.MuiOtpInput-Box .MuiInputBase-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #e93a7d !important;
+  border-radius: 10px !important;
+}
+
+.MuiOtpInput-Box
+  .MuiInputBase-root.Mui-focused
+  .MuiOutlinedInput-notchedOutline {
+  border-color: #e93a7d !important;
+  border-radius: 10px !important;
+}
+.otp-resend-text {
+  color: #667085;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+.otp-resend-timer-text {
+  color: #667085;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+.otp-change-email-text {
+  color: #0a0d14;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+  text-decoration-line: underline;
 }
