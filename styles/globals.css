@@ -136,6 +136,75 @@ html {
   letter-spacing: -0.084px;
 }
 
+.dropdown-industry-input-field {
+  padding: 8px 8px 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #e2e4e9;
+  background: #fff;
+  box-shadow: 0px 1px 2px 0px rgba(228, 229, 231, 0.24);
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+
+.dropdown-industry {
+  color: #0a0d14;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+
+.react-tel-input .form-control {
+  position: relative;
+  padding-left: 48px !important;
+  margin-left: 0;
+  width: 100% !important;
+  outline: none;
+  height: auto !important;
+  padding: 8px 8px 8px 10px;
+  border-radius: 8px !important;
+  border: 1px solid #e2e4e9 !important;
+  background: #fff !important;
+  box-shadow: 0px 1px 2px 0px rgba(228, 229, 231, 0.24) !important;
+  color: #0a0d14 !important;
+  font-family: "Plus Jakarta Sans" !important;
+  font-size: 14px !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  line-height: 20px !important;
+  letter-spacing: -0.084px !important;
+}
+
+.react-tel-input .flag-dropdown {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  padding: 0;
+  background-color: #fff !important;
+  border-radius: 8px 0 0 8px !important;
+  border: none !important;
+}
+
+.react-tel-input .selected-flag {
+  outline: none;
+  position: relative;
+  width: 38px;
+  height: 100%;
+  border: 1px solid #e2e4e9 !important;
+  border-radius: 8px 0 0 8px !important;
+}
+
+.react-tel-input .selected-flag:hover,
+.react-tel-input .selected-flag:focus {
+  background-color: #fff !important;
+}
+
 .sb-form-submit-button-non-active {
   padding: 10px 8px;
   border-radius: 8px;
@@ -360,4 +429,263 @@ html {
   line-height: 20px;
   letter-spacing: -0.084px;
   text-decoration-line: underline;
+}
+
+/* Onboarding CSS */
+
+.ob-text {
+  color: #0a0d14;
+  font-family: "Plus Jakarta Sans";
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 32px;
+}
+
+.ob-instruction-text {
+  color: #0a0d14;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+.ob-instruction-sub-text {
+  color: #525866;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+
+.ob-accordion-heading {
+  color: #0a0d14;
+  font-family: "Plus Jakarta Sans";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: -0.176px;
+}
+
+.ob-required-start {
+  color: #375dfb;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+
+.react-tel-input {
+  font-family: "Plus Jakarta Sans" !important;
+}
+
+.currency-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.currency-input-container input {
+  width: 100%;
+  padding: 8px 120px 8px 30px;
+}
+
+.currency-input-container span {
+  position: absolute;
+  left: 10px;
+  top: 49%;
+  transform: translateY(-50%);
+  color: #868c98;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+
+.currency-input-container select {
+  position: absolute;
+  right: 10px;
+  top: 49%;
+  transform: translateY(-50%);
+  border-left: 1px solid #e2e4e9;
+  background-color: #fff;
+  color: #0a0d14;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+
+.sb-form-optional-text {
+  color: #525866;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+
+.documents-tabs-wrapper {
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid #eaecf0;
+  background: #f6f8fa;
+}
+
+.documents-tab-active {
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0px 1px 3px 0px rgba(16, 24, 40, 0.1),
+    0px 1px 2px 0px rgba(16, 24, 40, 0.06);
+  color: #0a0d14;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+
+.documents-tab-non-active {
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: transparent;
+  color: #0a0d14;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+
+.documents-wrapper-dotted {
+  padding: 20px 20px 16px 20px;
+  border-radius: 16px;
+  border: 1px dashed #cdd0d5;
+  background: #fff;
+}
+
+.documents-heading {
+  color: #0a0d14;
+  font-family: "Plus Jakarta Sans";
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: -0.072px;
+}
+.documents-sub-heading {
+  color: #525866;
+  font-family: "Plus Jakarta Sans";
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 16px;
+}
+.documents-button {
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid #e2e4e9;
+  background: #fff;
+  box-shadow: 0px 1px 2px 0px rgba(82, 88, 102, 0.06);
+  color: #525866;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+.documents-wrapper-normal {
+  padding: 20px 20px 16px 20px;
+  border-radius: 16px;
+  border: 1px solid #cdd0d5;
+  background: #fff;
+}
+
+.tab-send-email-text-wrapper {
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: #ebf1ff;
+}
+.tab-send-email-text {
+  color: #525866;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+.tab-send-email-button {
+  color: #0a0d14;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+  text-decoration-line: underline;
+}
+
+.terms-and-conditions-text {
+  color: #0a0d14;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+
+.terms-hyperlink {
+  color: #375dfb;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+  text-decoration-line: underline;
+}
+
+.sb-form-cancel-button {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #cdd0d5;
+  color: #525866;
+  text-align: center;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+.sb-form-submit-button {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #e93a7d;
+  background: #e93a7d;
+  box-shadow: 0px 1px 2px 0px rgba(233, 58, 125, 0.48), 0px 0px 0px 1px #e93a7d;
+  color: #fff;
+  text-align: center;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.084px;
 }

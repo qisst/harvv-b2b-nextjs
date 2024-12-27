@@ -7,8 +7,10 @@ import Images from "@/public/images/sign-up-images.png";
 import ReCAPTCHA from "react-google-recaptcha";
 import Tooltip from "@mui/material/Tooltip";
 import { MuiOtpInput } from "mui-one-time-password-input";
+import { useRouter } from "next/router";
 
 function VerifyOTP() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("seller");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -154,7 +156,12 @@ function VerifyOTP() {
 
           <div className="w-full flex justify-center items-center">
             {/* <button className="w-full sb-form-submit-button-non-active"> */}
-            <button className="w-full sb-form-submit-button-active">
+            <button
+              onClick={() => {
+                router.push("/onboarding");
+              }}
+              className="w-full sb-form-submit-button-active"
+            >
               Verify
             </button>
           </div>
