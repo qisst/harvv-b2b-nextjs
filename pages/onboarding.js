@@ -1353,8 +1353,303 @@ function Onboarding() {
             </div>
           </div>
         </div>
-        <div className="hidden lg:flex lg:w-1/4 w-full px-5 py-5 lg:py-10 lg:px-5 text-black justify-start items-start h-full overflow-hidden">
-          <CustomStepper />
+        <div className="hidden lg:flex lg:w-1/4 w-full px-5 py-5 lg:py-10 lg:px-5 justify-start items-start flex-col h-full overflow-auto">
+          <div className="w-full flex justify-around items-center flex-col md:flex-row">
+            <div className="w-full left-steps-services-heading text-center md:text-start">
+              Services Selection
+            </div>
+            <div className="w-full left-steps-services-selected text-center md:text-end">
+              2 out of 4 selected
+            </div>
+          </div>
+
+          <div className="w-full gap-4 flex mt-4 justify-center items-start flex-col">
+            <div className="w-full gap-3 flex justify-center items-start flex-row">
+              <div className="flex mt-[0.5px] justify-center items-center flex-col">
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                  >
+                    <path
+                      d="M0.75 8C0.75 3.99594 3.99594 0.75 8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 12.0041 12.0041 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8Z"
+                      fill="#17B26A"
+                    />
+                    <path
+                      d="M0.75 8C0.75 3.99594 3.99594 0.75 8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 12.0041 12.0041 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8Z"
+                      stroke="#17B26A"
+                      stroke-width="1.5"
+                    />
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M11.3975 4.9271L6.62421 9.53377L5.35755 8.18043C5.12421 7.96043 4.75755 7.9471 4.49088 8.13377C4.23088 8.3271 4.15755 8.6671 4.31755 8.94043L5.81755 11.3804C5.96421 11.6071 6.21755 11.7471 6.50421 11.7471C6.77755 11.7471 7.03755 11.6071 7.18421 11.3804C7.42421 11.0671 12.0042 5.6071 12.0042 5.6071C12.6042 4.99376 11.8775 4.45377 11.3975 4.92043V4.9271Z"
+                      fill="white"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div className="w-full flex justify-center items-start flex-col">
+                <div className="w-full text-start steps-heading">Service A</div>
+                <div className="w-full text-start steps-sub-heading">
+                  Offer Card & ACH payment options on your invoices
+                </div>
+              </div>
+            </div>
+
+            <div className="w-full gap-3 flex justify-center items-start flex-row">
+              <div className="flex mt-[0.5px] justify-center items-center flex-col">
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                  >
+                    <path
+                      d="M0.75 8C0.75 3.99594 3.99594 0.75 8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 12.0041 12.0041 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8Z"
+                      fill="#17B26A"
+                    />
+                    <path
+                      d="M0.75 8C0.75 3.99594 3.99594 0.75 8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 12.0041 12.0041 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8Z"
+                      stroke="#17B26A"
+                      stroke-width="1.5"
+                    />
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M11.3975 4.9271L6.62421 9.53377L5.35755 8.18043C5.12421 7.96043 4.75755 7.9471 4.49088 8.13377C4.23088 8.3271 4.15755 8.6671 4.31755 8.94043L5.81755 11.3804C5.96421 11.6071 6.21755 11.7471 6.50421 11.7471C6.77755 11.7471 7.03755 11.6071 7.18421 11.3804C7.42421 11.0671 12.0042 5.6071 12.0042 5.6071C12.6042 4.99376 11.8775 4.45377 11.3975 4.92043V4.9271Z"
+                      fill="white"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div className="w-full flex justify-center items-center flex-col">
+                <div className="w-full text-start steps-heading">Service B</div>
+                <div className="w-full text-start steps-sub-heading">
+                  Offer Net Terms (30, 60, 90) on your invoices for approved
+                  buyers
+                </div>
+              </div>
+            </div>
+
+            <div className="w-full gap-3 flex justify-center items-start flex-row">
+              <div className="flex mt-[0.5px] justify-center items-center flex-col">
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                  >
+                    <path
+                      d="M8 16C3.5816 16 0 12.4184 0 8C0 3.5816 3.5816 0 8 0C12.4184 0 16 3.5816 16 8C16 12.4184 12.4184 16 8 16ZM4 7.2V8.8H12V7.2H4Z"
+                      fill="#D0D5DD"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div className="w-full flex justify-center items-center flex-col">
+                <div className="w-full text-start steps-heading">Service C</div>
+                <div className="w-full text-start steps-sub-heading">
+                  Pay invoices using Card & ACH
+                </div>
+              </div>
+            </div>
+
+            <div className="w-full gap-3 flex justify-center items-start flex-row">
+              <div className="flex mt-[0.5px] justify-center items-center flex-col">
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                  >
+                    <path
+                      d="M8 16C3.5816 16 0 12.4184 0 8C0 3.5816 3.5816 0 8 0C12.4184 0 16 3.5816 16 8C16 12.4184 12.4184 16 8 16ZM4 7.2V8.8H12V7.2H4Z"
+                      fill="#D0D5DD"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div className="w-full flex justify-center items-center flex-col">
+                <div className="w-full text-start steps-heading">Service D</div>
+                <div className="w-full text-start steps-sub-heading">
+                  Pay invoices using Net Terms to approved sellers
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button className="left-steps-services-change-button w-full mt-4 flex justify-center items-center gap-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="21"
+              height="20"
+              viewBox="0 0 21 20"
+              fill="none"
+            >
+              <path
+                d="M6.3105 12.9996L13.917 5.39307L12.8565 4.33257L5.25 11.9391V12.9996H6.3105ZM6.93225 14.4996H3.75V11.3173L12.3263 2.74107C12.4669 2.60047 12.6576 2.52148 12.8565 2.52148C13.0554 2.52148 13.2461 2.60047 13.3868 2.74107L15.5085 4.86282C15.6491 5.00347 15.7281 5.1942 15.7281 5.39307C15.7281 5.59195 15.6491 5.78268 15.5085 5.92332L6.93225 14.4996ZM3.75 15.9996H17.25V17.4996H3.75V15.9996Z"
+                fill="#525866"
+              />
+            </svg>
+            <div>Change</div>
+          </button>
+
+          <div className="w-full mt-8 left-steps-services-heading">
+            Onboarding Status
+          </div>
+
+          <div className="w-full flex mt-4 justify-center items-start flex-col">
+            <div className="w-full gap-3 flex justify-center items-start flex-row">
+              <div className="flex justify-center items-center flex-col">
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <path
+                      d="M0.75 12C0.75 5.7868 5.7868 0.75 12 0.75C18.2132 0.75 23.25 5.7868 23.25 12C23.25 18.2132 18.2132 23.25 12 23.25C5.7868 23.25 0.75 18.2132 0.75 12Z"
+                      fill="#17B26A"
+                    />
+                    <path
+                      d="M0.75 12C0.75 5.7868 5.7868 0.75 12 0.75C18.2132 0.75 23.25 5.7868 23.25 12C23.25 18.2132 18.2132 23.25 12 23.25C5.7868 23.25 0.75 18.2132 0.75 12Z"
+                      stroke="#17B26A"
+                      stroke-width="1.5"
+                    />
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M17.0964 7.38967L9.93638 14.2997L8.03638 12.2697C7.68638 11.9397 7.13638 11.9197 6.73638 12.1997C6.34638 12.4897 6.23638 12.9997 6.47638 13.4097L8.72638 17.0697C8.94638 17.4097 9.32638 17.6197 9.75638 17.6197C10.1664 17.6197 10.5564 17.4097 10.7764 17.0697C11.1364 16.5997 18.0064 8.40967 18.0064 8.40967C18.9064 7.48967 17.8164 6.67967 17.0964 7.37967V7.38967Z"
+                      fill="white"
+                    />
+                  </svg>
+                </div>
+                <div className="w-[2px] bg-[#17B26A] h-[34px]"></div>
+              </div>
+              <div className="w-full flex justify-center items-center flex-col">
+                <div className="w-full text-start steps-heading">
+                  Contact Information
+                </div>
+                <div className="w-full text-start steps-sub-heading">
+                  Enter your personal contact details.
+                </div>
+              </div>
+            </div>
+
+            <div className="w-full gap-3 flex justify-center items-start flex-row">
+              <div className="flex justify-center items-center flex-col">
+                <div
+                  className="z-50 rounded-full bg-[#F9F5FF]"
+                  style={{
+                    boxShadow: "0px 0px 0px 4px rgba(23, 178, 106, 0.24)",
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <path
+                      d="M0.75 12C0.75 5.7868 5.7868 0.75 12 0.75C18.2132 0.75 23.25 5.7868 23.25 12C23.25 18.2132 18.2132 23.25 12 23.25C5.7868 23.25 0.75 18.2132 0.75 12Z"
+                      fill="#17B26A"
+                    />
+                    <path
+                      d="M0.75 12C0.75 5.7868 5.7868 0.75 12 0.75C18.2132 0.75 23.25 5.7868 23.25 12C23.25 18.2132 18.2132 23.25 12 23.25C5.7868 23.25 0.75 18.2132 0.75 12Z"
+                      stroke="#17B26A"
+                      stroke-width="1.5"
+                    />
+                    <circle cx="12" cy="12" r="4" fill="white" />
+                  </svg>
+                </div>
+                <div className="w-[2px] bg-[#EAECF0] h-[34px]"></div>
+              </div>
+              <div className="w-full flex justify-center items-center flex-col">
+                <div className="w-full text-start steps-heading">
+                  Business Information
+                </div>
+                <div className="w-full text-start steps-sub-heading">
+                  Complete your business profile.
+                </div>
+              </div>
+            </div>
+
+            <div className="w-full gap-3 flex justify-center items-start flex-row">
+              <div className="flex justify-center items-center flex-col">
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <path
+                      d="M0.75 12C0.75 5.7868 5.7868 0.75 12 0.75C18.2132 0.75 23.25 5.7868 23.25 12C23.25 18.2132 18.2132 23.25 12 23.25C5.7868 23.25 0.75 18.2132 0.75 12Z"
+                      stroke="#EAECF0"
+                      stroke-width="1.5"
+                    />
+                    <circle cx="12" cy="12" r="4" fill="#D0D5DD" />
+                  </svg>
+                </div>
+                <div className="w-[2px] bg-[#EAECF0] h-[34px]"></div>
+              </div>
+              <div className="w-full flex justify-center items-center flex-col">
+                <div className="w-full text-start steps-heading">
+                  Required Documents
+                </div>
+                <div className="w-full text-start steps-sub-heading">
+                  Connect with essential business tools.
+                </div>
+              </div>
+            </div>
+
+            <div className="w-full gap-3 flex justify-center items-start flex-row">
+              <div className="flex justify-center items-center flex-col">
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <path
+                      d="M0.75 12C0.75 5.7868 5.7868 0.75 12 0.75C18.2132 0.75 23.25 5.7868 23.25 12C23.25 18.2132 18.2132 23.25 12 23.25C5.7868 23.25 0.75 18.2132 0.75 12Z"
+                      stroke="#EAECF0"
+                      stroke-width="1.5"
+                    />
+                    <circle cx="12" cy="12" r="4" fill="#D0D5DD" />
+                  </svg>
+                </div>
+              </div>
+              <div className="w-full flex justify-center items-center flex-col">
+                <div className="w-full text-start steps-heading">
+                  Authorization and Agreement
+                </div>
+                <div className="w-full text-start steps-sub-heading">
+                  Confirm your authority and agree to the terms.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button className="steps-visit-sandbox-button mt-8 w-full text-center">
+            Skip Onboarding - Visit Sandbox
+          </button>
         </div>
       </div>
     </div>
