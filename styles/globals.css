@@ -16,8 +16,8 @@
 
 body,
 html {
-  color: var(--foreground);
-  background: var(--background);
+  color: #000;
+  background: #fff;
   padding: 0;
   margin: 0;
   scroll-behavior: smooth;
@@ -78,7 +78,7 @@ html {
   background: #fff;
   box-shadow: 0px 6px 10px 0px rgba(27, 28, 29, 0.06),
     0px 2px 4px 0px rgba(27, 28, 29, 0.02);
-  color: #e93a7d;
+  color: #ff007a;
   font-family: "Plus Jakarta Sans";
   font-size: 14px;
   font-style: normal;
@@ -221,8 +221,7 @@ html {
 .sb-form-submit-button-active {
   padding: 10px 8px;
   border-radius: 8px;
-  border: 1px solid #fff;
-  background: #e93a7d;
+  background: #ff007a;
   color: #fff;
   text-align: center;
   font-family: "Plus Jakarta Sans";
@@ -247,9 +246,9 @@ html {
 .sb-form-or-button1 {
   padding: 10px 16px;
   border-radius: 8px;
-  border: 1px solid #e93a7d;
+  border: 1px solid #ff007a;
   box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
-  color: #e93a7d;
+  color: #ff007a;
   font-family: "Plus Jakarta Sans";
   font-size: 14px;
   font-style: normal;
@@ -366,7 +365,7 @@ html {
 
 /* Hover state */
 .MuiOtpInput-Box .MuiInputBase-input:hover {
-  border-color: #e93a7d !important; /* Change border color on hover */
+  border-color: #ff007a !important; /* Change border color on hover */
   background-color: #fff !important; /* Optional background color */
   border-radius: 10px !important;
 }
@@ -392,14 +391,14 @@ html {
 }
 
 .MuiOtpInput-Box .MuiInputBase-root:hover .MuiOutlinedInput-notchedOutline {
-  border-color: #e93a7d !important;
+  border-color: #ff007a !important;
   border-radius: 10px !important;
 }
 
 .MuiOtpInput-Box
   .MuiInputBase-root.Mui-focused
   .MuiOutlinedInput-notchedOutline {
-  border-color: #e93a7d !important;
+  border-color: #ff007a !important;
   border-radius: 10px !important;
 }
 .otp-resend-text {
@@ -677,9 +676,9 @@ html {
 .sb-form-submit-button {
   padding: 8px;
   border-radius: 8px;
-  border: 1px solid #e93a7d;
-  background: #e93a7d;
-  box-shadow: 0px 1px 2px 0px rgba(233, 58, 125, 0.48), 0px 0px 0px 1px #e93a7d;
+  border: 1px solid #ff007a;
+  background: #ff007a;
+  box-shadow: 0px 1px 2px 0px rgba(233, 58, 125, 0.48), 0px 0px 0px 1px #ff007a;
   color: #fff;
   text-align: center;
   font-family: "Plus Jakarta Sans";
@@ -777,4 +776,114 @@ html {
   font-weight: 500;
   line-height: 20px;
   letter-spacing: -0.084px;
+}
+
+/* Owner Screen CSS */
+
+.os-heading {
+  color: #0a0d14;
+  font-family: "Plus Jakarta Sans";
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 32px;
+}
+.os-sub-heading {
+  color: #525866;
+  font-family: "Plus Jakarta Sans";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: -0.176px;
+}
+
+.os-section-heading {
+  color: #0a0d14;
+  font-family: "Plus Jakarta Sans";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.os-services-wrapper {
+  padding: 16px;
+  border-radius: 16px;
+  background: #fff;
+}
+.os-services-list-heading {
+  color: #ff007a;
+  font-family: "Plus Jakarta Sans";
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 19.2px;
+  letter-spacing: -0.132px;
+}
+
+.os-services-upper-tag-wrapper-seller {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #375dfb;
+  color: #fff;
+  font-family: "Plus Jakarta Sans";
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 12px;
+  letter-spacing: 0.22px;
+  text-transform: uppercase;
+}
+.os-services-upper-tag-wrapper-buyer {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #df1c41;
+  color: #fff;
+  font-family: "Plus Jakarta Sans";
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 12px;
+  letter-spacing: 0.22px;
+  text-transform: uppercase;
+}
+
+.os-services-sub-heading {
+  color: #0a0d14;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+}
+
+.ob-services-free-package-tag {
+  padding: 4px 8px 4px 4px;
+  border-radius: 6px;
+  border: 1px solid var(--stroke-soft-200, #e2e4e9);
+  background: #fff;
+  color: #525866;
+  font-family: "Plus Jakarta Sans";
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+/* MODAL CSS */
+
+.modal-custom-css {
+  filter: drop-shadow(0px 0px 4px #fff);
+}
+
+.modal-heading-custom {
+  color: #0a0d14;
+  font-family: "Plus Jakarta Sans";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: -0.27px;
 }

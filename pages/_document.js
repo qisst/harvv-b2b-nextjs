@@ -2,7 +2,7 @@ import { Html, Head, Main, NextScript } from "next/document";
 
 export default function Document() {
   return (
-    <Html lang="en">
+    <Html className="bg-white" lang="en">
       <Head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -54,7 +54,7 @@ export default function Document() {
         />
         <link rel="canonical" href="https://harvv.com" /> */}
       </Head>
-      <body className="antialiased">
+      <body className="antialiased bg-white">
         <Main />
         <NextScript />
       </body>
