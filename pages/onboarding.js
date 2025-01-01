@@ -32,6 +32,7 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+import { useSelector } from "react-redux";
 
 function Onboarding() {
   const router = useRouter();
@@ -101,6 +102,7 @@ function Onboarding() {
   const [ownerTab, setOwnerTab] = useState("yes");
   const [open2, setOpen2] = useState(false);
   const [showSteps, setShowSteps] = useState(false);
+  const email = useSelector((state) => state.user.email);
 
   const handleChangeChecked1 = (event) => {
     setChecked1(event.target.checked);
@@ -289,7 +291,7 @@ function Onboarding() {
             className="h-7 md:h-12 w-auto"
           />
         </div>
-        <div className="w-full hidden md:flex justify-center md:justify-end items-center flex-col md:flex-row gap-3">
+        <div className="w-full hidden lg:flex justify-center md:justify-end items-center flex-col md:flex-row gap-3">
           <div className="w-full hidden md:flex md:w-auto text-center nav-switch-text">
             Already have an account?
           </div>
@@ -297,7 +299,7 @@ function Onboarding() {
             Login
           </button>
         </div>
-        <div className="w-full flex md:hidden justify-end items-center flex-row">
+        <div className="w-full flex lg:hidden justify-end items-center flex-row">
           <img
             onClick={handleShowSteps}
             src={BurgerMenu.src}
@@ -309,7 +311,7 @@ function Onboarding() {
       </div>
       {showSteps && (
         <>
-          <div className="w-full h-full flex justify-center items-center">
+          <div className="w-full h-full flex justify-center items-start">
             <div className="flex w-full px-5 py-5 justify-start items-start flex-col">
               <div className="w-full flex justify-around items-center flex-row">
                 <div className="w-full left-steps-services-heading text-start">
@@ -1140,6 +1142,7 @@ function Onboarding() {
                               {/* Input Field */}
                               <input
                                 type="email"
+                                value={email}
                                 placeholder="Input business email"
                                 className="w-full pl-8 outline-none bg-transparent"
                               />

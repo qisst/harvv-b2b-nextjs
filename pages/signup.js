@@ -7,9 +7,13 @@ import Images from "@/public/images/sign-up-images.png";
 import ReCAPTCHA from "react-google-recaptcha";
 import Tooltip from "@mui/material/Tooltip";
 import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
+import { setEmail } from "../redux/userSlice";
 
 function SignUp() {
   const router = useRouter();
+  const dispatch = useDispatch();
+  const [email, setEmailInput] = useState("");
   const [activeTab, setActiveTab] = useState("seller");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -192,6 +196,10 @@ function SignUp() {
                 {/* Input Field */}
                 <input
                   type="email"
+                  value={email}
+                  onChange={(e) => {
+                    setEmailInput(e.target.value);
+                  }}
                   placeholder="Input email address"
                   className="w-full pl-8 outline-none bg-transparent"
                 />
@@ -517,6 +525,7 @@ function SignUp() {
             {/* <button className="w-full sb-form-submit-button-non-active"> */}
             <button
               onClick={() => {
+                dispatch(setEmail(email));
                 router.push("verify-otp");
               }}
               className="w-full sb-form-submit-button-active"

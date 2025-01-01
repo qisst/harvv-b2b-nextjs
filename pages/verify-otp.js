@@ -8,6 +8,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import Tooltip from "@mui/material/Tooltip";
 import { MuiOtpInput } from "mui-one-time-password-input";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 
 function VerifyOTP() {
   const router = useRouter();
@@ -25,6 +26,7 @@ function VerifyOTP() {
   const [otp, setOtp] = React.useState("");
   const [countdown, setCountdown] = useState(30);
   const [showResendButton, setShowResendButton] = useState(false);
+  const email = useSelector((state) => state.user.email);
 
   useEffect(() => {
     if (countdown > 0) {
@@ -137,9 +139,7 @@ function VerifyOTP() {
             Please check OTP on your email. We've sent an email to you at
           </div>
 
-          <div className="w-full text-center otp-top-email-text">
-            ******livas@gmail.com
-          </div>
+          <div className="w-full text-center otp-top-email-text">{email}</div>
 
           <div className="w-full mt-5 mb-5 flex justify-center items-center flex-row gap-3">
             <div className="w-full h-[1px] bg-[#E2E4E9]"></div>
