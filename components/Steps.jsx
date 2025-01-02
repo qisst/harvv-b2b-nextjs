@@ -52,10 +52,6 @@ export default function CustomStepper() {
     setActiveStep(0);
   };
 
-  useEffect(() => {
-    console.log(activeStep);
-  }, [activeStep]);
-
   return (
     <Box sx={{ width: "100%" }}>
       <Stepper

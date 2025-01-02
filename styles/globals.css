@@ -887,3 +887,13 @@ html {
   line-height: 24px;
   letter-spacing: -0.27px;
 }
+
+.small-text-label {
+  color: #525866;
+  font-family: "Plus Jakarta Sans";
+  font-size: 16px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: -0.176px;
+}
