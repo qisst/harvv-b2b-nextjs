@@ -489,12 +489,17 @@ html {
   width: 100%;
 }
 
-.currency-input-container input {
+.currency-input-container-input {
   width: 100%;
   padding: 8px 120px 8px 30px;
 }
 
-.currency-input-container span {
+.currency-input-container-input2 {
+  width: 100%;
+  padding: 8px 8px 8px 80px;
+}
+
+.currency-input-container-span {
   position: absolute;
   left: 10px;
   top: 49%;
@@ -508,7 +513,7 @@ html {
   letter-spacing: -0.084px;
 }
 
-.currency-input-container select {
+.currency-input-container-select {
   position: absolute;
   right: 10px;
   top: 49%;
@@ -522,6 +527,21 @@ html {
   font-weight: 400;
   line-height: 20px;
   letter-spacing: -0.084px;
+}
+
+.currency-input-container-left-div {
+  position: absolute;
+  /* left: 10px; */
+  top: 49%;
+  transform: translateY(-50%);
+  color: #868c98;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.084px;
+  height: 37px !important;
 }
 
 .sb-form-optional-text {
@@ -896,4 +916,36 @@ html {
   font-weight: 400;
   line-height: 24px;
   letter-spacing: -0.176px;
+}
+
+.panel-2-label {
+  color: #868c98;
+  font-family: "Plus Jakarta Sans";
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.48px;
+  text-transform: uppercase;
+}
+
+/* Owner Section CSS */
+
+.owner-heading {
+  color: #0a0d14;
+  font-family: "Plus Jakarta Sans";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.owner-add-button {
+  color: #375dfb;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.084px;
 }

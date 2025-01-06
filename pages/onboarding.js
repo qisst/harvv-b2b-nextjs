@@ -75,14 +75,18 @@ function Onboarding() {
   const [query, setQuery] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
+  const [country, setCountry] = useState("");
   const [zipCode, setZipCode] = useState("");
   const [selectedAddress, setSelectedAddress] = useState(null);
   const autocompleteRef = useRef(null); // Use useRef to store the autocomplete instance
+  const autocompleteRefOwner = useRef(null); // Use useRef to store the autocomplete instance
   const libraries = ["places"]; // Include the "places" library
   const [currency, setCurrency] = useState(currencyOptions[0]); // Default to USD
   const [amount, setAmount] = useState("");
   const [currencyMonthly, setCurrencyMonthly] = useState(currencyOptions[0]); // Default to USD
+  const [currencyMonthly2, setCurrencyMonthly2] = useState(currencyOptions[0]); // Default to USD
   const [amountMonthly, setAmountMonthly] = useState("");
+  const [amountMonthly2, setAmountMonthly2] = useState("");
   const [date, setDate] = useState(null);
   const [taxID, setTaxID] = useState("");
   const [industryDropdownOpen, setIndustryDropdownOpen] = useState(false);
@@ -90,7 +94,7 @@ function Onboarding() {
   const [businessTypeDropdownOpen, setBusinessTypeDropdownOpen] =
     useState(false);
   const [selectedBusinessType, setSelectedBusinessType] = useState(
-    "Select Business Type"
+    "Select Organization Type"
   );
   const [checked1, setChecked1] = useState(false);
   const [checked2, setChecked2] = useState(false);
@@ -107,6 +111,68 @@ function Onboarding() {
   const email = useSelector((state) => state.user.email);
   const [disableButtonContinue, setDisableButtonContinue] = useState(true);
   const [loadingContinue, setLoadingContinue] = useState(false);
+  const [owners, setOwners] = useState([
+    {
+      firstName: "",
+      lastName: "",
+      dob: null,
+      ssn: "",
+      email: "",
+      phone: "",
+      ownership: "",
+      address: "",
+      country: "",
+      city: "",
+      state: "",
+      zip: "",
+    },
+  ]);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const addOwner = () => {
+    setOwners([
+      ...owners,
+      {
+        firstName: "",
+        lastName: "",
+        dob: null,
+        ssn: "",
+        email: "",
+        phone: "",
+        ownership: "",
+        address: "",
+        country: "",
+        city: "",
+        state: "",
+        zip: "",
+      },
+    ]);
+    setActiveIndex(owners.length); // Set the last section as active
+  };
+
+  const removeOwner = (index) => {
+    const updatedOwners = owners.filter((_, i) => i !== index);
+    setOwners(updatedOwners);
+    setActiveIndex(-1); // Reset active index
+    console.log(owners);
+  };
+
+  const updateOwner = (index, field, value) => {
+    setOwners((prevOwners) =>
+      prevOwners.map((owner, i) =>
+        i === index ? { ...owner, [field]: value } : owner
+      )
+    );
+    console.log(owners);
+  };
+
+  // const updateOwner = (index, field, value) => {
+  //   const updatedOwners = owners.map((owner, i) =>
+  //     i === index ? { ...owner, [field]: value } : owner
+  //   );
+  //   setOwners(updatedOwners);
+  //   console.log(owners);
+  // };
 
   const handleChangeChecked1 = (event) => {
     setChecked1(event.target.checked);
@@ -207,6 +273,13 @@ function Onboarding() {
     setCurrencyMonthly(selectedCurrency);
   };
 
+  const handleCurrencyChangeMonthly2 = (e) => {
+    const selectedCurrency = currencyOptions.find(
+      (option) => option.value === e.target.value
+    );
+    setCurrencyMonthly2(selectedCurrency);
+  };
+
   const formatWithCommas = (value) => {
     const numericValue = value.replace(/[^\d.]/g, ""); // Remove non-numeric characters
     const [integer, decimal] = numericValue.split("."); // Split integer and decimal parts
@@ -224,6 +297,11 @@ function Onboarding() {
   const handleAmountChangeMonthly = (e) => {
     const value = e.target.value;
     setAmountMonthly(formatWithCommas(value));
+  };
+
+  const handleAmountChangeMonthly2 = (e) => {
+    const value = e.target.value;
+    setAmountMonthly2(formatWithCommas(value));
   };
 
   const { isLoaded } = useJsApiLoader({
@@ -250,9 +328,9 @@ function Onboarding() {
         } else if (types.includes("administrative_area_level_1")) {
           state = component.short_name;
           setState(state);
-          // }
-          // else if (types.includes("country")) {
-          //   country = component.long_name;
+        } else if (types.includes("country")) {
+          country = component.long_name;
+          setCountry(country);
         } else if (types.includes("postal_code")) {
           postalCode = component.long_name;
           setZipCode(postalCode);
@@ -260,6 +338,46 @@ function Onboarding() {
       });
     }
     setQuery(place.formatted_address || place.name);
+  };
+
+  const handlePlaceSelectOwner = (index) => {
+    const place = autocompleteRefOwner.current.getPlace();
+
+    if (!place || !place.address_components) {
+      console.error("No place details available");
+      return;
+    }
+
+    // Initialize variables
+    let city = "";
+    let state = "";
+    let country = "";
+    let postalCode = "";
+
+    // Extract components
+    place.address_components.forEach((component) => {
+      const types = component.types;
+      if (types.includes("locality")) {
+        city = component.long_name;
+      } else if (types.includes("administrative_area_level_1")) {
+        state = component.short_name;
+      } else if (types.includes("country")) {
+        country = component.long_name;
+      } else if (types.includes("postal_code")) {
+        postalCode = component.long_name;
+      }
+    });
+
+    console.log(city, state, country, postalCode);
+    console.log(index);
+    // Update the fields after extracting all components
+    updateOwner(index, "city", city);
+    updateOwner(index, "state", state);
+    updateOwner(index, "country", country);
+    updateOwner(index, "zip", postalCode);
+    updateOwner(index, "address", place.formatted_address || place.name);
+
+    console.log("Owners:", owners);
   };
 
   const validatePhone = (value) => {
@@ -1361,11 +1479,29 @@ function Onboarding() {
                               : "h-0 p-0 overflow-hidden"
                           }`}
                         >
-                          <div className="w-full flex justify-center items-center">
+                          <div className="w-full panel-2-label bg-[#F6F8FA] px-4 py-[6px] text-center md:text-start">
+                            General Information
+                          </div>
+
+                          <div className="w-full flex gap-4 justify-center items-center flex-col md:flex-row mt-4">
                             <div className="w-full flex gap-1 justify-start items-center flex-col">
                               <div className="w-full flex justify-start items-start">
                                 <div className="sb-form-label">
-                                  DBA (Doing Business As)
+                                  Business legal Name
+                                </div>
+                                <div className="ob-required-start">*</div>
+                              </div>
+                              {/* Input Field */}
+                              <input
+                                type="text"
+                                placeholder="Input name your business operation"
+                                className="w-full sb-form-input-field outline-none"
+                              />
+                            </div>
+                            <div className="w-full flex gap-1 justify-start items-center flex-col">
+                              <div className="w-full flex justify-start items-start">
+                                <div className="sb-form-label">
+                                  Business DBA
                                 </div>
                                 <div className="ob-required-start">*</div>
                               </div>
@@ -1377,10 +1513,137 @@ function Onboarding() {
                               />
                             </div>
                           </div>
+                          <div className="w-full flex gap-4 justify-center items-center flex-col md:flex-row mt-4">
+                            <div className="w-full flex gap-1 justify-start items-center flex-col">
+                              <div className="w-full flex justify-start items-start">
+                                <div className="sb-form-label">Tax ID</div>
+                                <div className="ob-required-start">*</div>
+                              </div>
+                              <input
+                                type="text"
+                                placeholder="Enter Tax ID"
+                                value={taxID}
+                                onChange={handleInputChange}
+                                maxLength={10} // 9 digits + 1 hyphen
+                                className="w-full sb-form-input-field outline-none"
+                              />
+                            </div>
+                            <div className="w-full flex gap-1 justify-start items-center flex-col">
+                              <div className="w-full flex justify-start items-start">
+                                <div className="sb-form-label">
+                                  Organization Type
+                                </div>
+                                <div className="ob-required-start">*</div>
+                              </div>
+                              <div className="relative w-full">
+                                {/* Dropdown Button */}
+                                <button
+                                  className={`w-full ${
+                                    selectedBusinessType ===
+                                    "Select Organization Type"
+                                      ? "text-[#9ca3af]"
+                                      : "text-[#0a0d14]"
+                                  } dropdown-industry-input-field flex justify-between items-center outline-none`}
+                                  onClick={toggleBusinessTypeDropdown}
+                                >
+                                  {selectedBusinessType}
+                                  <span>
+                                    {businessTypeDropdownOpen ? (
+                                      <>
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="20"
+                                          height="20"
+                                          viewBox="0 0 20 20"
+                                          fill="none"
+                                        >
+                                          <path
+                                            d="M9.99956 9.121L6.28706 12.8335L5.22656 11.773L9.99956 7L14.7726 11.773L13.7121 12.8335L9.99956 9.121Z"
+                                            fill="#0A0D14"
+                                          />
+                                        </svg>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="20"
+                                          height="20"
+                                          viewBox="0 0 20 20"
+                                          fill="none"
+                                        >
+                                          <path
+                                            d="M10.0001 10.8785L13.7126 7.16602L14.7731 8.22652L10.0001 12.9995L5.22705 8.22652L6.28755 7.16602L10.0001 10.8785Z"
+                                            fill="#0A0D14"
+                                          />
+                                        </svg>
+                                      </>
+                                    )}
+                                  </span>
+                                  {/* Down arrow */}
+                                </button>
+
+                                {/* Dropdown Menu */}
+                                {businessTypeDropdownOpen && (
+                                  <ul className="absolute left-0 w-full mt-2 bg-white border rounded-lg shadow-lg">
+                                    {businessTypes.map((type, index) => (
+                                      <li
+                                        key={index}
+                                        className="px-4 py-2 rounded-lg cursor-pointer dropdown-industry hover:bg-gray-100"
+                                        onClick={() => selectBusinessType(type)}
+                                      >
+                                        {type}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="w-full flex gap-4 justify-center items-center flex-col md:flex-row mt-4">
+                            <div className="w-full flex gap-1 justify-start items-center flex-col">
+                              <div className="w-full flex justify-start items-start">
+                                <div className="sb-form-label">MCC</div>
+                                <div className="ob-required-start">*</div>
+                              </div>
+                              {/* Input Field */}
+                              <input
+                                type="text"
+                                placeholder="Input name your business operation"
+                                className="w-full sb-form-input-field outline-none"
+                              />
+                            </div>
+                            <div className="w-full flex gap-1 justify-start items-center flex-col">
+                              <div className="w-full flex justify-start items-start">
+                                <div className="sb-form-label">Website</div>
+                                <div className="ob-required-start">*</div>
+                              </div>
+                              <div className="currency-input-container">
+                                {/* Input Field */}
+                                <input
+                                  type="text"
+                                  placeholder="www.website.com"
+                                  className="currency-input-container-input2 w-full outline-none sb-form-input-field"
+                                />
+
+                                {/* Currency Symbol */}
+                                <span className="currency-input-container-left-div px-3 border-r-[1px] border-[#E2E4E9] flex justify-center items-center">
+                                  https://
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="w-full panel-2-label mt-4 bg-[#F6F8FA] px-4 py-[6px] text-center md:text-start">
+                            Location Details
+                          </div>
+
                           <div className="w-full flex justify-center items-center mt-4">
                             <div className="w-full flex gap-1 justify-start items-center flex-col">
                               <div className="w-full flex justify-start items-start">
-                                <div className="sb-form-label">Address</div>
+                                <div className="sb-form-label">
+                                  Business Address
+                                </div>
                                 <div className="ob-required-start">*</div>
                               </div>
                               {isLoaded && (
@@ -1401,17 +1664,27 @@ function Onboarding() {
                                       className="sb-form-input-field w-full outline-none"
                                     />
                                   </Autocomplete>
-                                  {selectedAddress && (
-                                    <div className="selected-address">
-                                      Selected Address: {selectedAddress}
-                                    </div>
-                                  )}
                                 </>
                               )}
                             </div>
                           </div>
 
-                          <div className="w-full  mt-4 flex justify-center items-center flex-col md:flex-row gap-4">
+                          <div className="w-full mt-4 flex justify-center items-center flex-col md:flex-row gap-4">
+                            <div className="w-full flex gap-1 justify-start items-center flex-col">
+                              <div className="w-full flex justify-start items-start">
+                                <div className="sb-form-label">Country</div>
+                                <div className="ob-required-start">*</div>
+                              </div>
+                              <input
+                                type="text"
+                                value={country}
+                                onChange={(e) => {
+                                  setCountry(e.target.value);
+                                }}
+                                placeholder="Country"
+                                className="w-full sb-form-input-field outline-none"
+                              />
+                            </div>
                             <div className="w-full flex gap-1 justify-start items-center flex-col">
                               <div className="w-full flex justify-start items-start">
                                 <div className="sb-form-label">City</div>
@@ -1427,6 +1700,9 @@ function Onboarding() {
                                 className="w-full sb-form-input-field outline-none"
                               />
                             </div>
+                          </div>
+
+                          <div className="w-full mt-4 flex justify-center items-center flex-col md:flex-row gap-4">
                             <div className="w-full flex gap-1 justify-start items-center flex-col">
                               <div className="w-full flex justify-start items-start">
                                 <div className="sb-form-label">State</div>
@@ -1459,15 +1735,17 @@ function Onboarding() {
                             </div>
                           </div>
 
+                          <div className="w-full panel-2-label mt-4 bg-[#F6F8FA] px-4 py-[6px] text-center md:text-start">
+                            Financial Details
+                          </div>
+
                           <div className="w-full mt-4 flex justify-center items-center flex-col md:flex-row gap-4">
                             <div className="w-full flex gap-1 justify-start items-center flex-col">
-                              <div className="w-full gap-1 flex justify-start items-start">
+                              <div className="w-full flex justify-start items-start">
                                 <div className="sb-form-label">
-                                  Annual Revenue
+                                  Average Payment Amount
                                 </div>
-                                <div className="sb-form-optional-text">
-                                  (Optional)
-                                </div>
+                                <div className="ob-required-start">*</div>
                               </div>
                               <div className="currency-input-container">
                                 {/* Input Field */}
@@ -1476,11 +1754,13 @@ function Onboarding() {
                                   value={amount}
                                   onChange={handleAmountChange}
                                   placeholder="0.00"
-                                  className="w-full outline-none sb-form-input-field"
+                                  className="w-full currency-input-container-input outline-none sb-form-input-field"
                                 />
 
                                 {/* Currency Symbol */}
-                                <span>{currency.symbol}</span>
+                                <span className="currency-input-container-span">
+                                  {currency.symbol}
+                                </span>
                                 {/* <img
                             src={currency.flag}
                             className="absolute right-5 top-6 z-50 rounded-full h-8 w-8"
@@ -1490,7 +1770,7 @@ function Onboarding() {
                                 <select
                                   value={currency.value}
                                   onChange={handleCurrencyChange}
-                                  className="px-5 py-2 cursor-pointer"
+                                  className="currency-input-container-select px-5 py-2 cursor-pointer"
                                 >
                                   {currencyOptions.map((option) => (
                                     <option
@@ -1505,13 +1785,11 @@ function Onboarding() {
                               </div>
                             </div>
                             <div className="w-full flex gap-1 justify-start items-center flex-col">
-                              <div className="w-full gap-1 flex justify-start items-start">
+                              <div className="w-full flex justify-start items-start">
                                 <div className="sb-form-label">
-                                  Monthly Expense
+                                  Maximum Payment Amount
                                 </div>
-                                <div className="sb-form-optional-text">
-                                  (Optional)
-                                </div>
+                                <div className="ob-required-start">*</div>
                               </div>
                               <div className="currency-input-container">
                                 {/* Input Field */}
@@ -1520,17 +1798,19 @@ function Onboarding() {
                                   value={amountMonthly}
                                   onChange={handleAmountChangeMonthly}
                                   placeholder="0.00"
-                                  className="w-full outline-none sb-form-input-field"
+                                  className="w-full currency-input-container-input outline-none sb-form-input-field"
                                 />
 
                                 {/* Currency Symbol */}
-                                <span>{currencyMonthly.symbol}</span>
+                                <span className="currency-input-container-span">
+                                  {currencyMonthly.symbol}
+                                </span>
 
                                 {/* Currency Dropdown */}
                                 <select
                                   value={currencyMonthly.value}
                                   onChange={handleCurrencyChangeMonthly}
-                                  className="px-5 py-2"
+                                  className="currency-input-container-select px-5 py-2"
                                 >
                                   {currencyOptions.map((option) => (
                                     <option
@@ -1545,23 +1825,516 @@ function Onboarding() {
                             </div>
                           </div>
 
-                          <div className="w-full mt-4 flex justify-center items-center flex-col md:flex-row gap-4">
+                          <div className="w-full mt-4">
                             <div className="w-full flex gap-1 justify-start items-center flex-col">
-                              <div className="w-full gap-1 flex justify-start items-start">
-                                <div className="sb-form-label">Tax ID</div>
-                                <div className="sb-form-optional-text">
-                                  (Optional)
+                              <div className="w-full flex justify-start items-start">
+                                <div className="sb-form-label">
+                                  Total Monthly Payments Amount
                                 </div>
+                                <div className="ob-required-start">*</div>
                               </div>
-                              <input
-                                type="text"
-                                placeholder="Enter Tax ID"
-                                value={taxID}
-                                onChange={handleInputChange}
-                                maxLength={10} // 9 digits + 1 hyphen
-                                className="w-full sb-form-input-field outline-none"
-                              />
+                              <div className="currency-input-container">
+                                {/* Input Field */}
+                                <input
+                                  type="text"
+                                  value={amountMonthly2}
+                                  onChange={handleAmountChangeMonthly2}
+                                  placeholder="0.00"
+                                  className="w-full currency-input-container-input outline-none sb-form-input-field"
+                                />
+
+                                {/* Currency Symbol */}
+                                <span className="currency-input-container-span">
+                                  {currencyMonthly2.symbol}
+                                </span>
+
+                                {/* Currency Dropdown */}
+                                <select
+                                  value={currencyMonthly2.value}
+                                  onChange={handleCurrencyChangeMonthly2}
+                                  className="currency-input-container-select px-5 py-2"
+                                >
+                                  {currencyOptions.map((option) => (
+                                    <option
+                                      key={option.value}
+                                      value={option.value}
+                                    >
+                                      {option.label}
+                                    </option>
+                                  ))}
+                                </select>
+                              </div>
                             </div>
+                          </div>
+
+                          <div className="w-full panel-2-label mt-4 bg-[#F6F8FA] px-4 py-[6px] text-center md:text-start">
+                            Add Owner
+                          </div>
+
+                          <div className="w-full mt-4">
+                            <div className="w-full space-y-4">
+                              {owners.map((owner, index) => (
+                                <div
+                                  key={index}
+                                  className="p-6 rounded-2xl border-[1px] border-[#EAECF0] bg-white"
+                                >
+                                  <div
+                                    onClick={() =>
+                                      setActiveIndex(
+                                        activeIndex === index ? -1 : index
+                                      )
+                                    }
+                                    className="cursor-pointer flex justify-between items-center"
+                                  >
+                                    <span className="owner-heading">
+                                      Owner {index + 1}
+                                    </span>
+                                    <div className="flex space-x-2">
+                                      <button
+                                        onClick={() => removeOwner(index)}
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="25"
+                                          height="24"
+                                          viewBox="0 0 25 24"
+                                          fill="none"
+                                        >
+                                          <path
+                                            d="M17 6.6H21.5V8.4H19.7V20.1C19.7 20.3387 19.6052 20.5676 19.4364 20.7364C19.2676 20.9052 19.0387 21 18.8 21H6.2C5.96131 21 5.73239 20.9052 5.5636 20.7364C5.39482 20.5676 5.3 20.3387 5.3 20.1V8.4H3.5V6.6H8V3.9C8 3.66131 8.09482 3.43239 8.2636 3.2636C8.43239 3.09482 8.6613 3 8.9 3H16.1C16.3387 3 16.5676 3.09482 16.7364 3.2636C16.9052 3.43239 17 3.66131 17 3.9V6.6ZM17.9 8.4H7.1V19.2H17.9V8.4ZM9.8 11.1H11.6V16.5H9.8V11.1ZM13.4 11.1H15.2V16.5H13.4V11.1ZM9.8 4.8V6.6H15.2V4.8H9.8Z"
+                                            fill="#ff007a"
+                                          />
+                                        </svg>
+                                      </button>
+                                      <button
+                                      // onClick={() =>
+                                      //   setActiveIndex(
+                                      //     activeIndex === index ? -1 : index
+                                      //   )
+                                      // }
+                                      >
+                                        {activeIndex === index ? (
+                                          <>
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              width="20"
+                                              height="20"
+                                              viewBox="0 0 20 20"
+                                              fill="none"
+                                            >
+                                              <path
+                                                d="M4.75 9.25H15.25V10.75H4.75V9.25Z"
+                                                fill="#525866"
+                                              />
+                                            </svg>
+                                          </>
+                                        ) : (
+                                          <>
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              width="20"
+                                              height="20"
+                                              viewBox="0 0 20 20"
+                                              fill="none"
+                                            >
+                                              <path
+                                                d="M9.25 9.25V4.75H10.75V9.25H15.25V10.75H10.75V15.25H9.25V10.75H4.75V9.25H9.25Z"
+                                                fill="#525866"
+                                              />
+                                            </svg>
+                                          </>
+                                        )}
+                                      </button>
+                                    </div>
+                                  </div>
+
+                                  {activeIndex === index && (
+                                    <div className="py-6 space-y-4">
+                                      <div className="w-full panel-2-label bg-[#F6F8FA] px-4 py-[6px] text-center md:text-start">
+                                        Owner Details
+                                      </div>
+
+                                      <div className="w-full mt-4 flex justify-center items-center gap-4 flex-col md:flex-row">
+                                        <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                          <div className="w-full flex justify-start items-start">
+                                            <div className="sb-form-label">
+                                              Owner First Name
+                                            </div>
+                                            <div className="ob-required-start">
+                                              *
+                                            </div>
+                                          </div>
+                                          <input
+                                            type="text"
+                                            value={owner.firstName}
+                                            onChange={(e) =>
+                                              updateOwner(
+                                                index,
+                                                "firstName",
+                                                e.target.value
+                                              )
+                                            }
+                                            placeholder="Enter owner first name"
+                                            className="w-full sb-form-input-field outline-none"
+                                          />
+                                        </div>
+                                        <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                          <div className="w-full flex justify-start items-start">
+                                            <div className="sb-form-label">
+                                              Owner Last Name
+                                            </div>
+                                            <div className="ob-required-start">
+                                              *
+                                            </div>
+                                          </div>
+                                          <input
+                                            type="text"
+                                            value={owner.lastName}
+                                            onChange={(e) =>
+                                              updateOwner(
+                                                index,
+                                                "lastName",
+                                                e.target.value
+                                              )
+                                            }
+                                            placeholder="Enter owner last name"
+                                            className="w-full sb-form-input-field outline-none"
+                                          />
+                                        </div>
+                                      </div>
+
+                                      <div className="w-full mt-4 flex justify-center items-center gap-4 flex-col md:flex-row">
+                                        <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                          <div className="w-full flex justify-start items-start">
+                                            <div className="sb-form-label">
+                                              Date of Birth
+                                            </div>
+                                            <div className="ob-required-start">
+                                              *
+                                            </div>
+                                          </div>
+                                          <LocalizationProvider
+                                            dateAdapter={AdapterDayjs}
+                                          >
+                                            <DatePicker
+                                              sx={{
+                                                "& .MuiInputBase-root": {
+                                                  color: "#0a0d14",
+                                                  fontWeight: "400",
+                                                  border: "none",
+                                                },
+                                                "& .MuiIconButton-label": {
+                                                  color: "white",
+                                                },
+                                                "& .MuiOutlinedInput-notchedOutline":
+                                                  {
+                                                    border: "none !important",
+                                                    color: "#0a0d14",
+                                                    fontWeight: "400",
+                                                  },
+                                                "& .css-1dune0f-MuiInputBase-input-MuiOutlinedInput-input":
+                                                  {
+                                                    padding:
+                                                      "7.1px 8px 6px 10px",
+                                                    color: "#0a0d14",
+                                                    fontWeight: "400",
+                                                  },
+                                                "& .MuiButtonBase-root": {
+                                                  color: "#0a0d14",
+                                                  border: "none",
+                                                },
+                                                width: "100%",
+                                                color: "#0a0d14",
+                                                background: "#fff",
+                                                fontWeight: "400",
+                                                border: "1px solid #e2e4e9",
+                                                borderRadius: "8px",
+                                              }}
+                                              value={owner.dob}
+                                              onChange={(newValue) =>
+                                                updateOwner(
+                                                  index,
+                                                  "dob",
+                                                  newValue
+                                                )
+                                              }
+                                            />
+                                          </LocalizationProvider>
+                                        </div>
+                                        <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                          <div className="w-full flex justify-start items-start">
+                                            <div className="sb-form-label">
+                                              Social Security Number
+                                            </div>
+                                            <div className="ob-required-start">
+                                              *
+                                            </div>
+                                          </div>
+                                          <input
+                                            type="text"
+                                            value={owner.ssn}
+                                            onChange={(e) =>
+                                              updateOwner(
+                                                index,
+                                                "ssn",
+                                                e.target.value
+                                              )
+                                            }
+                                            placeholder="Enter SSN"
+                                            className="w-full sb-form-input-field outline-none"
+                                          />
+                                        </div>
+                                      </div>
+
+                                      <div className="w-full mt-4 flex justify-center items-center gap-4 flex-col md:flex-row">
+                                        <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                          <div className="w-full flex justify-start items-start">
+                                            <div className="sb-form-label">
+                                              Email
+                                            </div>
+                                            <div className="ob-required-start">
+                                              *
+                                            </div>
+                                          </div>
+                                          <input
+                                            type="email"
+                                            value={owner.email}
+                                            onChange={(e) =>
+                                              updateOwner(
+                                                index,
+                                                "email",
+                                                e.target.value
+                                              )
+                                            }
+                                            placeholder="Enter email"
+                                            className="w-full sb-form-input-field outline-none"
+                                          />
+                                        </div>
+                                        <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                          <div className="w-full flex justify-start items-start">
+                                            <div className="sb-form-label">
+                                              Phone Number
+                                            </div>
+                                            <div className="ob-required-start">
+                                              *
+                                            </div>
+                                          </div>
+                                          <PhoneInput
+                                            country={"us"}
+                                            enableSearch={true}
+                                            value={owner.phone}
+                                            onChange={(value) => {
+                                              if (!value.startsWith("+")) {
+                                                value = "+" + value;
+                                              }
+                                              updateOwner(
+                                                index,
+                                                "phone",
+                                                value
+                                              );
+                                              console.log(value);
+                                            }}
+                                          />
+                                        </div>
+                                      </div>
+                                      <div className="w-full mt-4 flex justify-center items-center gap-4 flex-col md:flex-row">
+                                        <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                          <div className="w-full flex justify-start items-start">
+                                            <div className="sb-form-label">
+                                              Ownership %
+                                            </div>
+                                            <div className="ob-required-start">
+                                              *
+                                            </div>
+                                          </div>
+                                          <input
+                                            type="text"
+                                            value={owner.ownership}
+                                            onChange={(e) =>
+                                              updateOwner(
+                                                index,
+                                                "ownership",
+                                                e.target.value
+                                              )
+                                            }
+                                            placeholder="0"
+                                            className="w-full sb-form-input-field outline-none"
+                                          />
+                                        </div>
+                                      </div>
+
+                                      <div className="w-full panel-2-label mt-4 bg-[#F6F8FA] px-4 py-[6px] text-center md:text-start">
+                                        Owner Address
+                                      </div>
+
+                                      <div className="w-full flex justify-center items-center mt-4">
+                                        <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                          <div className="w-full flex justify-start items-start">
+                                            <div className="sb-form-label">
+                                              Address
+                                            </div>
+                                            <div className="ob-required-start">
+                                              *
+                                            </div>
+                                          </div>
+                                          {isLoaded && (
+                                            <>
+                                              <Autocomplete
+                                                onLoad={(
+                                                  autocompleteInstance
+                                                ) =>
+                                                  (autocompleteRefOwner.current =
+                                                    autocompleteInstance)
+                                                }
+                                                onPlaceChanged={() =>
+                                                  handlePlaceSelectOwner(index)
+                                                }
+                                                className="w-full"
+                                              >
+                                                <input
+                                                  type="text"
+                                                  value={owner.address}
+                                                  onChange={(e) =>
+                                                    updateOwner(
+                                                      index,
+                                                      "address",
+                                                      e.target.value
+                                                    )
+                                                  }
+                                                  placeholder="Enter the address"
+                                                  className="sb-form-input-field w-full outline-none"
+                                                />
+                                              </Autocomplete>
+                                            </>
+                                          )}
+                                        </div>
+                                      </div>
+
+                                      <div className="w-full mt-4 flex justify-center items-center flex-col md:flex-row gap-4">
+                                        <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                          <div className="w-full flex justify-start items-start">
+                                            <div className="sb-form-label">
+                                              Country
+                                            </div>
+                                            <div className="ob-required-start">
+                                              *
+                                            </div>
+                                          </div>
+                                          <input
+                                            type="text"
+                                            value={owner.country}
+                                            onChange={(e) =>
+                                              updateOwner(
+                                                index,
+                                                "country",
+                                                e.target.value
+                                              )
+                                            }
+                                            placeholder="Enter the Country"
+                                            className="w-full sb-form-input-field outline-none"
+                                          />
+                                        </div>
+                                        <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                          <div className="w-full flex justify-start items-start">
+                                            <div className="sb-form-label">
+                                              City
+                                            </div>
+                                            <div className="ob-required-start">
+                                              *
+                                            </div>
+                                          </div>
+                                          <input
+                                            type="text"
+                                            value={owner.city}
+                                            onChange={(e) =>
+                                              updateOwner(
+                                                index,
+                                                "city",
+                                                e.target.value
+                                              )
+                                            }
+                                            placeholder="Enter the city"
+                                            className="w-full sb-form-input-field outline-none"
+                                          />
+                                        </div>
+                                      </div>
+
+                                      <div className="w-full mt-4 flex justify-center items-center flex-col md:flex-row gap-4">
+                                        <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                          <div className="w-full flex justify-start items-start">
+                                            <div className="sb-form-label">
+                                              State
+                                            </div>
+                                            <div className="ob-required-start">
+                                              *
+                                            </div>
+                                          </div>
+                                          <input
+                                            type="text"
+                                            value={owner.state}
+                                            onChange={(e) =>
+                                              updateOwner(
+                                                index,
+                                                "state",
+                                                e.target.value
+                                              )
+                                            }
+                                            placeholder="Enter the state"
+                                            className="w-full sb-form-input-field outline-none"
+                                          />
+                                        </div>
+                                        <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                          <div className="w-full flex justify-start items-start">
+                                            <div className="sb-form-label">
+                                              ZIP
+                                            </div>
+                                            <div className="ob-required-start">
+                                              *
+                                            </div>
+                                          </div>
+                                          <input
+                                            type="text"
+                                            value={owner.zip}
+                                            onChange={(e) =>
+                                              updateOwner(
+                                                index,
+                                                "zip",
+                                                e.target.value
+                                              )
+                                            }
+                                            placeholder="Enter the ZIP code"
+                                            className="w-full sb-form-input-field outline-none"
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                              <button
+                                onClick={addOwner}
+                                className="w-full owner-add-button my-6 flex justify-start items-center gap-1"
+                              >
+                                <div>
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 20 20"
+                                    fill="none"
+                                  >
+                                    <path
+                                      d="M9.25 9.25V4.75H10.75V9.25H15.25V10.75H10.75V15.25H9.25V10.75H4.75V9.25H9.25Z"
+                                      fill="#375DFB"
+                                    />
+                                  </svg>
+                                </div>
+                                <div>Add Another Owner</div>
+                              </button>
+                            </div>
+                          </div>
+
+                          <div className="w-full mt-4 flex justify-center items-center flex-col md:flex-row gap-4">
                             <div className="w-full flex gap-1 justify-start items-center flex-col">
                               <div className="w-full flex justify-start items-start">
                                 <div className="sb-form-label">
@@ -1672,77 +2445,6 @@ function Onboarding() {
                                         onClick={() => selectIndustry(industry)}
                                       >
                                         {industry}
-                                      </li>
-                                    ))}
-                                  </ul>
-                                )}
-                              </div>
-                            </div>
-                            <div className="w-full flex gap-1 justify-start items-center flex-col">
-                              <div className="w-full flex justify-start items-start">
-                                <div className="sb-form-label">
-                                  Business Type
-                                </div>
-                                <div className="ob-required-start">*</div>
-                              </div>
-                              <div className="relative w-full">
-                                {/* Dropdown Button */}
-                                <button
-                                  className={`w-full ${
-                                    selectedBusinessType ===
-                                    "Select Business Type"
-                                      ? "text-[#9ca3af]"
-                                      : "text-[#0a0d14]"
-                                  } dropdown-industry-input-field flex justify-between items-center outline-none`}
-                                  onClick={toggleBusinessTypeDropdown}
-                                >
-                                  {selectedBusinessType}
-                                  <span>
-                                    {businessTypeDropdownOpen ? (
-                                      <>
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          width="20"
-                                          height="20"
-                                          viewBox="0 0 20 20"
-                                          fill="none"
-                                        >
-                                          <path
-                                            d="M9.99956 9.121L6.28706 12.8335L5.22656 11.773L9.99956 7L14.7726 11.773L13.7121 12.8335L9.99956 9.121Z"
-                                            fill="#0A0D14"
-                                          />
-                                        </svg>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          width="20"
-                                          height="20"
-                                          viewBox="0 0 20 20"
-                                          fill="none"
-                                        >
-                                          <path
-                                            d="M10.0001 10.8785L13.7126 7.16602L14.7731 8.22652L10.0001 12.9995L5.22705 8.22652L6.28755 7.16602L10.0001 10.8785Z"
-                                            fill="#0A0D14"
-                                          />
-                                        </svg>
-                                      </>
-                                    )}
-                                  </span>
-                                  {/* Down arrow */}
-                                </button>
-
-                                {/* Dropdown Menu */}
-                                {businessTypeDropdownOpen && (
-                                  <ul className="absolute left-0 w-full mt-2 bg-white border rounded-lg shadow-lg">
-                                    {businessTypes.map((type, index) => (
-                                      <li
-                                        key={index}
-                                        className="px-4 py-2 rounded-lg cursor-pointer dropdown-industry hover:bg-gray-100"
-                                        onClick={() => selectBusinessType(type)}
-                                      >
-                                        {type}
                                       </li>
                                     ))}
                                   </ul>
