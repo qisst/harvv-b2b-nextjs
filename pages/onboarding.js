@@ -68,6 +68,7 @@ function Onboarding() {
   const [isOpen2, setIsOpen2] = useState(false);
   const [isOpen3, setIsOpen3] = useState(false);
   const [isOpen4, setIsOpen4] = useState(false);
+  const [isOpen5, setIsOpen5] = useState(false);
   const [phone, setPhone] = useState("");
   const [activeTab, setActiveTab] = useState("upload");
   const [isValid, setIsValid] = useState(true);
@@ -81,12 +82,25 @@ function Onboarding() {
   const autocompleteRef = useRef(null); // Use useRef to store the autocomplete instance
   const autocompleteRefOwner = useRef(null); // Use useRef to store the autocomplete instance
   const libraries = ["places"]; // Include the "places" library
-  const [currency, setCurrency] = useState(currencyOptions[0]); // Default to USD
-  const [amount, setAmount] = useState("");
-  const [currencyMonthly, setCurrencyMonthly] = useState(currencyOptions[0]); // Default to USD
-  const [currencyMonthly2, setCurrencyMonthly2] = useState(currencyOptions[0]); // Default to USD
-  const [amountMonthly, setAmountMonthly] = useState("");
-  const [amountMonthly2, setAmountMonthly2] = useState("");
+  const [averagePaymentAmount, setAveragePaymentAmount] = useState("");
+  const [maximumPaymentAmount, setMaximumPaymentAmount] = useState("");
+  const [annualRevenueAmount, setAnnualRevenueAmount] = useState("");
+  const [totalMonthlyPaymentsAmount, setTotalMonthlyPaymentsAmount] =
+    useState("");
+  const [monthlySpendAmount, setMonthlySpendAmount] = useState("");
+  const [averagePaymentAmountCurrency, setAveragePaymentAmountCurrency] =
+    useState(currencyOptions[0]); // Default to USD
+  const [currencyMaximumPaymentAmount, setCurrencyMaximumPaymentAmount] =
+    useState(currencyOptions[0]); // Default to USD
+  const [currencyAnnualRevenueAmount, setCurrencyAnnualRevenueAmount] =
+    useState(currencyOptions[0]); // Default to USD
+  const [
+    currencyTotalMonthlyPaymentsAmount,
+    setCurrencyTotalMonthlyPaymentsAmount,
+  ] = useState(currencyOptions[0]); // Default to USD
+  const [monthlySpendAmountCurrency, setMonthlySpendAmountCurrency] = useState(
+    currencyOptions[0]
+  ); // Default to USD
   const [date, setDate] = useState(null);
   const [taxID, setTaxID] = useState("");
   const [industryDropdownOpen, setIndustryDropdownOpen] = useState(false);
@@ -128,6 +142,15 @@ function Onboarding() {
     },
   ]);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [maxOwners, setMaxOwners] = useState(false);
+
+  useEffect(() => {
+    if (owners.length >= 6) {
+      setMaxOwners(true);
+    } else {
+      setMaxOwners(false);
+    }
+  }, [owners]);
 
   const addOwner = () => {
     setOwners([
@@ -259,25 +282,39 @@ function Onboarding() {
     setTaxID(formattedValue);
   };
 
-  const handleCurrencyChange = (e) => {
+  const handleCurrencyChangeAveragePaymentAmount = (e) => {
     const selectedCurrency = currencyOptions.find(
       (option) => option.value === e.target.value
     );
-    setCurrency(selectedCurrency);
+    setAveragePaymentAmountCurrency(selectedCurrency);
   };
 
-  const handleCurrencyChangeMonthly = (e) => {
+  const handleCurrencyChangeMonthlySpendAmount = (e) => {
     const selectedCurrency = currencyOptions.find(
       (option) => option.value === e.target.value
     );
-    setCurrencyMonthly(selectedCurrency);
+    setMonthlySpendAmountCurrency(selectedCurrency);
   };
 
-  const handleCurrencyChangeMonthly2 = (e) => {
+  const handleCurrencyChangeMaximumPaymentAmount = (e) => {
     const selectedCurrency = currencyOptions.find(
       (option) => option.value === e.target.value
     );
-    setCurrencyMonthly2(selectedCurrency);
+    setCurrencyMaximumPaymentAmount(selectedCurrency);
+  };
+
+  const handleCurrencyChangeAnnualRevenueAmount = (e) => {
+    const selectedCurrency = currencyOptions.find(
+      (option) => option.value === e.target.value
+    );
+    setCurrencyAnnualRevenueAmount(selectedCurrency);
+  };
+
+  const handleCurrencyChangeTotalMonthlyPaymentsAmount = (e) => {
+    const selectedCurrency = currencyOptions.find(
+      (option) => option.value === e.target.value
+    );
+    setCurrencyTotalMonthlyPaymentsAmount(selectedCurrency);
   };
 
   const formatWithCommas = (value) => {
@@ -289,19 +326,29 @@ function Onboarding() {
       : formattedInteger;
   };
 
-  const handleAmountChange = (e) => {
+  const handleAveragePaymentAmountChange = (e) => {
     const value = e.target.value;
-    setAmount(formatWithCommas(value));
+    setAveragePaymentAmount(formatWithCommas(value));
   };
 
-  const handleAmountChangeMonthly = (e) => {
+  const handleMaximumPaymentAmountChange = (e) => {
     const value = e.target.value;
-    setAmountMonthly(formatWithCommas(value));
+    setMaximumPaymentAmount(formatWithCommas(value));
   };
 
-  const handleAmountChangeMonthly2 = (e) => {
+  const handleAnnualRevenueAmountChange = (e) => {
     const value = e.target.value;
-    setAmountMonthly2(formatWithCommas(value));
+    setAnnualRevenueAmount(formatWithCommas(value));
+  };
+
+  const handleTotalMonthlyPaymentsAmountChange = (e) => {
+    const value = e.target.value;
+    setTotalMonthlyPaymentsAmount(formatWithCommas(value));
+  };
+
+  const handleMonthlySpendAmountChange = (e) => {
+    const value = e.target.value;
+    setMonthlySpendAmount(formatWithCommas(value));
   };
 
   const { isLoaded } = useJsApiLoader({
@@ -920,240 +967,308 @@ function Onboarding() {
                 </div>
                 <div className="w-full mt-3 flex flex-col justify-center items-center gap-3">
                   <div className="w-full flex justify-center items-center flex-col md:flex-row gap-3">
-                    <div
-                      onClick={handleChangeChecked5}
-                      className={` ${
-                        checked5
-                          ? "border-[1px] border-[#ff007a]"
-                          : "border-[1px] border-[#eaecf0]"
-                      } cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
-                    >
-                      <div className="w-full flex justify-center items-center flex-row">
-                        <div className="w-full flex justify-start items-center">
-                          <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
-                            A
-                          </div>
-                        </div>
-                        <div className="w-full flex justify-end items-center gap-2">
-                          <div className="os-services-upper-tag-wrapper-seller">
-                            Seller
-                          </div>
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                sx={{
-                                  color: "#E2E4E9",
-                                  "&.Mui-checked": {
-                                    color: "#17B26A",
-                                  },
-                                }}
-                                checked={checked5}
-                                onChange={handleChangeChecked5}
-                                inputProps={{ "aria-label": "controlled" }}
-                              />
-                            }
-                            sx={{
-                              marginRight: "-10%",
-                            }}
+                    <div className="relative w-full flex justify-start items-center flex-col">
+                      <div className="rounded-t-xl label-send-invoices w-full flex justify-start items-center flex-row gap-2 text-black absolute">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                        >
+                          <path
+                            d="M4.99998 4.4V2.6C4.99998 2.44087 5.06319 2.28826 5.17571 2.17574C5.28823 2.06321 5.44085 2 5.59998 2H12.8C12.9591 2 13.1117 2.06321 13.2242 2.17574C13.3368 2.28826 13.4 2.44087 13.4 2.6V11C13.4 11.1591 13.3368 11.3117 13.2242 11.4243C13.1117 11.5368 12.9591 11.6 12.8 11.6H11V13.4C11 13.7312 10.73 14 10.3958 14H3.20418C3.12505 14.0005 3.04661 13.9853 2.97337 13.9554C2.90012 13.9254 2.83352 13.8813 2.77737 13.8256C2.72123 13.7698 2.67665 13.7035 2.64621 13.6305C2.61576 13.5575 2.60005 13.4791 2.59998 13.4L2.60178 5C2.60178 4.6688 2.87178 4.4 3.20538 4.4H4.99998ZM3.80118 5.6L3.79998 12.8H9.79998V5.6H3.80118ZM6.19998 4.4H11V10.4H12.2V3.2H6.19998V4.4ZM4.99998 7.4H8.59998V8.6H4.99998V7.4ZM4.99998 9.8H8.59998V11H4.99998V9.8Z"
+                            fill="white"
                           />
+                        </svg>
+                        <div>Send Invoice</div>
+                      </div>
+                      <div
+                        onClick={handleChangeChecked5}
+                        className={` ${
+                          checked5
+                            ? "border-[1px] border-[#ff007a]"
+                            : "border-[1px] border-[#eaecf0]"
+                        } mt-[11%] z-10 cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
+                      >
+                        <div className="w-full flex justify-center items-center flex-row">
+                          <div className="w-full flex justify-start items-center">
+                            <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
+                              A
+                            </div>
+                          </div>
+                          <div className="w-full flex justify-end items-center gap-2">
+                            <div className="os-services-upper-tag-wrapper-seller">
+                              Seller
+                            </div>
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  sx={{
+                                    color: "#E2E4E9",
+                                    "&.Mui-checked": {
+                                      color: "#17B26A",
+                                    },
+                                  }}
+                                  checked={checked5}
+                                  onChange={handleChangeChecked5}
+                                  inputProps={{ "aria-label": "controlled" }}
+                                />
+                              }
+                              sx={{
+                                marginRight: "-10%",
+                              }}
+                            />
+                          </div>
                         </div>
-                      </div>
 
-                      <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
-                        Offer Card & ACH payment options on your invoices
-                      </div>
+                        <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
+                          Offer Card & ACH payment options on your invoices
+                        </div>
 
-                      <div className="w-full mt-3 flex justify-center md:justify-start items-center">
-                        <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 16 16"
-                            fill="none"
-                          >
-                            <circle cx="8" cy="8" r="3" fill="#38C793" />
-                          </svg>
-                          <div>Free Package</div>
+                        <div className="w-full mt-3 flex justify-center md:justify-start items-center">
+                          <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 16 16"
+                              fill="none"
+                            >
+                              <circle cx="8" cy="8" r="3" fill="#38C793" />
+                            </svg>
+                            <div>Free Package</div>
+                          </div>
                         </div>
                       </div>
                     </div>
 
-                    <div
-                      onClick={handleChangeChecked6}
-                      className={` ${
-                        checked6
-                          ? "border-[1px] border-[#ff007a]"
-                          : "border-[1px] border-[#eaecf0]"
-                      } cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
-                    >
-                      <div className="w-full flex justify-center items-center flex-row">
-                        <div className="w-full flex justify-start items-center">
-                          <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
-                            B
-                          </div>
-                        </div>
-                        <div className="w-full flex justify-end items-center gap-2">
-                          <div className="os-services-upper-tag-wrapper-seller">
-                            Seller
-                          </div>
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                sx={{
-                                  color: "#E2E4E9",
-                                  "&.Mui-checked": {
-                                    color: "#17B26A",
-                                  },
-                                }}
-                                checked={checked6}
-                                onChange={handleChangeChecked6}
-                                inputProps={{ "aria-label": "controlled" }}
-                              />
-                            }
-                            sx={{
-                              marginRight: "-10%",
-                            }}
+                    <div className="relative w-full flex justify-start items-center flex-col">
+                      <div className="rounded-t-xl label-send-invoices w-full flex justify-start items-center flex-row gap-2 text-black absolute">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                        >
+                          <path
+                            d="M4.99998 4.4V2.6C4.99998 2.44087 5.06319 2.28826 5.17571 2.17574C5.28823 2.06321 5.44085 2 5.59998 2H12.8C12.9591 2 13.1117 2.06321 13.2242 2.17574C13.3368 2.28826 13.4 2.44087 13.4 2.6V11C13.4 11.1591 13.3368 11.3117 13.2242 11.4243C13.1117 11.5368 12.9591 11.6 12.8 11.6H11V13.4C11 13.7312 10.73 14 10.3958 14H3.20418C3.12505 14.0005 3.04661 13.9853 2.97337 13.9554C2.90012 13.9254 2.83352 13.8813 2.77737 13.8256C2.72123 13.7698 2.67665 13.7035 2.64621 13.6305C2.61576 13.5575 2.60005 13.4791 2.59998 13.4L2.60178 5C2.60178 4.6688 2.87178 4.4 3.20538 4.4H4.99998ZM3.80118 5.6L3.79998 12.8H9.79998V5.6H3.80118ZM6.19998 4.4H11V10.4H12.2V3.2H6.19998V4.4ZM4.99998 7.4H8.59998V8.6H4.99998V7.4ZM4.99998 9.8H8.59998V11H4.99998V9.8Z"
+                            fill="white"
                           />
+                        </svg>
+                        <div>Send Invoice</div>
+                      </div>
+                      <div
+                        onClick={handleChangeChecked6}
+                        className={` ${
+                          checked6
+                            ? "border-[1px] border-[#ff007a]"
+                            : "border-[1px] border-[#eaecf0]"
+                        } mt-[11%] z-10 cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
+                      >
+                        <div className="w-full flex justify-center items-center flex-row">
+                          <div className="w-full flex justify-start items-center">
+                            <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
+                              B
+                            </div>
+                          </div>
+                          <div className="w-full flex justify-end items-center gap-2">
+                            <div className="os-services-upper-tag-wrapper-seller">
+                              Seller
+                            </div>
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  sx={{
+                                    color: "#E2E4E9",
+                                    "&.Mui-checked": {
+                                      color: "#17B26A",
+                                    },
+                                  }}
+                                  checked={checked6}
+                                  onChange={handleChangeChecked6}
+                                  inputProps={{ "aria-label": "controlled" }}
+                                />
+                              }
+                              sx={{
+                                marginRight: "-10%",
+                              }}
+                            />
+                          </div>
                         </div>
-                      </div>
 
-                      <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
-                        Offer Net Terms (30, 60, 90) on your invoices for
-                        approved buyers
-                      </div>
+                        <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
+                          Offer Net Terms (30, 60, 90) on your invoices for
+                          approved buyers
+                        </div>
 
-                      <div className="w-full mt-3 flex justify-center md:justify-start items-center">
-                        <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 16 16"
-                            fill="none"
-                          >
-                            <circle cx="8" cy="8" r="3" fill="#38C793" />
-                          </svg>
-                          <div>Subscription required</div>
+                        <div className="w-full mt-3 flex justify-center md:justify-start items-center">
+                          <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 16 16"
+                              fill="none"
+                            >
+                              <circle cx="8" cy="8" r="3" fill="#38C793" />
+                            </svg>
+                            <div>Subscription required</div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div className="w-full flex justify-center items-center flex-col md:flex-row gap-3">
-                    <div
-                      onClick={handleChangeChecked7}
-                      className={` ${
-                        checked7
-                          ? "border-[1px] border-[#ff007a]"
-                          : "border-[1px] border-[#eaecf0]"
-                      } cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
-                    >
-                      <div className="w-full flex justify-center items-center flex-row">
-                        <div className="w-full flex justify-start items-center">
-                          <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
-                            C
-                          </div>
-                        </div>
-                        <div className="w-full flex justify-end items-center gap-2">
-                          <div className="os-services-upper-tag-wrapper-buyer">
-                            Buyer
-                          </div>
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                sx={{
-                                  color: "#E2E4E9",
-                                  "&.Mui-checked": {
-                                    color: "#17B26A",
-                                  },
-                                }}
-                                checked={checked7}
-                                onChange={handleChangeChecked7}
-                                inputProps={{ "aria-label": "controlled" }}
-                              />
-                            }
-                            sx={{
-                              marginRight: "-10%",
-                            }}
+                    <div className="relative w-full flex justify-start items-center flex-col">
+                      <div className="rounded-t-xl label-pay-invoices w-full flex justify-start items-center flex-row gap-2 text-black absolute">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                        >
+                          <path
+                            d="M4.99998 4.4V2.6C4.99998 2.44087 5.06319 2.28826 5.17571 2.17574C5.28823 2.06321 5.44085 2 5.59998 2H12.8C12.9591 2 13.1117 2.06321 13.2242 2.17574C13.3368 2.28826 13.4 2.44087 13.4 2.6V11C13.4 11.1591 13.3368 11.3117 13.2242 11.4243C13.1117 11.5368 12.9591 11.6 12.8 11.6H11V13.4C11 13.7312 10.73 14 10.3958 14H3.20418C3.12505 14.0005 3.04661 13.9853 2.97337 13.9554C2.90012 13.9254 2.83352 13.8813 2.77737 13.8256C2.72123 13.7698 2.67665 13.7035 2.64621 13.6305C2.61576 13.5575 2.60005 13.4791 2.59998 13.4L2.60178 5C2.60178 4.6688 2.87178 4.4 3.20538 4.4H4.99998ZM3.80118 5.6L3.79998 12.8H9.79998V5.6H3.80118ZM6.19998 4.4H11V10.4H12.2V3.2H6.19998V4.4ZM4.99998 7.4H8.59998V8.6H4.99998V7.4ZM4.99998 9.8H8.59998V11H4.99998V9.8Z"
+                            fill="white"
                           />
+                        </svg>
+                        <div>Pay Invoice</div>
+                      </div>
+                      <div
+                        onClick={handleChangeChecked7}
+                        className={` ${
+                          checked7
+                            ? "border-[1px] border-[#ff007a]"
+                            : "border-[1px] border-[#eaecf0]"
+                        } mt-[11%] z-10 cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
+                      >
+                        <div className="w-full flex justify-center items-center flex-row">
+                          <div className="w-full flex justify-start items-center">
+                            <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
+                              C
+                            </div>
+                          </div>
+                          <div className="w-full flex justify-end items-center gap-2">
+                            <div className="os-services-upper-tag-wrapper-buyer">
+                              Buyer
+                            </div>
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  sx={{
+                                    color: "#E2E4E9",
+                                    "&.Mui-checked": {
+                                      color: "#17B26A",
+                                    },
+                                  }}
+                                  checked={checked7}
+                                  onChange={handleChangeChecked7}
+                                  inputProps={{ "aria-label": "controlled" }}
+                                />
+                              }
+                              sx={{
+                                marginRight: "-10%",
+                              }}
+                            />
+                          </div>
                         </div>
-                      </div>
 
-                      <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
-                        Pay invoices using Card & ACH
-                      </div>
+                        <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
+                          Pay invoices using Card & ACH
+                        </div>
 
-                      <div className="w-full mt-3 flex justify-center md:justify-start items-center">
-                        <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 16 16"
-                            fill="none"
-                          >
-                            <circle cx="8" cy="8" r="3" fill="#38C793" />
-                          </svg>
-                          <div>Free Package</div>
+                        <div className="w-full mt-3 flex justify-center md:justify-start items-center">
+                          <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 16 16"
+                              fill="none"
+                            >
+                              <circle cx="8" cy="8" r="3" fill="#38C793" />
+                            </svg>
+                            <div>Free Package</div>
+                          </div>
                         </div>
                       </div>
                     </div>
 
-                    <div
-                      onClick={handleChangeChecked8}
-                      className={` ${
-                        checked8
-                          ? "border-[1px] border-[#ff007a]"
-                          : "border-[1px] border-[#eaecf0]"
-                      } cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
-                    >
-                      <div className="w-full flex justify-center items-center flex-row">
-                        <div className="w-full flex justify-start items-center">
-                          <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
-                            D
-                          </div>
-                        </div>
-                        <div className="w-full flex justify-end items-center gap-2">
-                          <div className="os-services-upper-tag-wrapper-buyer">
-                            Buyer
-                          </div>
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                sx={{
-                                  color: "#E2E4E9",
-                                  "&.Mui-checked": {
-                                    color: "#17B26A",
-                                  },
-                                }}
-                                checked={checked8}
-                                onChange={handleChangeChecked8}
-                                inputProps={{ "aria-label": "controlled" }}
-                              />
-                            }
-                            sx={{
-                              marginRight: "-10%",
-                            }}
+                    <div className="relative w-full flex justify-start items-center flex-col">
+                      <div className="rounded-t-xl label-pay-invoices w-full flex justify-start items-center flex-row gap-2 text-black absolute">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                        >
+                          <path
+                            d="M4.99998 4.4V2.6C4.99998 2.44087 5.06319 2.28826 5.17571 2.17574C5.28823 2.06321 5.44085 2 5.59998 2H12.8C12.9591 2 13.1117 2.06321 13.2242 2.17574C13.3368 2.28826 13.4 2.44087 13.4 2.6V11C13.4 11.1591 13.3368 11.3117 13.2242 11.4243C13.1117 11.5368 12.9591 11.6 12.8 11.6H11V13.4C11 13.7312 10.73 14 10.3958 14H3.20418C3.12505 14.0005 3.04661 13.9853 2.97337 13.9554C2.90012 13.9254 2.83352 13.8813 2.77737 13.8256C2.72123 13.7698 2.67665 13.7035 2.64621 13.6305C2.61576 13.5575 2.60005 13.4791 2.59998 13.4L2.60178 5C2.60178 4.6688 2.87178 4.4 3.20538 4.4H4.99998ZM3.80118 5.6L3.79998 12.8H9.79998V5.6H3.80118ZM6.19998 4.4H11V10.4H12.2V3.2H6.19998V4.4ZM4.99998 7.4H8.59998V8.6H4.99998V7.4ZM4.99998 9.8H8.59998V11H4.99998V9.8Z"
+                            fill="white"
                           />
+                        </svg>
+                        <div>Pay Invoice</div>
+                      </div>
+                      <div
+                        onClick={handleChangeChecked8}
+                        className={` ${
+                          checked8
+                            ? "border-[1px] border-[#ff007a]"
+                            : "border-[1px] border-[#eaecf0]"
+                        } mt-[11%] z-10 cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
+                      >
+                        <div className="w-full flex justify-center items-center flex-row">
+                          <div className="w-full flex justify-start items-center">
+                            <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
+                              D
+                            </div>
+                          </div>
+                          <div className="w-full flex justify-end items-center gap-2">
+                            <div className="os-services-upper-tag-wrapper-buyer">
+                              Buyer
+                            </div>
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  sx={{
+                                    color: "#E2E4E9",
+                                    "&.Mui-checked": {
+                                      color: "#17B26A",
+                                    },
+                                  }}
+                                  checked={checked8}
+                                  onChange={handleChangeChecked8}
+                                  inputProps={{ "aria-label": "controlled" }}
+                                />
+                              }
+                              sx={{
+                                marginRight: "-10%",
+                              }}
+                            />
+                          </div>
                         </div>
-                      </div>
 
-                      <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
-                        Pay invoices using Net Terms to approved sellers
-                      </div>
+                        <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
+                          Pay invoices using Net Terms to approved sellers
+                        </div>
 
-                      <div className="w-full mt-3 flex justify-center md:justify-start items-center">
-                        <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 16 16"
-                            fill="none"
-                          >
-                            <circle cx="8" cy="8" r="3" fill="#38C793" />
-                          </svg>
-                          <div>Free Package</div>
+                        <div className="w-full mt-3 flex justify-center md:justify-start items-center">
+                          <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 16 16"
+                              fill="none"
+                            >
+                              <circle cx="8" cy="8" r="3" fill="#38C793" />
+                            </svg>
+                            <div>Free Package</div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1246,8 +1361,131 @@ function Onboarding() {
                       alt="Image"
                       className="h-[88px] w-[88px]"
                     />
-                    <div className="ob-text w-full text-center md:text-start">
-                      {checked5 && "Card & ACH Payments Activation"}
+                    <div className="w-full flex justify-center items-center flex-col gap-1">
+                      {/* Hereeeeeeeeeeeee */}
+                      {checked5 && !checked6 && !checked7 && !checked8 ? (
+                        // Only checked5 is true
+                        <>
+                          <div className="w-full text-center md:text-start ob-text">
+                            Card & ACH Payments Activation
+                          </div>
+                          {/* <div className="w-full text-center md:text-start ob-sub-text">
+                            Hello
+                          </div> */}
+                        </>
+                      ) : !checked5 && checked6 && !checked7 && !checked8 ? (
+                        // Only checked6 is true
+                        <>
+                          <div className="w-full text-center md:text-start ob-text">
+                            Business Credit Application
+                          </div>
+                          <div className="w-full text-center md:text-start ob-sub-text">
+                            (for enabling net terms on invoices)
+                          </div>
+                        </>
+                      ) : !checked5 && !checked6 && !checked7 && checked8 ? (
+                        // Only checked8 is true
+                        <>
+                          <div className="w-full text-center md:text-start ob-text">
+                            Business Credit Application
+                          </div>
+                          <div className="w-full text-center md:text-start ob-sub-text">
+                            (for paying invoices using net terms)
+                          </div>
+                        </>
+                      ) : checked5 && checked6 && !checked7 && !checked8 ? (
+                        // checked5 and checked6 are true
+                        <>
+                          <div className="w-full text-center md:text-start ob-text">
+                            Integrated Payment & Credit Terms Application
+                          </div>
+                        </>
+                      ) : checked5 && !checked6 && checked7 && !checked8 ? (
+                        // checked5 and checked7 are true
+                        <>
+                          <div className="w-full text-center md:text-start ob-text">
+                            Card & ACH Payments Activation
+                          </div>
+                        </>
+                      ) : checked5 && !checked6 && !checked7 && checked8 ? (
+                        // checked5 and checked8 are true
+                        <>
+                          <div className="w-full text-center md:text-start ob-text">
+                            Integrated Payment & Credit Terms Application
+                          </div>
+                        </>
+                      ) : !checked5 && checked6 && checked7 && !checked8 ? (
+                        // checked6 and checked7 are true
+                        <>
+                          <div className="w-full text-center md:text-start ob-text">
+                            Business Credit Application
+                          </div>
+                          <div className="w-full text-center md:text-start ob-sub-text">
+                            (for enabling net terms on invoices)
+                          </div>
+                        </>
+                      ) : !checked5 && checked6 && !checked7 && checked8 ? (
+                        // checked6 and checked8 are true
+                        <>
+                          <div className="w-full text-center md:text-start ob-text">
+                            Business Credit Application
+                          </div>
+                          <div className="w-full text-center md:text-start ob-sub-text">
+                            (for offering net terms & paying using net terms)
+                          </div>
+                        </>
+                      ) : !checked5 && !checked6 && checked7 && checked8 ? (
+                        // checked7 and checked8 are true
+                        <>
+                          <div className="w-full text-center md:text-start ob-text">
+                            Business Credit Application
+                          </div>
+                          <div className="w-full text-center md:text-start ob-sub-text">
+                            (for paying invoices using net terms)
+                          </div>
+                        </>
+                      ) : checked5 && checked6 && checked7 && !checked8 ? (
+                        // checked5, checked6, and checked7 are true
+                        <>
+                          <div className="w-full text-center md:text-start ob-text">
+                            Integrated Payment & Credit Terms Application
+                          </div>
+                        </>
+                      ) : checked5 && checked6 && !checked7 && checked8 ? (
+                        // checked5, checked6, and checked8 are true
+                        <>
+                          <div className="w-full text-center md:text-start ob-text">
+                            Integrated Payment & Credit Terms Application
+                          </div>
+                        </>
+                      ) : checked5 && !checked6 && checked7 && checked8 ? (
+                        // checked5, checked7, and checked8 are true
+                        <>
+                          <div className="w-full text-center md:text-start ob-text">
+                            Integrated Payment & Credit Terms Application
+                          </div>
+                        </>
+                      ) : !checked5 && checked6 && checked7 && checked8 ? (
+                        // checked6, checked7, and checked8 are true
+                        <>
+                          <div className="w-full text-center md:text-start ob-text">
+                            Business Credit Application
+                          </div>
+                          <div className="w-full text-center md:text-start ob-sub-text">
+                            (for offering net terms & paying using net terms)
+                          </div>
+                        </>
+                      ) : checked5 && checked6 && checked7 && checked8 ? (
+                        // All checked5, checked6, checked7, and checked8 are true
+                        <>
+                          <div className="w-full text-center md:text-start ob-text">
+                            Integrated Payment & Credit Terms Application
+                          </div>
+                          {/* <div className="w-full text-center md:text-start ob-sub-text">
+                          (for paying invoices using net terms)
+                          </div> */}
+                        </>
+                      ) : null}
                       {/* Business Credit Application */}
                     </div>
                   </div>
@@ -1296,10 +1534,11 @@ function Onboarding() {
                       <div className="p-6 border-[1px] border-[#EAECF0] rounded-2xl bg-[#fff]">
                         <button
                           onClick={() => {
+                            setIsOpen1(!isOpen1);
                             setIsOpen2(false);
                             setIsOpen3(false);
                             setIsOpen4(false);
-                            setIsOpen1(!isOpen1);
+                            setIsOpen5(false);
                           }}
                           className="w-full ob-accordion-heading text-left flex justify-between items-center"
                         >
@@ -1431,9 +1670,10 @@ function Onboarding() {
                         <button
                           onClick={() => {
                             setIsOpen1(false);
+                            setIsOpen2(!isOpen2);
                             setIsOpen3(false);
                             setIsOpen4(false);
-                            setIsOpen2(!isOpen2);
+                            setIsOpen5(false);
                           }}
                           className="w-full ob-accordion-heading text-left flex justify-between items-center"
                         >
@@ -1528,7 +1768,7 @@ function Onboarding() {
                                 className="w-full sb-form-input-field outline-none"
                               />
                             </div>
-                            <div className="w-full flex gap-1 justify-start items-center flex-col">
+                            <div className="w-full z-10 flex gap-1 justify-start items-center flex-col">
                               <div className="w-full flex justify-start items-start">
                                 <div className="sb-form-label">
                                   Organization Type
@@ -1600,39 +1840,115 @@ function Onboarding() {
                               </div>
                             </div>
                           </div>
-                          <div className="w-full flex gap-4 justify-center items-center flex-col md:flex-row mt-4">
-                            <div className="w-full flex gap-1 justify-start items-center flex-col">
-                              <div className="w-full flex justify-start items-start">
-                                <div className="sb-form-label">MCC</div>
-                                <div className="ob-required-start">*</div>
-                              </div>
-                              {/* Input Field */}
-                              <input
-                                type="text"
-                                placeholder="Input name your business operation"
-                                className="w-full sb-form-input-field outline-none"
-                              />
-                            </div>
-                            <div className="w-full flex gap-1 justify-start items-center flex-col">
-                              <div className="w-full flex justify-start items-start">
-                                <div className="sb-form-label">Website</div>
-                                <div className="ob-required-start">*</div>
-                              </div>
-                              <div className="currency-input-container">
-                                {/* Input Field */}
-                                <input
-                                  type="text"
-                                  placeholder="www.website.com"
-                                  className="currency-input-container-input2 w-full outline-none sb-form-input-field"
-                                />
 
-                                {/* Currency Symbol */}
-                                <span className="currency-input-container-left-div px-3 border-r-[1px] border-[#E2E4E9] flex justify-center items-center">
-                                  https://
-                                </span>
+                          {(checked5 && !checked6 && !checked7 && !checked8) ||
+                          (checked5 && checked6 && !checked7 && !checked8) ||
+                          (checked5 && !checked6 && !checked7 && checked8) ||
+                          (checked5 && checked6 && checked7 && !checked8) ||
+                          (checked5 && checked6 && !checked7 && checked8) ||
+                          (checked5 && !checked6 && checked7 && checked8) ||
+                          (checked5 && checked6 && checked7 && checked8) ? (
+                            <>
+                              <div className="w-full flex gap-4 justify-center items-center flex-col md:flex-row mt-4">
+                                <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                  <div className="w-full flex justify-start items-start">
+                                    <div className="sb-form-label">MCC</div>
+                                    <div className="ob-required-start">*</div>
+                                  </div>
+                                  {/* Input Field */}
+                                  <input
+                                    type="text"
+                                    placeholder="Input name your business operation"
+                                    className="w-full sb-form-input-field outline-none"
+                                  />
+                                </div>
+                                <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                  <div className="w-full flex justify-start items-start">
+                                    <div className="sb-form-label">Website</div>
+                                    <div className="ob-required-start">*</div>
+                                  </div>
+                                  <div className="currency-input-container">
+                                    {/* Input Field */}
+                                    <input
+                                      type="text"
+                                      placeholder="www.website.com"
+                                      className="currency-input-container-input2 w-full outline-none sb-form-input-field"
+                                    />
+
+                                    {/* Currency Symbol */}
+                                    <span className="currency-input-container-left-div px-3 border-r-[1px] border-[#E2E4E9] flex justify-center items-center">
+                                      https://
+                                    </span>
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                          </div>
+                            </>
+                          ) : null}
+
+                          {(!checked5 && checked6 && !checked7 && !checked8) ||
+                          (!checked5 && !checked6 && !checked7 && checked8) ||
+                          (checked5 && checked6 && !checked7 && !checked8) ||
+                          (checked5 && !checked6 && !checked7 && checked8) ||
+                          (!checked5 && checked6 && checked7 && !checked8) ||
+                          (!checked5 && checked6 && !checked7 && checked8) ||
+                          (!checked5 && !checked6 && checked7 && checked8) ||
+                          (checked5 && checked6 && checked7 && !checked8) ||
+                          (checked5 && checked6 && !checked7 && checked8) ||
+                          (checked5 && !checked6 && checked7 && checked8) ||
+                          (!checked5 && checked6 && checked7 && checked8) ||
+                          (checked5 && checked6 && checked7 && checked8) ? (
+                            <>
+                              <div className="w-full mt-4 flex justify-center items-center flex-col md:flex-row gap-4">
+                                <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                  <div className="w-full flex justify-start items-start">
+                                    <div className="sb-form-label">
+                                      Business Registration Date
+                                    </div>
+                                    <div className="ob-required-start">*</div>
+                                  </div>
+                                  <LocalizationProvider
+                                    dateAdapter={AdapterDayjs}
+                                  >
+                                    <DatePicker
+                                      sx={{
+                                        "& .MuiInputBase-root": {
+                                          color: "#0a0d14",
+                                          fontWeight: "400",
+                                          border: "none",
+                                        },
+                                        "& .MuiIconButton-label": {
+                                          color: "white",
+                                        },
+                                        "& .MuiOutlinedInput-notchedOutline": {
+                                          border: "none !important",
+                                          color: "#0a0d14",
+                                          fontWeight: "400",
+                                        },
+                                        "& .css-1dune0f-MuiInputBase-input-MuiOutlinedInput-input":
+                                          {
+                                            padding: "7.1px 8px 6px 10px",
+                                            color: "#0a0d14",
+                                            fontWeight: "400",
+                                          },
+                                        "& .MuiButtonBase-root": {
+                                          color: "#0a0d14",
+                                          border: "none",
+                                        },
+                                        width: "100%",
+                                        color: "#0a0d14",
+                                        background: "#fff",
+                                        fontWeight: "400",
+                                        border: "1px solid #e2e4e9",
+                                        borderRadius: "8px",
+                                      }}
+                                      value={date}
+                                      onChange={(newValue) => setDate(newValue)}
+                                    />
+                                  </LocalizationProvider>
+                                </div>
+                              </div>
+                            </>
+                          ) : null}
 
                           <div className="w-full panel-2-label mt-4 bg-[#F6F8FA] px-4 py-[6px] text-center md:text-start">
                             Location Details
@@ -1739,657 +2055,777 @@ function Onboarding() {
                             Financial Details
                           </div>
 
-                          <div className="w-full mt-4 flex justify-center items-center flex-col md:flex-row gap-4">
-                            <div className="w-full flex gap-1 justify-start items-center flex-col">
-                              <div className="w-full flex justify-start items-start">
-                                <div className="sb-form-label">
-                                  Average Payment Amount
-                                </div>
-                                <div className="ob-required-start">*</div>
-                              </div>
-                              <div className="currency-input-container">
-                                {/* Input Field */}
-                                <input
-                                  type="text"
-                                  value={amount}
-                                  onChange={handleAmountChange}
-                                  placeholder="0.00"
-                                  className="w-full currency-input-container-input outline-none sb-form-input-field"
-                                />
-
-                                {/* Currency Symbol */}
-                                <span className="currency-input-container-span">
-                                  {currency.symbol}
-                                </span>
-                                {/* <img
-                            src={currency.flag}
-                            className="absolute right-5 top-6 z-50 rounded-full h-8 w-8"
-                          /> */}
-
-                                {/* Currency Dropdown */}
-                                <select
-                                  value={currency.value}
-                                  onChange={handleCurrencyChange}
-                                  className="currency-input-container-select px-5 py-2 cursor-pointer"
-                                >
-                                  {currencyOptions.map((option) => (
-                                    <option
-                                      className="cursor-pointer"
-                                      key={option.value}
-                                      value={option.value}
-                                    >
-                                      {option.label}
-                                    </option>
-                                  ))}
-                                </select>
-                              </div>
-                            </div>
-                            <div className="w-full flex gap-1 justify-start items-center flex-col">
-                              <div className="w-full flex justify-start items-start">
-                                <div className="sb-form-label">
-                                  Maximum Payment Amount
-                                </div>
-                                <div className="ob-required-start">*</div>
-                              </div>
-                              <div className="currency-input-container">
-                                {/* Input Field */}
-                                <input
-                                  type="text"
-                                  value={amountMonthly}
-                                  onChange={handleAmountChangeMonthly}
-                                  placeholder="0.00"
-                                  className="w-full currency-input-container-input outline-none sb-form-input-field"
-                                />
-
-                                {/* Currency Symbol */}
-                                <span className="currency-input-container-span">
-                                  {currencyMonthly.symbol}
-                                </span>
-
-                                {/* Currency Dropdown */}
-                                <select
-                                  value={currencyMonthly.value}
-                                  onChange={handleCurrencyChangeMonthly}
-                                  className="currency-input-container-select px-5 py-2"
-                                >
-                                  {currencyOptions.map((option) => (
-                                    <option
-                                      key={option.value}
-                                      value={option.value}
-                                    >
-                                      {option.label}
-                                    </option>
-                                  ))}
-                                </select>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="w-full mt-4">
-                            <div className="w-full flex gap-1 justify-start items-center flex-col">
-                              <div className="w-full flex justify-start items-start">
-                                <div className="sb-form-label">
-                                  Total Monthly Payments Amount
-                                </div>
-                                <div className="ob-required-start">*</div>
-                              </div>
-                              <div className="currency-input-container">
-                                {/* Input Field */}
-                                <input
-                                  type="text"
-                                  value={amountMonthly2}
-                                  onChange={handleAmountChangeMonthly2}
-                                  placeholder="0.00"
-                                  className="w-full currency-input-container-input outline-none sb-form-input-field"
-                                />
-
-                                {/* Currency Symbol */}
-                                <span className="currency-input-container-span">
-                                  {currencyMonthly2.symbol}
-                                </span>
-
-                                {/* Currency Dropdown */}
-                                <select
-                                  value={currencyMonthly2.value}
-                                  onChange={handleCurrencyChangeMonthly2}
-                                  className="currency-input-container-select px-5 py-2"
-                                >
-                                  {currencyOptions.map((option) => (
-                                    <option
-                                      key={option.value}
-                                      value={option.value}
-                                    >
-                                      {option.label}
-                                    </option>
-                                  ))}
-                                </select>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="w-full panel-2-label mt-4 bg-[#F6F8FA] px-4 py-[6px] text-center md:text-start">
-                            Add Owner
-                          </div>
-
-                          <div className="w-full mt-4">
-                            <div className="w-full space-y-4">
-                              {owners.map((owner, index) => (
-                                <div
-                                  key={index}
-                                  className="p-6 rounded-2xl border-[1px] border-[#EAECF0] bg-white"
-                                >
-                                  <div
-                                    onClick={() =>
-                                      setActiveIndex(
-                                        activeIndex === index ? -1 : index
-                                      )
-                                    }
-                                    className="cursor-pointer flex justify-between items-center"
-                                  >
-                                    <span className="owner-heading">
-                                      Owner {index + 1}
-                                    </span>
-                                    <div className="flex space-x-2">
-                                      <button
-                                        onClick={() => removeOwner(index)}
-                                      >
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          width="25"
-                                          height="24"
-                                          viewBox="0 0 25 24"
-                                          fill="none"
-                                        >
-                                          <path
-                                            d="M17 6.6H21.5V8.4H19.7V20.1C19.7 20.3387 19.6052 20.5676 19.4364 20.7364C19.2676 20.9052 19.0387 21 18.8 21H6.2C5.96131 21 5.73239 20.9052 5.5636 20.7364C5.39482 20.5676 5.3 20.3387 5.3 20.1V8.4H3.5V6.6H8V3.9C8 3.66131 8.09482 3.43239 8.2636 3.2636C8.43239 3.09482 8.6613 3 8.9 3H16.1C16.3387 3 16.5676 3.09482 16.7364 3.2636C16.9052 3.43239 17 3.66131 17 3.9V6.6ZM17.9 8.4H7.1V19.2H17.9V8.4ZM9.8 11.1H11.6V16.5H9.8V11.1ZM13.4 11.1H15.2V16.5H13.4V11.1ZM9.8 4.8V6.6H15.2V4.8H9.8Z"
-                                            fill="#ff007a"
-                                          />
-                                        </svg>
-                                      </button>
-                                      <button
-                                      // onClick={() =>
-                                      //   setActiveIndex(
-                                      //     activeIndex === index ? -1 : index
-                                      //   )
-                                      // }
-                                      >
-                                        {activeIndex === index ? (
-                                          <>
-                                            <svg
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              width="20"
-                                              height="20"
-                                              viewBox="0 0 20 20"
-                                              fill="none"
-                                            >
-                                              <path
-                                                d="M4.75 9.25H15.25V10.75H4.75V9.25Z"
-                                                fill="#525866"
-                                              />
-                                            </svg>
-                                          </>
-                                        ) : (
-                                          <>
-                                            <svg
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              width="20"
-                                              height="20"
-                                              viewBox="0 0 20 20"
-                                              fill="none"
-                                            >
-                                              <path
-                                                d="M9.25 9.25V4.75H10.75V9.25H15.25V10.75H10.75V15.25H9.25V10.75H4.75V9.25H9.25Z"
-                                                fill="#525866"
-                                              />
-                                            </svg>
-                                          </>
-                                        )}
-                                      </button>
+                          {(checked5 && !checked6 && !checked7 && !checked8) ||
+                          (checked5 && checked6 && !checked7 && !checked8) ||
+                          (checked5 && !checked6 && !checked7 && checked8) ||
+                          (checked5 && checked6 && checked7 && !checked8) ||
+                          (checked5 && checked6 && !checked7 && checked8) ||
+                          (checked5 && !checked6 && checked7 && checked8) ||
+                          (checked5 && checked6 && checked7 && checked8) ? (
+                            <>
+                              <div className="w-full mt-4 flex justify-center items-center flex-col md:flex-row gap-4">
+                                <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                  <div className="w-full flex justify-start items-start">
+                                    <div className="sb-form-label">
+                                      Average Payment Amount
                                     </div>
+                                    <div className="ob-required-start">*</div>
                                   </div>
+                                  <div className="currency-input-container">
+                                    {/* Input Field */}
+                                    <input
+                                      type="text"
+                                      value={averagePaymentAmount}
+                                      onChange={
+                                        handleAveragePaymentAmountChange
+                                      }
+                                      placeholder="0.00"
+                                      className="w-full currency-input-container-input outline-none sb-form-input-field"
+                                    />
 
-                                  {activeIndex === index && (
-                                    <div className="py-6 space-y-4">
-                                      <div className="w-full panel-2-label bg-[#F6F8FA] px-4 py-[6px] text-center md:text-start">
-                                        Owner Details
-                                      </div>
+                                    {/* Currency Symbol */}
+                                    <span className="currency-input-container-span">
+                                      {averagePaymentAmountCurrency.symbol}
+                                    </span>
 
-                                      <div className="w-full mt-4 flex justify-center items-center gap-4 flex-col md:flex-row">
-                                        <div className="w-full flex gap-1 justify-start items-center flex-col">
-                                          <div className="w-full flex justify-start items-start">
-                                            <div className="sb-form-label">
-                                              Owner First Name
-                                            </div>
-                                            <div className="ob-required-start">
-                                              *
-                                            </div>
-                                          </div>
-                                          <input
-                                            type="text"
-                                            value={owner.firstName}
-                                            onChange={(e) =>
-                                              updateOwner(
-                                                index,
-                                                "firstName",
-                                                e.target.value
-                                              )
-                                            }
-                                            placeholder="Enter owner first name"
-                                            className="w-full sb-form-input-field outline-none"
-                                          />
-                                        </div>
-                                        <div className="w-full flex gap-1 justify-start items-center flex-col">
-                                          <div className="w-full flex justify-start items-start">
-                                            <div className="sb-form-label">
-                                              Owner Last Name
-                                            </div>
-                                            <div className="ob-required-start">
-                                              *
-                                            </div>
-                                          </div>
-                                          <input
-                                            type="text"
-                                            value={owner.lastName}
-                                            onChange={(e) =>
-                                              updateOwner(
-                                                index,
-                                                "lastName",
-                                                e.target.value
-                                              )
-                                            }
-                                            placeholder="Enter owner last name"
-                                            className="w-full sb-form-input-field outline-none"
-                                          />
-                                        </div>
-                                      </div>
+                                    {/* Currency Dropdown */}
+                                    <select
+                                      value={averagePaymentAmountCurrency.value}
+                                      onChange={
+                                        handleCurrencyChangeAveragePaymentAmount
+                                      }
+                                      className="currency-input-container-select px-5 py-2 cursor-pointer"
+                                    >
+                                      {currencyOptions.map((option) => (
+                                        <option
+                                          className="cursor-pointer"
+                                          key={option.value}
+                                          value={option.value}
+                                        >
+                                          {option.label}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </div>
+                                </div>
 
-                                      <div className="w-full mt-4 flex justify-center items-center gap-4 flex-col md:flex-row">
-                                        <div className="w-full flex gap-1 justify-start items-center flex-col">
-                                          <div className="w-full flex justify-start items-start">
-                                            <div className="sb-form-label">
-                                              Date of Birth
-                                            </div>
-                                            <div className="ob-required-start">
-                                              *
-                                            </div>
-                                          </div>
-                                          <LocalizationProvider
-                                            dateAdapter={AdapterDayjs}
+                                <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                  <div className="w-full flex justify-start items-start">
+                                    <div className="sb-form-label">
+                                      Maximum Payment Amount
+                                    </div>
+                                    <div className="ob-required-start">*</div>
+                                  </div>
+                                  <div className="currency-input-container">
+                                    {/* Input Field */}
+                                    <input
+                                      type="text"
+                                      value={maximumPaymentAmount}
+                                      onChange={
+                                        handleMaximumPaymentAmountChange
+                                      }
+                                      placeholder="0.00"
+                                      className="w-full currency-input-container-input outline-none sb-form-input-field"
+                                    />
+
+                                    {/* Currency Symbol */}
+                                    <span className="currency-input-container-span">
+                                      {currencyMaximumPaymentAmount.symbol}
+                                    </span>
+
+                                    {/* Currency Dropdown */}
+                                    <select
+                                      value={currencyMaximumPaymentAmount.value}
+                                      onChange={
+                                        handleCurrencyChangeMaximumPaymentAmount
+                                      }
+                                      className="currency-input-container-select px-5 py-2"
+                                    >
+                                      {currencyOptions.map((option) => (
+                                        <option
+                                          key={option.value}
+                                          value={option.value}
+                                        >
+                                          {option.label}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="w-full mt-4">
+                                <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                  <div className="w-full flex justify-start items-start">
+                                    <div className="sb-form-label">
+                                      Total Monthly Payments Amount
+                                    </div>
+                                    <div className="ob-required-start">*</div>
+                                  </div>
+                                  <div className="currency-input-container">
+                                    {/* Input Field */}
+                                    <input
+                                      type="text"
+                                      value={totalMonthlyPaymentsAmount}
+                                      onChange={
+                                        handleTotalMonthlyPaymentsAmountChange
+                                      }
+                                      placeholder="0.00"
+                                      className="w-full currency-input-container-input outline-none sb-form-input-field"
+                                    />
+
+                                    {/* Currency Symbol */}
+                                    <span className="currency-input-container-span">
+                                      {
+                                        currencyTotalMonthlyPaymentsAmount.symbol
+                                      }
+                                    </span>
+
+                                    {/* Currency Dropdown */}
+                                    <select
+                                      value={
+                                        currencyTotalMonthlyPaymentsAmount.value
+                                      }
+                                      onChange={
+                                        handleCurrencyChangeTotalMonthlyPaymentsAmount
+                                      }
+                                      className="currency-input-container-select px-5 py-2"
+                                    >
+                                      {currencyOptions.map((option) => (
+                                        <option
+                                          key={option.value}
+                                          value={option.value}
+                                        >
+                                          {option.label}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          ) : null}
+
+                          {/* Hereeeeeee */}
+
+                          {(!checked5 && checked6 && !checked7 && !checked8) ||
+                          (!checked5 && !checked6 && !checked7 && checked8) ||
+                          (checked5 && checked6 && !checked7 && !checked8) ||
+                          (checked5 && !checked6 && !checked7 && checked8) ||
+                          (!checked5 && checked6 && checked7 && !checked8) ||
+                          (!checked5 && checked6 && !checked7 && checked8) ||
+                          (!checked5 && !checked6 && checked7 && checked8) ||
+                          (checked5 && checked6 && checked7 && !checked8) ||
+                          (checked5 && checked6 && !checked7 && checked8) ||
+                          (checked5 && !checked6 && checked7 && checked8) ||
+                          (!checked5 && checked6 && checked7 && checked8) ||
+                          (checked5 && checked6 && checked7 && checked8) ? (
+                            <>
+                              <div className="w-full mt-4 flex justify-center items-center flex-col md:flex-row gap-4">
+                                <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                  <div className="w-full flex justify-start items-start">
+                                    <div className="sb-form-label">
+                                      Monthly Spend
+                                    </div>
+                                    <div className="ob-required-start">*</div>
+                                  </div>
+                                  <div className="currency-input-container">
+                                    {/* Input Field */}
+                                    <input
+                                      type="text"
+                                      value={monthlySpendAmount}
+                                      onChange={handleMonthlySpendAmountChange}
+                                      placeholder="0.00"
+                                      className="w-full currency-input-container-input outline-none sb-form-input-field"
+                                    />
+
+                                    {/* Currency Symbol */}
+                                    <span className="currency-input-container-span">
+                                      {monthlySpendAmountCurrency.symbol}
+                                    </span>
+
+                                    {/* Currency Dropdown */}
+                                    <select
+                                      value={monthlySpendAmountCurrency.value}
+                                      onChange={
+                                        handleCurrencyChangeMonthlySpendAmount
+                                      }
+                                      className="currency-input-container-select px-5 py-2 cursor-pointer"
+                                    >
+                                      {currencyOptions.map((option) => (
+                                        <option
+                                          className="cursor-pointer"
+                                          key={option.value}
+                                          value={option.value}
+                                        >
+                                          {option.label}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </div>
+                                </div>
+
+                                <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                  <div className="w-full flex justify-start items-start">
+                                    <div className="sb-form-label">
+                                      Annual Revenue
+                                    </div>
+                                    <div className="ob-required-start">*</div>
+                                  </div>
+                                  <div className="currency-input-container">
+                                    {/* Input Field */}
+                                    <input
+                                      type="text"
+                                      value={annualRevenueAmount}
+                                      onChange={handleAnnualRevenueAmountChange}
+                                      placeholder="0.00"
+                                      className="w-full currency-input-container-input outline-none sb-form-input-field"
+                                    />
+
+                                    {/* Currency Symbol */}
+                                    <span className="currency-input-container-span">
+                                      {currencyAnnualRevenueAmount.symbol}
+                                    </span>
+
+                                    {/* Currency Dropdown */}
+                                    <select
+                                      value={currencyAnnualRevenueAmount.value}
+                                      onChange={
+                                        handleCurrencyChangeAnnualRevenueAmount
+                                      }
+                                      className="currency-input-container-select px-5 py-2"
+                                    >
+                                      {currencyOptions.map((option) => (
+                                        <option
+                                          key={option.value}
+                                          value={option.value}
+                                        >
+                                          {option.label}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          ) : null}
+
+                          {(checked5 && !checked6 && !checked7 && !checked8) ||
+                          (checked5 && checked6 && !checked7 && !checked8) ||
+                          (checked5 && !checked6 && !checked7 && checked8) ||
+                          (checked5 && checked6 && checked7 && !checked8) ||
+                          (checked5 && checked6 && !checked7 && checked8) ||
+                          (checked5 && !checked6 && checked7 && checked8) ||
+                          (checked5 && checked6 && checked7 && checked8) ? (
+                            <>
+                              <div className="w-full panel-2-label mt-4 bg-[#F6F8FA] px-4 py-[6px] text-center md:text-start">
+                                Add Owner
+                              </div>
+
+                              <div className="w-full mt-4">
+                                <div className="w-full space-y-4">
+                                  {owners.map((owner, index) => (
+                                    <div
+                                      key={index}
+                                      className="p-6 rounded-2xl border-[1px] border-[#EAECF0] bg-white"
+                                    >
+                                      <div
+                                        onClick={() =>
+                                          setActiveIndex(
+                                            activeIndex === index ? -1 : index
+                                          )
+                                        }
+                                        className="cursor-pointer flex justify-between items-center"
+                                      >
+                                        <span className="owner-heading">
+                                          Owner#{index + 1}
+                                        </span>
+                                        <div className="flex space-x-2">
+                                          <button
+                                            onClick={() => removeOwner(index)}
                                           >
-                                            <DatePicker
-                                              sx={{
-                                                "& .MuiInputBase-root": {
-                                                  color: "#0a0d14",
-                                                  fontWeight: "400",
-                                                  border: "none",
-                                                },
-                                                "& .MuiIconButton-label": {
-                                                  color: "white",
-                                                },
-                                                "& .MuiOutlinedInput-notchedOutline":
-                                                  {
-                                                    border: "none !important",
-                                                    color: "#0a0d14",
-                                                    fontWeight: "400",
-                                                  },
-                                                "& .css-1dune0f-MuiInputBase-input-MuiOutlinedInput-input":
-                                                  {
-                                                    padding:
-                                                      "7.1px 8px 6px 10px",
-                                                    color: "#0a0d14",
-                                                    fontWeight: "400",
-                                                  },
-                                                "& .MuiButtonBase-root": {
-                                                  color: "#0a0d14",
-                                                  border: "none",
-                                                },
-                                                width: "100%",
-                                                color: "#0a0d14",
-                                                background: "#fff",
-                                                fontWeight: "400",
-                                                border: "1px solid #e2e4e9",
-                                                borderRadius: "8px",
-                                              }}
-                                              value={owner.dob}
-                                              onChange={(newValue) =>
-                                                updateOwner(
-                                                  index,
-                                                  "dob",
-                                                  newValue
-                                                )
-                                              }
-                                            />
-                                          </LocalizationProvider>
-                                        </div>
-                                        <div className="w-full flex gap-1 justify-start items-center flex-col">
-                                          <div className="w-full flex justify-start items-start">
-                                            <div className="sb-form-label">
-                                              Social Security Number
-                                            </div>
-                                            <div className="ob-required-start">
-                                              *
-                                            </div>
-                                          </div>
-                                          <input
-                                            type="text"
-                                            value={owner.ssn}
-                                            onChange={(e) =>
-                                              updateOwner(
-                                                index,
-                                                "ssn",
-                                                e.target.value
-                                              )
-                                            }
-                                            placeholder="Enter SSN"
-                                            className="w-full sb-form-input-field outline-none"
-                                          />
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              width="25"
+                                              height="24"
+                                              viewBox="0 0 25 24"
+                                              fill="none"
+                                            >
+                                              <path
+                                                d="M17 6.6H21.5V8.4H19.7V20.1C19.7 20.3387 19.6052 20.5676 19.4364 20.7364C19.2676 20.9052 19.0387 21 18.8 21H6.2C5.96131 21 5.73239 20.9052 5.5636 20.7364C5.39482 20.5676 5.3 20.3387 5.3 20.1V8.4H3.5V6.6H8V3.9C8 3.66131 8.09482 3.43239 8.2636 3.2636C8.43239 3.09482 8.6613 3 8.9 3H16.1C16.3387 3 16.5676 3.09482 16.7364 3.2636C16.9052 3.43239 17 3.66131 17 3.9V6.6ZM17.9 8.4H7.1V19.2H17.9V8.4ZM9.8 11.1H11.6V16.5H9.8V11.1ZM13.4 11.1H15.2V16.5H13.4V11.1ZM9.8 4.8V6.6H15.2V4.8H9.8Z"
+                                                fill="#ff007a"
+                                              />
+                                            </svg>
+                                          </button>
+                                          <button
+                                          // onClick={() =>
+                                          //   setActiveIndex(
+                                          //     activeIndex === index ? -1 : index
+                                          //   )
+                                          // }
+                                          >
+                                            {activeIndex === index ? (
+                                              <>
+                                                <svg
+                                                  xmlns="http://www.w3.org/2000/svg"
+                                                  width="20"
+                                                  height="20"
+                                                  viewBox="0 0 20 20"
+                                                  fill="none"
+                                                >
+                                                  <path
+                                                    d="M4.75 9.25H15.25V10.75H4.75V9.25Z"
+                                                    fill="#525866"
+                                                  />
+                                                </svg>
+                                              </>
+                                            ) : (
+                                              <>
+                                                <svg
+                                                  xmlns="http://www.w3.org/2000/svg"
+                                                  width="20"
+                                                  height="20"
+                                                  viewBox="0 0 20 20"
+                                                  fill="none"
+                                                >
+                                                  <path
+                                                    d="M9.25 9.25V4.75H10.75V9.25H15.25V10.75H10.75V15.25H9.25V10.75H4.75V9.25H9.25Z"
+                                                    fill="#525866"
+                                                  />
+                                                </svg>
+                                              </>
+                                            )}
+                                          </button>
                                         </div>
                                       </div>
 
-                                      <div className="w-full mt-4 flex justify-center items-center gap-4 flex-col md:flex-row">
-                                        <div className="w-full flex gap-1 justify-start items-center flex-col">
-                                          <div className="w-full flex justify-start items-start">
-                                            <div className="sb-form-label">
-                                              Email
-                                            </div>
-                                            <div className="ob-required-start">
-                                              *
-                                            </div>
+                                      {activeIndex === index && (
+                                        <div className="py-6 space-y-4">
+                                          <div className="w-full panel-2-label bg-[#F6F8FA] px-4 py-[6px] text-center md:text-start">
+                                            Owner Details
                                           </div>
-                                          <input
-                                            type="email"
-                                            value={owner.email}
-                                            onChange={(e) =>
-                                              updateOwner(
-                                                index,
-                                                "email",
-                                                e.target.value
-                                              )
-                                            }
-                                            placeholder="Enter email"
-                                            className="w-full sb-form-input-field outline-none"
-                                          />
-                                        </div>
-                                        <div className="w-full flex gap-1 justify-start items-center flex-col">
-                                          <div className="w-full flex justify-start items-start">
-                                            <div className="sb-form-label">
-                                              Phone Number
-                                            </div>
-                                            <div className="ob-required-start">
-                                              *
-                                            </div>
-                                          </div>
-                                          <PhoneInput
-                                            country={"us"}
-                                            enableSearch={true}
-                                            value={owner.phone}
-                                            onChange={(value) => {
-                                              if (!value.startsWith("+")) {
-                                                value = "+" + value;
-                                              }
-                                              updateOwner(
-                                                index,
-                                                "phone",
-                                                value
-                                              );
-                                              console.log(value);
-                                            }}
-                                          />
-                                        </div>
-                                      </div>
-                                      <div className="w-full mt-4 flex justify-center items-center gap-4 flex-col md:flex-row">
-                                        <div className="w-full flex gap-1 justify-start items-center flex-col">
-                                          <div className="w-full flex justify-start items-start">
-                                            <div className="sb-form-label">
-                                              Ownership %
-                                            </div>
-                                            <div className="ob-required-start">
-                                              *
-                                            </div>
-                                          </div>
-                                          <input
-                                            type="text"
-                                            value={owner.ownership}
-                                            onChange={(e) =>
-                                              updateOwner(
-                                                index,
-                                                "ownership",
-                                                e.target.value
-                                              )
-                                            }
-                                            placeholder="0"
-                                            className="w-full sb-form-input-field outline-none"
-                                          />
-                                        </div>
-                                      </div>
 
-                                      <div className="w-full panel-2-label mt-4 bg-[#F6F8FA] px-4 py-[6px] text-center md:text-start">
-                                        Owner Address
-                                      </div>
-
-                                      <div className="w-full flex justify-center items-center mt-4">
-                                        <div className="w-full flex gap-1 justify-start items-center flex-col">
-                                          <div className="w-full flex justify-start items-start">
-                                            <div className="sb-form-label">
-                                              Address
-                                            </div>
-                                            <div className="ob-required-start">
-                                              *
-                                            </div>
-                                          </div>
-                                          {isLoaded && (
-                                            <>
-                                              <Autocomplete
-                                                onLoad={(
-                                                  autocompleteInstance
-                                                ) =>
-                                                  (autocompleteRefOwner.current =
-                                                    autocompleteInstance)
+                                          <div className="w-full mt-4 flex justify-center items-center gap-4 flex-col md:flex-row">
+                                            <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                              <div className="w-full flex justify-start items-start">
+                                                <div className="sb-form-label">
+                                                  Owner First Name
+                                                </div>
+                                                <div className="ob-required-start">
+                                                  *
+                                                </div>
+                                              </div>
+                                              <input
+                                                type="text"
+                                                value={owner.firstName}
+                                                onChange={(e) =>
+                                                  updateOwner(
+                                                    index,
+                                                    "firstName",
+                                                    e.target.value
+                                                  )
                                                 }
-                                                onPlaceChanged={() =>
-                                                  handlePlaceSelectOwner(index)
+                                                placeholder="Enter owner first name"
+                                                className="w-full sb-form-input-field outline-none"
+                                              />
+                                            </div>
+                                            <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                              <div className="w-full flex justify-start items-start">
+                                                <div className="sb-form-label">
+                                                  Owner Last Name
+                                                </div>
+                                                <div className="ob-required-start">
+                                                  *
+                                                </div>
+                                              </div>
+                                              <input
+                                                type="text"
+                                                value={owner.lastName}
+                                                onChange={(e) =>
+                                                  updateOwner(
+                                                    index,
+                                                    "lastName",
+                                                    e.target.value
+                                                  )
                                                 }
-                                                className="w-full"
+                                                placeholder="Enter owner last name"
+                                                className="w-full sb-form-input-field outline-none"
+                                              />
+                                            </div>
+                                          </div>
+
+                                          <div className="w-full mt-4 flex justify-center items-center gap-4 flex-col md:flex-row">
+                                            <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                              <div className="w-full flex justify-start items-start">
+                                                <div className="sb-form-label">
+                                                  Date of Birth
+                                                </div>
+                                                <div className="ob-required-start">
+                                                  *
+                                                </div>
+                                              </div>
+                                              <LocalizationProvider
+                                                dateAdapter={AdapterDayjs}
                                               >
-                                                <input
-                                                  type="text"
-                                                  value={owner.address}
-                                                  onChange={(e) =>
+                                                <DatePicker
+                                                  sx={{
+                                                    "& .MuiInputBase-root": {
+                                                      color: "#0a0d14",
+                                                      fontWeight: "400",
+                                                      border: "none",
+                                                    },
+                                                    "& .MuiIconButton-label": {
+                                                      color: "white",
+                                                    },
+                                                    "& .MuiOutlinedInput-notchedOutline":
+                                                      {
+                                                        border:
+                                                          "none !important",
+                                                        color: "#0a0d14",
+                                                        fontWeight: "400",
+                                                      },
+                                                    "& .css-1dune0f-MuiInputBase-input-MuiOutlinedInput-input":
+                                                      {
+                                                        padding:
+                                                          "7.1px 8px 6px 10px",
+                                                        color: "#0a0d14",
+                                                        fontWeight: "400",
+                                                      },
+                                                    "& .MuiButtonBase-root": {
+                                                      color: "#0a0d14",
+                                                      border: "none",
+                                                    },
+                                                    width: "100%",
+                                                    color: "#0a0d14",
+                                                    background: "#fff",
+                                                    fontWeight: "400",
+                                                    border: "1px solid #e2e4e9",
+                                                    borderRadius: "8px",
+                                                  }}
+                                                  value={owner.dob}
+                                                  onChange={(newValue) =>
                                                     updateOwner(
                                                       index,
-                                                      "address",
-                                                      e.target.value
+                                                      "dob",
+                                                      newValue
                                                     )
                                                   }
-                                                  placeholder="Enter the address"
-                                                  className="sb-form-input-field w-full outline-none"
                                                 />
-                                              </Autocomplete>
-                                            </>
-                                          )}
-                                        </div>
-                                      </div>
+                                              </LocalizationProvider>
+                                            </div>
+                                            <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                              <div className="w-full flex justify-start items-start">
+                                                <div className="sb-form-label">
+                                                  Social Security Number
+                                                </div>
+                                                <div className="ob-required-start">
+                                                  *
+                                                </div>
+                                              </div>
+                                              <input
+                                                type="text"
+                                                value={owner.ssn}
+                                                onChange={(e) =>
+                                                  updateOwner(
+                                                    index,
+                                                    "ssn",
+                                                    e.target.value
+                                                  )
+                                                }
+                                                placeholder="Enter SSN"
+                                                className="w-full sb-form-input-field outline-none"
+                                              />
+                                            </div>
+                                          </div>
 
-                                      <div className="w-full mt-4 flex justify-center items-center flex-col md:flex-row gap-4">
-                                        <div className="w-full flex gap-1 justify-start items-center flex-col">
-                                          <div className="w-full flex justify-start items-start">
-                                            <div className="sb-form-label">
-                                              Country
+                                          <div className="w-full mt-4 flex justify-center items-center gap-4 flex-col md:flex-row">
+                                            <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                              <div className="w-full flex justify-start items-start">
+                                                <div className="sb-form-label">
+                                                  Email
+                                                </div>
+                                                <div className="ob-required-start">
+                                                  *
+                                                </div>
+                                              </div>
+                                              <input
+                                                type="email"
+                                                value={owner.email}
+                                                onChange={(e) =>
+                                                  updateOwner(
+                                                    index,
+                                                    "email",
+                                                    e.target.value
+                                                  )
+                                                }
+                                                placeholder="Enter email"
+                                                className="w-full sb-form-input-field outline-none"
+                                              />
                                             </div>
-                                            <div className="ob-required-start">
-                                              *
+                                            <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                              <div className="w-full flex justify-start items-start">
+                                                <div className="sb-form-label">
+                                                  Phone Number
+                                                </div>
+                                                <div className="ob-required-start">
+                                                  *
+                                                </div>
+                                              </div>
+                                              <PhoneInput
+                                                country={"us"}
+                                                enableSearch={true}
+                                                value={owner.phone}
+                                                onChange={(value) => {
+                                                  if (!value.startsWith("+")) {
+                                                    value = "+" + value;
+                                                  }
+                                                  updateOwner(
+                                                    index,
+                                                    "phone",
+                                                    value
+                                                  );
+                                                  console.log(value);
+                                                }}
+                                              />
                                             </div>
                                           </div>
-                                          <input
-                                            type="text"
-                                            value={owner.country}
-                                            onChange={(e) =>
-                                              updateOwner(
-                                                index,
-                                                "country",
-                                                e.target.value
-                                              )
-                                            }
-                                            placeholder="Enter the Country"
-                                            className="w-full sb-form-input-field outline-none"
-                                          />
-                                        </div>
-                                        <div className="w-full flex gap-1 justify-start items-center flex-col">
-                                          <div className="w-full flex justify-start items-start">
-                                            <div className="sb-form-label">
-                                              City
-                                            </div>
-                                            <div className="ob-required-start">
-                                              *
+                                          <div className="w-full mt-4 flex justify-center items-center gap-4 flex-col md:flex-row">
+                                            <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                              <div className="w-full flex justify-start items-start">
+                                                <div className="sb-form-label">
+                                                  Ownership %
+                                                </div>
+                                                <div className="ob-required-start">
+                                                  *
+                                                </div>
+                                              </div>
+                                              <input
+                                                type="text"
+                                                value={owner.ownership}
+                                                onChange={(e) =>
+                                                  updateOwner(
+                                                    index,
+                                                    "ownership",
+                                                    e.target.value
+                                                  )
+                                                }
+                                                placeholder="0"
+                                                className="w-full sb-form-input-field outline-none"
+                                              />
                                             </div>
                                           </div>
-                                          <input
-                                            type="text"
-                                            value={owner.city}
-                                            onChange={(e) =>
-                                              updateOwner(
-                                                index,
-                                                "city",
-                                                e.target.value
-                                              )
-                                            }
-                                            placeholder="Enter the city"
-                                            className="w-full sb-form-input-field outline-none"
-                                          />
-                                        </div>
-                                      </div>
 
-                                      <div className="w-full mt-4 flex justify-center items-center flex-col md:flex-row gap-4">
-                                        <div className="w-full flex gap-1 justify-start items-center flex-col">
-                                          <div className="w-full flex justify-start items-start">
-                                            <div className="sb-form-label">
-                                              State
-                                            </div>
-                                            <div className="ob-required-start">
-                                              *
+                                          <div className="w-full panel-2-label mt-4 bg-[#F6F8FA] px-4 py-[6px] text-center md:text-start">
+                                            Owner Address
+                                          </div>
+
+                                          <div className="w-full flex justify-center items-center mt-4">
+                                            <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                              <div className="w-full flex justify-start items-start">
+                                                <div className="sb-form-label">
+                                                  Address
+                                                </div>
+                                                <div className="ob-required-start">
+                                                  *
+                                                </div>
+                                              </div>
+                                              {isLoaded && (
+                                                <>
+                                                  <Autocomplete
+                                                    onLoad={(
+                                                      autocompleteInstance
+                                                    ) =>
+                                                      (autocompleteRefOwner.current =
+                                                        autocompleteInstance)
+                                                    }
+                                                    onPlaceChanged={() =>
+                                                      handlePlaceSelectOwner(
+                                                        index
+                                                      )
+                                                    }
+                                                    className="w-full"
+                                                  >
+                                                    <input
+                                                      type="text"
+                                                      value={owner.address}
+                                                      onChange={(e) =>
+                                                        updateOwner(
+                                                          index,
+                                                          "address",
+                                                          e.target.value
+                                                        )
+                                                      }
+                                                      placeholder="Enter the address"
+                                                      className="sb-form-input-field w-full outline-none"
+                                                    />
+                                                  </Autocomplete>
+                                                </>
+                                              )}
                                             </div>
                                           </div>
-                                          <input
-                                            type="text"
-                                            value={owner.state}
-                                            onChange={(e) =>
-                                              updateOwner(
-                                                index,
-                                                "state",
-                                                e.target.value
-                                              )
-                                            }
-                                            placeholder="Enter the state"
-                                            className="w-full sb-form-input-field outline-none"
-                                          />
-                                        </div>
-                                        <div className="w-full flex gap-1 justify-start items-center flex-col">
-                                          <div className="w-full flex justify-start items-start">
-                                            <div className="sb-form-label">
-                                              ZIP
+
+                                          <div className="w-full mt-4 flex justify-center items-center flex-col md:flex-row gap-4">
+                                            <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                              <div className="w-full flex justify-start items-start">
+                                                <div className="sb-form-label">
+                                                  Country
+                                                </div>
+                                                <div className="ob-required-start">
+                                                  *
+                                                </div>
+                                              </div>
+                                              <input
+                                                type="text"
+                                                value={owner.country}
+                                                onChange={(e) =>
+                                                  updateOwner(
+                                                    index,
+                                                    "country",
+                                                    e.target.value
+                                                  )
+                                                }
+                                                placeholder="Enter the Country"
+                                                className="w-full sb-form-input-field outline-none"
+                                              />
                                             </div>
-                                            <div className="ob-required-start">
-                                              *
+                                            <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                              <div className="w-full flex justify-start items-start">
+                                                <div className="sb-form-label">
+                                                  City
+                                                </div>
+                                                <div className="ob-required-start">
+                                                  *
+                                                </div>
+                                              </div>
+                                              <input
+                                                type="text"
+                                                value={owner.city}
+                                                onChange={(e) =>
+                                                  updateOwner(
+                                                    index,
+                                                    "city",
+                                                    e.target.value
+                                                  )
+                                                }
+                                                placeholder="Enter the city"
+                                                className="w-full sb-form-input-field outline-none"
+                                              />
                                             </div>
                                           </div>
-                                          <input
-                                            type="text"
-                                            value={owner.zip}
-                                            onChange={(e) =>
-                                              updateOwner(
-                                                index,
-                                                "zip",
-                                                e.target.value
-                                              )
-                                            }
-                                            placeholder="Enter the ZIP code"
-                                            className="w-full sb-form-input-field outline-none"
-                                          />
+
+                                          <div className="w-full mt-4 flex justify-center items-center flex-col md:flex-row gap-4">
+                                            <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                              <div className="w-full flex justify-start items-start">
+                                                <div className="sb-form-label">
+                                                  State
+                                                </div>
+                                                <div className="ob-required-start">
+                                                  *
+                                                </div>
+                                              </div>
+                                              <input
+                                                type="text"
+                                                value={owner.state}
+                                                onChange={(e) =>
+                                                  updateOwner(
+                                                    index,
+                                                    "state",
+                                                    e.target.value
+                                                  )
+                                                }
+                                                placeholder="Enter the state"
+                                                className="w-full sb-form-input-field outline-none"
+                                              />
+                                            </div>
+                                            <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                              <div className="w-full flex justify-start items-start">
+                                                <div className="sb-form-label">
+                                                  ZIP
+                                                </div>
+                                                <div className="ob-required-start">
+                                                  *
+                                                </div>
+                                              </div>
+                                              <input
+                                                type="text"
+                                                value={owner.zip}
+                                                onChange={(e) =>
+                                                  updateOwner(
+                                                    index,
+                                                    "zip",
+                                                    e.target.value
+                                                  )
+                                                }
+                                                placeholder="Enter the ZIP code"
+                                                className="w-full sb-form-input-field outline-none"
+                                              />
+                                            </div>
+                                          </div>
                                         </div>
-                                      </div>
+                                      )}
                                     </div>
+                                  ))}
+                                  {maxOwners ? (
+                                    <>
+                                      <div className="w-full md:w-[516px] bg-[#EBF1FF] rounded-xl p-4 gap-2 mb-6 flex justify-center md:justify-start items-center md:items-start flex-col md:flex-row">
+                                        <div>
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="20"
+                                            height="20"
+                                            viewBox="0 0 20 20"
+                                            fill="none"
+                                          >
+                                            <path
+                                              d="M10 17.5C5.85775 17.5 2.5 14.1423 2.5 10C2.5 5.85775 5.85775 2.5 10 2.5C14.1423 2.5 17.5 5.85775 17.5 10C17.5 14.1423 14.1423 17.5 10 17.5ZM9.25 9.25V13.75H10.75V9.25H9.25ZM9.25 6.25V7.75H10.75V6.25H9.25Z"
+                                              fill="#375DFB"
+                                            />
+                                          </svg>
+                                        </div>
+                                        <div className="w-full flex gap-2 md:gap-0 flex-col justify-center items-center md:justify-start md:items-start">
+                                          <div className="w-full ob-instruction-sub-text text-center md:text-start">
+                                            You have reached the maximum number
+                                            of owners.
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <button
+                                        onClick={addOwner}
+                                        className="w-full owner-add-button my-6 flex justify-start items-center gap-1"
+                                      >
+                                        <div>
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="20"
+                                            height="20"
+                                            viewBox="0 0 20 20"
+                                            fill="none"
+                                          >
+                                            <path
+                                              d="M9.25 9.25V4.75H10.75V9.25H15.25V10.75H10.75V15.25H9.25V10.75H4.75V9.25H9.25Z"
+                                              fill="#375DFB"
+                                            />
+                                          </svg>
+                                        </div>
+                                        <div>Add Another Owner</div>
+                                      </button>
+                                    </>
                                   )}
                                 </div>
-                              ))}
-                              <button
-                                onClick={addOwner}
-                                className="w-full owner-add-button my-6 flex justify-start items-center gap-1"
-                              >
-                                <div>
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="20"
-                                    height="20"
-                                    viewBox="0 0 20 20"
-                                    fill="none"
-                                  >
-                                    <path
-                                      d="M9.25 9.25V4.75H10.75V9.25H15.25V10.75H10.75V15.25H9.25V10.75H4.75V9.25H9.25Z"
-                                      fill="#375DFB"
-                                    />
-                                  </svg>
-                                </div>
-                                <div>Add Another Owner</div>
-                              </button>
-                            </div>
-                          </div>
-
-                          <div className="w-full mt-4 flex justify-center items-center flex-col md:flex-row gap-4">
-                            <div className="w-full flex gap-1 justify-start items-center flex-col">
-                              <div className="w-full flex justify-start items-start">
-                                <div className="sb-form-label">
-                                  Business Registration Date
-                                </div>
-                                <div className="ob-required-start">*</div>
                               </div>
-                              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DatePicker
-                                  sx={{
-                                    "& .MuiInputBase-root": {
-                                      color: "#0a0d14",
-                                      fontWeight: "400",
-                                      border: "none",
-                                    },
-                                    "& .MuiIconButton-label": {
-                                      color: "white",
-                                    },
-                                    "& .MuiOutlinedInput-notchedOutline": {
-                                      border: "none !important",
-                                      color: "#0a0d14",
-                                      fontWeight: "400",
-                                    },
-                                    "& .css-1dune0f-MuiInputBase-input-MuiOutlinedInput-input":
-                                      {
-                                        padding: "7.1px 8px 6px 10px",
-                                        color: "#0a0d14",
-                                        fontWeight: "400",
-                                      },
-                                    "& .MuiButtonBase-root": {
-                                      color: "#0a0d14",
-                                      border: "none",
-                                    },
-                                    width: "100%",
-                                    color: "#0a0d14",
-                                    background: "#fff",
-                                    fontWeight: "400",
-                                    border: "1px solid #e2e4e9",
-                                    borderRadius: "8px",
-                                  }}
-                                  value={date}
-                                  onChange={(newValue) => setDate(newValue)}
-                                />
-                              </LocalizationProvider>
-                            </div>
-                          </div>
+                            </>
+                          ) : null}
 
-                          <div className="w-full mt-4 flex justify-center items-center flex-col md:flex-row gap-4">
+                          {/* <div className="w-full mt-4 flex justify-center items-center flex-col md:flex-row gap-4">
                             <div className="w-full flex gap-1 justify-start items-center flex-col">
                               <div className="w-full flex justify-start items-start">
                                 <div className="sb-form-label">Industry</div>
                                 <div className="ob-required-start">*</div>
                               </div>
                               <div className="z-50 relative w-full">
-                                {/* Dropdown Button */}
                                 <button
                                   className={`w-full ${
                                     selectedIndustry === "Select Industry"
@@ -2432,10 +2868,8 @@ function Onboarding() {
                                       </>
                                     )}
                                   </span>
-                                  {/* Down arrow */}
                                 </button>
 
-                                {/* Dropdown Menu */}
                                 {industryDropdownOpen && (
                                   <ul className="absolute left-0 w-full mt-2 bg-white border rounded-lg shadow-lg">
                                     {industries.map((industry, index) => (
@@ -2451,394 +2885,703 @@ function Onboarding() {
                                 )}
                               </div>
                             </div>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
 
-                      {/* Accordion 3 */}
-                      <div className="p-6 border-[1px] border-[#EAECF0] rounded-2xl bg-[#fff]">
-                        <button
-                          onClick={() => {
-                            setIsOpen1(false);
-                            setIsOpen2(false);
-                            setIsOpen4(false);
-                            setIsOpen3(!isOpen3);
-                          }}
-                          className="w-full ob-accordion-heading text-left flex justify-between items-center"
-                        >
-                          <span>
-                            {checked5 && (
-                              <>
+                      {(checked5 && checked6 && !checked7 && !checked8) ||
+                      (checked5 && !checked6 && !checked7 && checked8) ||
+                      (checked5 && !checked6 && checked7 && !checked8) ||
+                      (checked5 && !checked6 && !checked7 && !checked8) ||
+                      (checked5 && checked6 && checked7 && !checked8) ||
+                      (checked5 && checked6 && !checked7 && checked8) ||
+                      (checked5 && !checked6 && checked7 && checked8) ||
+                      (checked5 && checked6 && checked7 && checked8) ? (
+                        <>
+                          {/* Accordion 3 */}
+                          <div className="p-6 border-[1px] border-[#EAECF0] rounded-2xl bg-[#fff]">
+                            <button
+                              onClick={() => {
+                                setIsOpen1(false);
+                                setIsOpen2(false);
+                                setIsOpen3(!isOpen3);
+                                setIsOpen4(false);
+                                setIsOpen5(false);
+                              }}
+                              className="w-full ob-accordion-heading text-left flex justify-between items-center"
+                            >
+                              <span>
                                 3. Bank Account
                                 <span className="ms-1 small-text-label">
                                   (for settlements)
                                 </span>
-                              </>
-                            )}
-                            {/* 3. Required Documents */}
-                          </span>
-                          <span>
-                            {isOpen3 ? (
-                              <>
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="20"
-                                  height="20"
-                                  viewBox="0 0 20 20"
-                                  fill="none"
-                                >
-                                  <path
-                                    d="M4.75 9.25H15.25V10.75H4.75V9.25Z"
-                                    fill="#525866"
-                                  />
-                                </svg>
-                              </>
-                            ) : (
-                              <>
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="20"
-                                  height="20"
-                                  viewBox="0 0 20 20"
-                                  fill="none"
-                                >
-                                  <path
-                                    d="M9.25 9.25V4.75H10.75V9.25H15.25V10.75H10.75V15.25H9.25V10.75H4.75V9.25H9.25Z"
-                                    fill="#525866"
-                                  />
-                                </svg>
-                              </>
-                            )}
-                          </span>
-                        </button>
-                        <div
-                          className={`transition-all duration-300 ease-in-out ${
-                            isOpen3
-                              ? "h-full pt-5 w-full flex justify-center items-center flex-col"
-                              : "h-0 p-0 overflow-hidden"
-                          }`}
-                        >
-                          <div className="w-full flex justify-center md:justify-start items-center flex-row">
-                            <div className="w-full md:w-3/5 lg:w-2/5 flex gap-2 justify-center items-center flex-row documents-tabs-wrapper">
-                              <div
-                                onClick={() => {
-                                  setActiveTab("upload");
-                                }}
-                                className={`w-full ${
-                                  activeTab === "upload"
-                                    ? "documents-tab-active"
-                                    : "documents-tab-non-active"
-                                } cursor-pointer flex justify-center items-center flex-row gap-1`}
-                              >
-                                <div>Upload Here</div>
-                              </div>
-                              <div
-                                onClick={() => {
-                                  setActiveTab("email");
-                                }}
-                                className={`w-full ${
-                                  activeTab === "email"
-                                    ? "documents-tab-active"
-                                    : "documents-tab-non-active"
-                                } cursor-pointer flex justify-center items-center flex-row gap-1`}
-                              >
-                                <div>Send Via Email</div>
-                              </div>
-                            </div>
-                          </div>
-                          {activeTab === "upload" && (
-                            <>
-                              <div className="w-full p-3 rounded-2xl border-[1px] border-[#EAECF0] md:p-6 h-full flex justify-center items-center mt-4">
+                              </span>
+                              <span>
+                                {isOpen3 ? (
+                                  <>
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="20"
+                                      height="20"
+                                      viewBox="0 0 20 20"
+                                      fill="none"
+                                    >
+                                      <path
+                                        d="M4.75 9.25H15.25V10.75H4.75V9.25Z"
+                                        fill="#525866"
+                                      />
+                                    </svg>
+                                  </>
+                                ) : (
+                                  <>
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="20"
+                                      height="20"
+                                      viewBox="0 0 20 20"
+                                      fill="none"
+                                    >
+                                      <path
+                                        d="M9.25 9.25V4.75H10.75V9.25H15.25V10.75H10.75V15.25H9.25V10.75H4.75V9.25H9.25Z"
+                                        fill="#525866"
+                                      />
+                                    </svg>
+                                  </>
+                                )}
+                              </span>
+                            </button>
+                            <div
+                              className={`transition-all duration-300 ease-in-out ${
+                                isOpen3
+                                  ? "h-full pt-5 w-full flex justify-center items-center flex-col"
+                                  : "h-0 p-0 overflow-hidden"
+                              }`}
+                            >
+                              <div className="w-full flex justify-center items-center flex-col md:flex-row gap-4">
                                 <div className="w-full flex gap-1 justify-start items-center flex-col">
                                   <div className="w-full flex justify-start items-start">
                                     <div className="sb-form-label">
-                                      3 Month of Bank Statements
+                                      Account Number
                                     </div>
                                     <div className="ob-required-start">*</div>
                                   </div>
-                                  <div className="w-full h-full mt-2 gap-4 flex justify-center md:justify-start items-center flex-col md:flex-row">
-                                    <div className="w-full flex justify-center items-center flex-col documents-wrapper-dotted">
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="40"
-                                        height="40"
-                                        viewBox="0 0 25 24"
-                                        fill="none"
-                                      >
-                                        <path
-                                          d="M12.5001 12.5274L16.3188 16.3452L15.0452 17.6187L13.4001 15.9735V21H11.6V15.9717L9.95485 17.6187L8.68135 16.3452L12.5001 12.5274ZM12.5001 3C14.0453 3.00007 15.5367 3.568 16.6906 4.59581C17.8445 5.62361 18.5805 7.03962 18.7587 8.5746C19.8785 8.87998 20.8554 9.56919 21.5186 10.5218C22.1819 11.4744 22.4893 12.6297 22.3871 13.786C22.2849 14.9422 21.7797 16.0257 20.9597 16.8472C20.1396 17.6687 19.057 18.1759 17.901 18.2802V16.4676C18.3151 16.4085 18.7133 16.2674 19.0724 16.0527C19.4314 15.8379 19.7441 15.5539 19.9922 15.217C20.2402 14.8801 20.4187 14.4972 20.5171 14.0906C20.6156 13.6839 20.6321 13.2618 20.5656 12.8488C20.4991 12.4357 20.351 12.0401 20.13 11.6849C19.9089 11.3297 19.6194 11.0221 19.2781 10.78C18.9369 10.538 18.5509 10.3663 18.1426 10.2751C17.7343 10.1838 17.312 10.1748 16.9002 10.2486C17.0411 9.5924 17.0335 8.91297 16.8778 8.2601C16.7222 7.60722 16.4225 6.99743 16.0007 6.47538C15.5789 5.95333 15.0456 5.53225 14.44 5.24298C13.8343 4.9537 13.1717 4.80357 12.5005 4.80357C11.8293 4.80357 11.1667 4.9537 10.561 5.24298C9.95539 5.53225 9.42214 5.95333 9.00031 6.47538C8.57849 6.99743 8.27879 7.60722 8.12315 8.2601C7.96752 8.91297 7.9599 9.5924 8.10085 10.2486C7.27974 10.0944 6.43101 10.2727 5.74136 10.7443C5.05171 11.2159 4.57765 11.9421 4.42345 12.7632C4.26925 13.5843 4.44756 14.433 4.91914 15.1227C5.39072 15.8123 6.11694 16.2864 6.93805 16.4406L7.10005 16.4676V18.2802C5.94396 18.1761 4.86122 17.669 4.04107 16.8476C3.22093 16.0261 2.71555 14.9426 2.61326 13.7863C2.51097 12.6301 2.81828 11.4747 3.48148 10.522C4.14468 9.56934 5.12159 8.88005 6.24145 8.5746C6.41939 7.03954 7.15532 5.62342 8.30927 4.59558C9.46323 3.56774 10.9547 2.99988 12.5001 3Z"
-                                          fill="#525866"
-                                        />
-                                      </svg>
-                                      <div className="documents-heading w-full mt-4 text-center">
-                                        Upload Document
-                                      </div>
-                                      <div className="documents-sub-heading w-full mt-1 text-center">
-                                        PDF, JPEG, PNG, and JPG formats, up to
-                                        50 MB.
-                                      </div>
-                                      <button className="documents-button w-full md:w-auto mt-4 text-center">
-                                        Browse
-                                      </button>
+                                  <input
+                                    type="text"
+                                    placeholder="Input account number"
+                                    className="w-full sb-form-input-field outline-none"
+                                  />
+                                </div>
+                                <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                  <div className="w-full flex justify-start items-start">
+                                    <div className="sb-form-label">
+                                      Routing Number
                                     </div>
-                                    <div className="h-full w-full md:w-auto flex justify-around items-center flex-row md:flex-col gap-3">
-                                      <div className="md:h-16 md:w-[1px] h-[1px] w-full bg-[#E2E4E9]"></div>
+                                    <div className="ob-required-start">*</div>
+                                  </div>
+                                  <input
+                                    type="text"
+                                    placeholder="Input routing number"
+                                    className="w-full sb-form-input-field outline-none"
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="w-full mt-4 flex justify-around items-center flex-row gap-3">
+                                <div className="h-[1px] w-full bg-[#E2E4E9]"></div>
+                                <div className="sb-form-or-text">OR</div>
+                                <div className="h-[1px] w-full bg-[#E2E4E9]"></div>
+                              </div>
+
+                              <div className="w-full flex gap-2 justify-center items-center flex-col mt-4 md:flex-row documents-wrapper-normal">
+                                <div className="w-ful md:w-16 flex justify-center items-center">
+                                  <img
+                                    src={PlaidLogo.src}
+                                    loading="lazy"
+                                    alt="Logo"
+                                    className="h-11 w-11"
+                                  />
+                                </div>
+                                <div className="w-full flex justify-center items-center md:justify-start flex-col gap-1">
+                                  <div className="documents-heading w-full text-center md:text-start">
+                                    Connect Plaid
+                                  </div>
+                                  <div className="documents-sub-heading w-full text-center md:text-start">
+                                    Securely link your bank for payouts and
+                                    payment processing.
+                                  </div>
+                                </div>
+                                <button className="documents-button w-full md:w-auto text-center">
+                                  Connect
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      ) : null}
+
+                      {(!checked5 && checked6 && !checked7 && !checked8) ||
+                      (!checked5 && !checked6 && !checked7 && checked8) ||
+                      (checked5 && checked6 && !checked7 && !checked8) ||
+                      (checked5 && !checked6 && !checked7 && checked8) ||
+                      (!checked5 && checked6 && checked7 && !checked8) ||
+                      (!checked5 && checked6 && !checked7 && checked8) ||
+                      (!checked5 && !checked6 && checked7 && checked8) ||
+                      (checked5 && checked6 && checked7 && !checked8) ||
+                      (checked5 && checked6 && !checked7 && checked8) ||
+                      (checked5 && !checked6 && checked7 && checked8) ||
+                      (!checked5 && checked6 && checked7 && checked8) ||
+                      (checked5 && checked6 && checked7 && checked8) ? (
+                        <>
+                          {/* Accordion 4 */}
+                          <div className="p-6 border-[1px] border-[#EAECF0] rounded-2xl bg-[#fff]">
+                            <button
+                              onClick={() => {
+                                setIsOpen1(false);
+                                setIsOpen2(false);
+                                setIsOpen3(false);
+                                setIsOpen4(!isOpen4);
+                                setIsOpen5(false);
+                              }}
+                              className="w-full ob-accordion-heading text-left flex justify-between items-center"
+                            >
+                              {(!checked5 &&
+                                checked6 &&
+                                !checked7 &&
+                                !checked8) ||
+                              (!checked5 &&
+                                !checked6 &&
+                                !checked7 &&
+                                checked8) ||
+                              (!checked5 &&
+                                checked6 &&
+                                checked7 &&
+                                !checked8) ||
+                              (!checked5 &&
+                                checked6 &&
+                                !checked7 &&
+                                checked8) ||
+                              (!checked5 &&
+                                !checked6 &&
+                                checked7 &&
+                                checked8) ||
+                              (!checked5 &&
+                                checked6 &&
+                                checked7 &&
+                                checked8) ? (
+                                <>
+                                  <span>
+                                    3. Required Documents
+                                    <span className="ms-1 small-text-label">
+                                      (Banking and Financial Information)
+                                    </span>
+                                  </span>
+                                </>
+                              ) : (
+                                <>
+                                  <span>
+                                    4. Required Documents
+                                    <span className="ms-1 small-text-label">
+                                      (Banking and Financial Information)
+                                    </span>
+                                  </span>
+                                </>
+                              )}
+
+                              <span>
+                                {isOpen4 ? (
+                                  <>
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="20"
+                                      height="20"
+                                      viewBox="0 0 20 20"
+                                      fill="none"
+                                    >
+                                      <path
+                                        d="M4.75 9.25H15.25V10.75H4.75V9.25Z"
+                                        fill="#525866"
+                                      />
+                                    </svg>
+                                  </>
+                                ) : (
+                                  <>
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="20"
+                                      height="20"
+                                      viewBox="0 0 20 20"
+                                      fill="none"
+                                    >
+                                      <path
+                                        d="M9.25 9.25V4.75H10.75V9.25H15.25V10.75H10.75V15.25H9.25V10.75H4.75V9.25H9.25Z"
+                                        fill="#525866"
+                                      />
+                                    </svg>
+                                  </>
+                                )}
+                              </span>
+                            </button>
+                            <div
+                              className={`transition-all duration-300 ease-in-out ${
+                                isOpen4
+                                  ? "h-full pt-5 w-full flex justify-center items-center flex-col"
+                                  : "h-0 p-0 overflow-hidden"
+                              }`}
+                            >
+                              <div className="w-full flex justify-center md:justify-start items-center flex-row">
+                                <div className="w-full md:w-3/5 lg:w-2/5 flex gap-2 justify-center items-center flex-row documents-tabs-wrapper">
+                                  <div
+                                    onClick={() => {
+                                      setActiveTab("upload");
+                                    }}
+                                    className={`w-full ${
+                                      activeTab === "upload"
+                                        ? "documents-tab-active"
+                                        : "documents-tab-non-active"
+                                    } cursor-pointer flex justify-center items-center flex-row gap-1`}
+                                  >
+                                    <div>Upload Here</div>
+                                  </div>
+                                  <div
+                                    onClick={() => {
+                                      setActiveTab("email");
+                                    }}
+                                    className={`w-full ${
+                                      activeTab === "email"
+                                        ? "documents-tab-active"
+                                        : "documents-tab-non-active"
+                                    } cursor-pointer flex justify-center items-center flex-row gap-1`}
+                                  >
+                                    <div>Send Via Email</div>
+                                  </div>
+                                </div>
+                              </div>
+                              {activeTab === "upload" && (
+                                <>
+                                  <div className="w-full p-3 rounded-2xl border-[1px] border-[#EAECF0] md:p-6 h-full flex justify-center items-center mt-4">
+                                    <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                      <div className="w-full flex justify-start items-start">
+                                        <div className="sb-form-label">
+                                          3 Month of Bank Statements
+                                        </div>
+                                        <div className="ob-required-start">
+                                          *
+                                        </div>
+                                      </div>
+                                      <div className="w-full h-full mt-2 gap-4 flex justify-center md:justify-start items-center flex-col md:flex-row">
+                                        <div className="w-full flex justify-center items-center flex-col documents-wrapper-dotted">
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="40"
+                                            height="40"
+                                            viewBox="0 0 25 24"
+                                            fill="none"
+                                          >
+                                            <path
+                                              d="M12.5001 12.5274L16.3188 16.3452L15.0452 17.6187L13.4001 15.9735V21H11.6V15.9717L9.95485 17.6187L8.68135 16.3452L12.5001 12.5274ZM12.5001 3C14.0453 3.00007 15.5367 3.568 16.6906 4.59581C17.8445 5.62361 18.5805 7.03962 18.7587 8.5746C19.8785 8.87998 20.8554 9.56919 21.5186 10.5218C22.1819 11.4744 22.4893 12.6297 22.3871 13.786C22.2849 14.9422 21.7797 16.0257 20.9597 16.8472C20.1396 17.6687 19.057 18.1759 17.901 18.2802V16.4676C18.3151 16.4085 18.7133 16.2674 19.0724 16.0527C19.4314 15.8379 19.7441 15.5539 19.9922 15.217C20.2402 14.8801 20.4187 14.4972 20.5171 14.0906C20.6156 13.6839 20.6321 13.2618 20.5656 12.8488C20.4991 12.4357 20.351 12.0401 20.13 11.6849C19.9089 11.3297 19.6194 11.0221 19.2781 10.78C18.9369 10.538 18.5509 10.3663 18.1426 10.2751C17.7343 10.1838 17.312 10.1748 16.9002 10.2486C17.0411 9.5924 17.0335 8.91297 16.8778 8.2601C16.7222 7.60722 16.4225 6.99743 16.0007 6.47538C15.5789 5.95333 15.0456 5.53225 14.44 5.24298C13.8343 4.9537 13.1717 4.80357 12.5005 4.80357C11.8293 4.80357 11.1667 4.9537 10.561 5.24298C9.95539 5.53225 9.42214 5.95333 9.00031 6.47538C8.57849 6.99743 8.27879 7.60722 8.12315 8.2601C7.96752 8.91297 7.9599 9.5924 8.10085 10.2486C7.27974 10.0944 6.43101 10.2727 5.74136 10.7443C5.05171 11.2159 4.57765 11.9421 4.42345 12.7632C4.26925 13.5843 4.44756 14.433 4.91914 15.1227C5.39072 15.8123 6.11694 16.2864 6.93805 16.4406L7.10005 16.4676V18.2802C5.94396 18.1761 4.86122 17.669 4.04107 16.8476C3.22093 16.0261 2.71555 14.9426 2.61326 13.7863C2.51097 12.6301 2.81828 11.4747 3.48148 10.522C4.14468 9.56934 5.12159 8.88005 6.24145 8.5746C6.41939 7.03954 7.15532 5.62342 8.30927 4.59558C9.46323 3.56774 10.9547 2.99988 12.5001 3Z"
+                                              fill="#525866"
+                                            />
+                                          </svg>
+                                          <div className="documents-heading w-full mt-4 text-center">
+                                            Upload Document
+                                          </div>
+                                          <div className="documents-sub-heading w-full mt-1 text-center">
+                                            PDF, JPEG, PNG, and JPG formats, up
+                                            to 50 MB.
+                                          </div>
+                                          <button className="documents-button w-full md:w-auto mt-4 text-center">
+                                            Browse
+                                          </button>
+                                        </div>
+                                        <div className="h-full w-full md:w-auto flex justify-around items-center flex-row md:flex-col gap-3">
+                                          <div className="md:h-16 md:w-[1px] h-[1px] w-full bg-[#E2E4E9]"></div>
+                                          <div className="sb-form-or-text">
+                                            OR
+                                          </div>
+                                          <div className="md:h-16 md:w-[1px] h-[1px] w-full bg-[#E2E4E9]"></div>
+                                        </div>
+                                        <div className="w-full flex justify-center items-center flex-col documents-wrapper-normal">
+                                          <div className="w-ful flex justify-center items-center">
+                                            <img
+                                              src={PlaidLogo.src}
+                                              loading="lazy"
+                                              alt="Logo"
+                                              className="w-10 h-10"
+                                            />
+                                          </div>
+                                          <div className="documents-heading w-full mt-4 text-center">
+                                            Connect Plaid
+                                          </div>
+                                          <div className="documents-sub-heading w-full mt-1 text-center">
+                                            Securely link your bank for payouts
+                                            and payment processing.
+                                          </div>
+                                          <button className="documents-button w-full md:w-auto mt-4 text-center">
+                                            Connect
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {/* <div className="w-full flex mt-5 justify-center items-center flex-row">
+                          <div className="h-[1px] w-full bg-[#E2E4E9]"></div>
+                        </div> */}
+
+                                  <div className="p-3 mt-5 rounded-2xl border-[1px] border-[#EAECF0] md:p-6 w-full flex justify-center items-center flex-col">
+                                    <div className="w-full flex gap-4 justify-center items-center flex-col md:flex-row">
+                                      <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                        <div className="w-full flex justify-start items-start">
+                                          <div className="sb-form-label">
+                                            Balance Sheet
+                                          </div>
+                                          <div className="ob-required-start">
+                                            *
+                                          </div>
+                                        </div>
+                                        <div className="w-full h-full mt-2 gap-4 flex justify-center md:justify-start items-center flex-col md:flex-row">
+                                          <div className="w-full flex justify-center items-center flex-col documents-wrapper-dotted">
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              width="40"
+                                              height="40"
+                                              viewBox="0 0 25 24"
+                                              fill="none"
+                                            >
+                                              <path
+                                                d="M12.5001 12.5274L16.3188 16.3452L15.0452 17.6187L13.4001 15.9735V21H11.6V15.9717L9.95485 17.6187L8.68135 16.3452L12.5001 12.5274ZM12.5001 3C14.0453 3.00007 15.5367 3.568 16.6906 4.59581C17.8445 5.62361 18.5805 7.03962 18.7587 8.5746C19.8785 8.87998 20.8554 9.56919 21.5186 10.5218C22.1819 11.4744 22.4893 12.6297 22.3871 13.786C22.2849 14.9422 21.7797 16.0257 20.9597 16.8472C20.1396 17.6687 19.057 18.1759 17.901 18.2802V16.4676C18.3151 16.4085 18.7133 16.2674 19.0724 16.0527C19.4314 15.8379 19.7441 15.5539 19.9922 15.217C20.2402 14.8801 20.4187 14.4972 20.5171 14.0906C20.6156 13.6839 20.6321 13.2618 20.5656 12.8488C20.4991 12.4357 20.351 12.0401 20.13 11.6849C19.9089 11.3297 19.6194 11.0221 19.2781 10.78C18.9369 10.538 18.5509 10.3663 18.1426 10.2751C17.7343 10.1838 17.312 10.1748 16.9002 10.2486C17.0411 9.5924 17.0335 8.91297 16.8778 8.2601C16.7222 7.60722 16.4225 6.99743 16.0007 6.47538C15.5789 5.95333 15.0456 5.53225 14.44 5.24298C13.8343 4.9537 13.1717 4.80357 12.5005 4.80357C11.8293 4.80357 11.1667 4.9537 10.561 5.24298C9.95539 5.53225 9.42214 5.95333 9.00031 6.47538C8.57849 6.99743 8.27879 7.60722 8.12315 8.2601C7.96752 8.91297 7.9599 9.5924 8.10085 10.2486C7.27974 10.0944 6.43101 10.2727 5.74136 10.7443C5.05171 11.2159 4.57765 11.9421 4.42345 12.7632C4.26925 13.5843 4.44756 14.433 4.91914 15.1227C5.39072 15.8123 6.11694 16.2864 6.93805 16.4406L7.10005 16.4676V18.2802C5.94396 18.1761 4.86122 17.669 4.04107 16.8476C3.22093 16.0261 2.71555 14.9426 2.61326 13.7863C2.51097 12.6301 2.81828 11.4747 3.48148 10.522C4.14468 9.56934 5.12159 8.88005 6.24145 8.5746C6.41939 7.03954 7.15532 5.62342 8.30927 4.59558C9.46323 3.56774 10.9547 2.99988 12.5001 3Z"
+                                                fill="#525866"
+                                              />
+                                            </svg>
+                                            <div className="documents-heading w-full mt-4 text-center">
+                                              Upload Document
+                                            </div>
+                                            <div className="documents-sub-heading w-full mt-1 text-center">
+                                              PDF, JPEG, PNG, and JPG formats,
+                                              up to 50 MB.
+                                            </div>
+                                            <button className="documents-button w-full md:w-auto mt-4 text-center">
+                                              Browse
+                                            </button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div className="w-full flex gap-1 justify-start items-center flex-col">
+                                        <div className="w-full flex justify-start items-start">
+                                          <div className="sb-form-label">
+                                            Profit and Loss Statement
+                                          </div>
+                                          <div className="ob-required-start">
+                                            *
+                                          </div>
+                                        </div>
+                                        <div className="w-full h-full mt-2 gap-4 flex justify-center md:justify-start items-center flex-col md:flex-row">
+                                          <div className="w-full flex justify-center items-center flex-col documents-wrapper-dotted">
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              width="40"
+                                              height="40"
+                                              viewBox="0 0 25 24"
+                                              fill="none"
+                                            >
+                                              <path
+                                                d="M12.5001 12.5274L16.3188 16.3452L15.0452 17.6187L13.4001 15.9735V21H11.6V15.9717L9.95485 17.6187L8.68135 16.3452L12.5001 12.5274ZM12.5001 3C14.0453 3.00007 15.5367 3.568 16.6906 4.59581C17.8445 5.62361 18.5805 7.03962 18.7587 8.5746C19.8785 8.87998 20.8554 9.56919 21.5186 10.5218C22.1819 11.4744 22.4893 12.6297 22.3871 13.786C22.2849 14.9422 21.7797 16.0257 20.9597 16.8472C20.1396 17.6687 19.057 18.1759 17.901 18.2802V16.4676C18.3151 16.4085 18.7133 16.2674 19.0724 16.0527C19.4314 15.8379 19.7441 15.5539 19.9922 15.217C20.2402 14.8801 20.4187 14.4972 20.5171 14.0906C20.6156 13.6839 20.6321 13.2618 20.5656 12.8488C20.4991 12.4357 20.351 12.0401 20.13 11.6849C19.9089 11.3297 19.6194 11.0221 19.2781 10.78C18.9369 10.538 18.5509 10.3663 18.1426 10.2751C17.7343 10.1838 17.312 10.1748 16.9002 10.2486C17.0411 9.5924 17.0335 8.91297 16.8778 8.2601C16.7222 7.60722 16.4225 6.99743 16.0007 6.47538C15.5789 5.95333 15.0456 5.53225 14.44 5.24298C13.8343 4.9537 13.1717 4.80357 12.5005 4.80357C11.8293 4.80357 11.1667 4.9537 10.561 5.24298C9.95539 5.53225 9.42214 5.95333 9.00031 6.47538C8.57849 6.99743 8.27879 7.60722 8.12315 8.2601C7.96752 8.91297 7.9599 9.5924 8.10085 10.2486C7.27974 10.0944 6.43101 10.2727 5.74136 10.7443C5.05171 11.2159 4.57765 11.9421 4.42345 12.7632C4.26925 13.5843 4.44756 14.433 4.91914 15.1227C5.39072 15.8123 6.11694 16.2864 6.93805 16.4406L7.10005 16.4676V18.2802C5.94396 18.1761 4.86122 17.669 4.04107 16.8476C3.22093 16.0261 2.71555 14.9426 2.61326 13.7863C2.51097 12.6301 2.81828 11.4747 3.48148 10.522C4.14468 9.56934 5.12159 8.88005 6.24145 8.5746C6.41939 7.03954 7.15532 5.62342 8.30927 4.59558C9.46323 3.56774 10.9547 2.99988 12.5001 3Z"
+                                                fill="#525866"
+                                              />
+                                            </svg>
+                                            <div className="documents-heading w-full mt-4 text-center">
+                                              Upload Document
+                                            </div>
+                                            <div className="documents-sub-heading w-full mt-1 text-center">
+                                              PDF, JPEG, PNG, and JPG formats,
+                                              up to 50 MB.
+                                            </div>
+                                            <button className="documents-button w-full md:w-auto mt-4 text-center">
+                                              Browse
+                                            </button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <div className="w-full mt-4 flex justify-around items-center flex-row gap-3">
+                                      <div className="h-[1px] w-full bg-[#E2E4E9]"></div>
                                       <div className="sb-form-or-text">OR</div>
-                                      <div className="md:h-16 md:w-[1px] h-[1px] w-full bg-[#E2E4E9]"></div>
+                                      <div className="h-[1px] w-full bg-[#E2E4E9]"></div>
                                     </div>
-                                    <div className="w-full flex justify-center items-center flex-col documents-wrapper-normal">
+
+                                    <div className="w-full mt-4 flex justify-center items-center flex-col documents-wrapper-normal">
                                       <div className="w-ful flex justify-center items-center">
                                         <img
-                                          src={PlaidLogo.src}
+                                          src={LogoQBOdoo.src}
                                           loading="lazy"
                                           alt="Logo"
-                                          className="w-10 h-10"
+                                          className="w-12 h-12"
                                         />
                                       </div>
                                       <div className="documents-heading w-full mt-4 text-center">
-                                        Connect Plaid
+                                        Connect QuickBooks/Odoo
                                       </div>
                                       <div className="documents-sub-heading w-full mt-1 text-center">
-                                        Securely link your bank for payouts and
-                                        payment processing.
+                                        This helps automate invoicing and
+                                        accounting.
                                       </div>
                                       <button className="documents-button w-full md:w-auto mt-4 text-center">
                                         Connect
                                       </button>
                                     </div>
                                   </div>
-                                </div>
-                              </div>
+                                </>
+                              )}
 
-                              {/* <div className="w-full flex mt-5 justify-center items-center flex-row">
-                          <div className="h-[1px] w-full bg-[#E2E4E9]"></div>
-                        </div> */}
-
-                              <div className="p-3 mt-5 rounded-2xl border-[1px] border-[#EAECF0] md:p-6 w-full flex justify-center items-center flex-col">
-                                <div className="w-full flex gap-4 justify-center items-center flex-col md:flex-row">
-                                  <div className="w-full flex gap-1 justify-start items-center flex-col">
-                                    <div className="w-full flex justify-start items-start">
-                                      <div className="sb-form-label">
-                                        Balance Sheet
-                                      </div>
-                                      <div className="ob-required-start">*</div>
+                              {activeTab === "email" && (
+                                <>
+                                  <div className="w-full mt-4 gap-2 md:gap-0 flex justify-between items-center flex-col tab-send-email-text-wrapper lg:flex-row">
+                                    <div className="w-full md:w-auto text-center tab-send-email-text">
+                                      Send completed application and supporting
+                                      documents to b2b@harvv.com
                                     </div>
-                                    <div className="w-full h-full mt-2 gap-4 flex justify-center md:justify-start items-center flex-col md:flex-row">
-                                      <div className="w-full flex justify-center items-center flex-col documents-wrapper-dotted">
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          width="40"
-                                          height="40"
-                                          viewBox="0 0 25 24"
-                                          fill="none"
-                                        >
-                                          <path
-                                            d="M12.5001 12.5274L16.3188 16.3452L15.0452 17.6187L13.4001 15.9735V21H11.6V15.9717L9.95485 17.6187L8.68135 16.3452L12.5001 12.5274ZM12.5001 3C14.0453 3.00007 15.5367 3.568 16.6906 4.59581C17.8445 5.62361 18.5805 7.03962 18.7587 8.5746C19.8785 8.87998 20.8554 9.56919 21.5186 10.5218C22.1819 11.4744 22.4893 12.6297 22.3871 13.786C22.2849 14.9422 21.7797 16.0257 20.9597 16.8472C20.1396 17.6687 19.057 18.1759 17.901 18.2802V16.4676C18.3151 16.4085 18.7133 16.2674 19.0724 16.0527C19.4314 15.8379 19.7441 15.5539 19.9922 15.217C20.2402 14.8801 20.4187 14.4972 20.5171 14.0906C20.6156 13.6839 20.6321 13.2618 20.5656 12.8488C20.4991 12.4357 20.351 12.0401 20.13 11.6849C19.9089 11.3297 19.6194 11.0221 19.2781 10.78C18.9369 10.538 18.5509 10.3663 18.1426 10.2751C17.7343 10.1838 17.312 10.1748 16.9002 10.2486C17.0411 9.5924 17.0335 8.91297 16.8778 8.2601C16.7222 7.60722 16.4225 6.99743 16.0007 6.47538C15.5789 5.95333 15.0456 5.53225 14.44 5.24298C13.8343 4.9537 13.1717 4.80357 12.5005 4.80357C11.8293 4.80357 11.1667 4.9537 10.561 5.24298C9.95539 5.53225 9.42214 5.95333 9.00031 6.47538C8.57849 6.99743 8.27879 7.60722 8.12315 8.2601C7.96752 8.91297 7.9599 9.5924 8.10085 10.2486C7.27974 10.0944 6.43101 10.2727 5.74136 10.7443C5.05171 11.2159 4.57765 11.9421 4.42345 12.7632C4.26925 13.5843 4.44756 14.433 4.91914 15.1227C5.39072 15.8123 6.11694 16.2864 6.93805 16.4406L7.10005 16.4676V18.2802C5.94396 18.1761 4.86122 17.669 4.04107 16.8476C3.22093 16.0261 2.71555 14.9426 2.61326 13.7863C2.51097 12.6301 2.81828 11.4747 3.48148 10.522C4.14468 9.56934 5.12159 8.88005 6.24145 8.5746C6.41939 7.03954 7.15532 5.62342 8.30927 4.59558C9.46323 3.56774 10.9547 2.99988 12.5001 3Z"
-                                            fill="#525866"
+                                    <Link
+                                      href="mailto:b2b@harvv.com"
+                                      className="w-full md:w-auto text-center tab-send-email-button"
+                                    >
+                                      Send Document
+                                    </Link>
+                                  </div>
+
+                                  <div className="w-full flex justify-center items-center flex-col mt-4">
+                                    <div className="w-full mt-[-1%] flex justify-start items-center flex-row">
+                                      <FormControlLabel
+                                        control={
+                                          <Checkbox
+                                            sx={{
+                                              color: "#E2E4E9",
+                                              "&.Mui-checked": {
+                                                color: "#375DFB",
+                                              },
+                                            }}
+                                            checked={checked1}
+                                            onChange={handleChangeChecked1}
+                                            inputProps={{
+                                              "aria-label": "controlled",
+                                            }}
                                           />
-                                        </svg>
-                                        <div className="documents-heading w-full mt-4 text-center">
-                                          Upload Document
-                                        </div>
-                                        <div className="documents-sub-heading w-full mt-1 text-center">
-                                          PDF, JPEG, PNG, and JPG formats, up to
-                                          50 MB.
-                                        </div>
-                                        <button className="documents-button w-full md:w-auto mt-4 text-center">
-                                          Browse
-                                        </button>
-                                      </div>
+                                        }
+                                        sx={{
+                                          color: "#0A0D14",
+                                          fontFamily: '"Plus Jakarta Sans"',
+                                          fontSize: "14px",
+                                          fontStyle: "normal",
+                                          fontWeight: "500",
+                                          lineHeight: "20px",
+                                          letterSpacing: "-0.084px",
+                                        }}
+                                        label="3 Month of Bank Statements"
+                                      />
                                     </div>
-                                  </div>
-                                  <div className="w-full flex gap-1 justify-start items-center flex-col">
-                                    <div className="w-full flex justify-start items-start">
-                                      <div className="sb-form-label">
-                                        Profit and Loss Statement
-                                      </div>
-                                      <div className="ob-required-start">*</div>
-                                    </div>
-                                    <div className="w-full h-full mt-2 gap-4 flex justify-center md:justify-start items-center flex-col md:flex-row">
-                                      <div className="w-full flex justify-center items-center flex-col documents-wrapper-dotted">
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          width="40"
-                                          height="40"
-                                          viewBox="0 0 25 24"
-                                          fill="none"
-                                        >
-                                          <path
-                                            d="M12.5001 12.5274L16.3188 16.3452L15.0452 17.6187L13.4001 15.9735V21H11.6V15.9717L9.95485 17.6187L8.68135 16.3452L12.5001 12.5274ZM12.5001 3C14.0453 3.00007 15.5367 3.568 16.6906 4.59581C17.8445 5.62361 18.5805 7.03962 18.7587 8.5746C19.8785 8.87998 20.8554 9.56919 21.5186 10.5218C22.1819 11.4744 22.4893 12.6297 22.3871 13.786C22.2849 14.9422 21.7797 16.0257 20.9597 16.8472C20.1396 17.6687 19.057 18.1759 17.901 18.2802V16.4676C18.3151 16.4085 18.7133 16.2674 19.0724 16.0527C19.4314 15.8379 19.7441 15.5539 19.9922 15.217C20.2402 14.8801 20.4187 14.4972 20.5171 14.0906C20.6156 13.6839 20.6321 13.2618 20.5656 12.8488C20.4991 12.4357 20.351 12.0401 20.13 11.6849C19.9089 11.3297 19.6194 11.0221 19.2781 10.78C18.9369 10.538 18.5509 10.3663 18.1426 10.2751C17.7343 10.1838 17.312 10.1748 16.9002 10.2486C17.0411 9.5924 17.0335 8.91297 16.8778 8.2601C16.7222 7.60722 16.4225 6.99743 16.0007 6.47538C15.5789 5.95333 15.0456 5.53225 14.44 5.24298C13.8343 4.9537 13.1717 4.80357 12.5005 4.80357C11.8293 4.80357 11.1667 4.9537 10.561 5.24298C9.95539 5.53225 9.42214 5.95333 9.00031 6.47538C8.57849 6.99743 8.27879 7.60722 8.12315 8.2601C7.96752 8.91297 7.9599 9.5924 8.10085 10.2486C7.27974 10.0944 6.43101 10.2727 5.74136 10.7443C5.05171 11.2159 4.57765 11.9421 4.42345 12.7632C4.26925 13.5843 4.44756 14.433 4.91914 15.1227C5.39072 15.8123 6.11694 16.2864 6.93805 16.4406L7.10005 16.4676V18.2802C5.94396 18.1761 4.86122 17.669 4.04107 16.8476C3.22093 16.0261 2.71555 14.9426 2.61326 13.7863C2.51097 12.6301 2.81828 11.4747 3.48148 10.522C4.14468 9.56934 5.12159 8.88005 6.24145 8.5746C6.41939 7.03954 7.15532 5.62342 8.30927 4.59558C9.46323 3.56774 10.9547 2.99988 12.5001 3Z"
-                                            fill="#525866"
+                                    <div className="w-full mt-[-1%] flex justify-start items-center flex-row">
+                                      <FormControlLabel
+                                        control={
+                                          <Checkbox
+                                            sx={{
+                                              color: "#E2E4E9",
+                                              "&.Mui-checked": {
+                                                color: "#375DFB",
+                                              },
+                                            }}
+                                            checked={checked2}
+                                            onChange={handleChangeChecked2}
+                                            inputProps={{
+                                              "aria-label": "controlled",
+                                            }}
                                           />
-                                        </svg>
-                                        <div className="documents-heading w-full mt-4 text-center">
-                                          Upload Document
-                                        </div>
-                                        <div className="documents-sub-heading w-full mt-1 text-center">
-                                          PDF, JPEG, PNG, and JPG formats, up to
-                                          50 MB.
-                                        </div>
-                                        <button className="documents-button w-full md:w-auto mt-4 text-center">
-                                          Browse
-                                        </button>
-                                      </div>
+                                        }
+                                        sx={{
+                                          color: "#0A0D14",
+                                          fontFamily: '"Plus Jakarta Sans"',
+                                          fontSize: "14px",
+                                          fontStyle: "normal",
+                                          fontWeight: "500",
+                                          lineHeight: "20px",
+                                          letterSpacing: "-0.084px",
+                                        }}
+                                        label="Profit and Loss Statement"
+                                      />
+                                    </div>
+                                    <div className="w-full mt-[-1%] flex justify-start items-center flex-row">
+                                      <FormControlLabel
+                                        control={
+                                          <Checkbox
+                                            sx={{
+                                              color: "#E2E4E9",
+                                              "&.Mui-checked": {
+                                                color: "#375DFB",
+                                              },
+                                            }}
+                                            checked={checked3}
+                                            onChange={handleChangeChecked3}
+                                            inputProps={{
+                                              "aria-label": "controlled",
+                                            }}
+                                          />
+                                        }
+                                        sx={{
+                                          color: "#0A0D14",
+                                          fontFamily: '"Plus Jakarta Sans"',
+                                          fontSize: "14px",
+                                          fontStyle: "normal",
+                                          fontWeight: "500",
+                                          lineHeight: "20px",
+                                          letterSpacing: "-0.084px",
+                                        }}
+                                        label="Balance Sheet"
+                                      />
                                     </div>
                                   </div>
-                                </div>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        </>
+                      ) : null}
 
-                                <div className="w-full mt-4 flex justify-around items-center flex-row gap-3">
-                                  <div className="h-[1px] w-full bg-[#E2E4E9]"></div>
-                                  <div className="sb-form-or-text">OR</div>
-                                  <div className="h-[1px] w-full bg-[#E2E4E9]"></div>
-                                </div>
-
-                                <div className="w-full mt-4 flex justify-center items-center flex-col documents-wrapper-normal">
-                                  <div className="w-ful flex justify-center items-center">
-                                    <img
-                                      src={LogoQBOdoo.src}
-                                      loading="lazy"
-                                      alt="Logo"
-                                      className="w-12 h-12"
-                                    />
-                                  </div>
-                                  <div className="documents-heading w-full mt-4 text-center">
-                                    Connect QuickBooks/Odoo
-                                  </div>
-                                  <div className="documents-sub-heading w-full mt-1 text-center">
-                                    This helps automate invoicing and
-                                    accounting.
-                                  </div>
-                                  <button className="documents-button w-full md:w-auto mt-4 text-center">
-                                    Connect
-                                  </button>
-                                </div>
-                              </div>
-                            </>
-                          )}
-
-                          {activeTab === "email" && (
-                            <>
-                              <div className="w-full mt-4 gap-2 md:gap-0 flex justify-between items-center flex-col tab-send-email-text-wrapper lg:flex-row">
-                                <div className="w-full md:w-auto text-center tab-send-email-text">
-                                  Send completed application and supporting
-                                  documents to b2b@harvv.com
-                                </div>
-                                <Link
-                                  href="mailto:b2b@harvv.com"
-                                  className="w-full md:w-auto text-center tab-send-email-button"
-                                >
-                                  Send Document
-                                </Link>
-                              </div>
-
-                              <div className="w-full flex justify-center items-center flex-col mt-4">
-                                <div className="w-full mt-[-1%] flex justify-start items-center flex-row">
-                                  <FormControlLabel
-                                    control={
-                                      <Checkbox
-                                        sx={{
-                                          color: "#E2E4E9",
-                                          "&.Mui-checked": {
-                                            color: "#375DFB",
-                                          },
-                                        }}
-                                        checked={checked1}
-                                        onChange={handleChangeChecked1}
-                                        inputProps={{
-                                          "aria-label": "controlled",
-                                        }}
-                                      />
-                                    }
-                                    sx={{
-                                      color: "#0A0D14",
-                                      fontFamily: '"Plus Jakarta Sans"',
-                                      fontSize: "14px",
-                                      fontStyle: "normal",
-                                      fontWeight: "500",
-                                      lineHeight: "20px",
-                                      letterSpacing: "-0.084px",
-                                    }}
-                                    label="3 Month of Bank Statements"
-                                  />
-                                </div>
-                                <div className="w-full mt-[-1%] flex justify-start items-center flex-row">
-                                  <FormControlLabel
-                                    control={
-                                      <Checkbox
-                                        sx={{
-                                          color: "#E2E4E9",
-                                          "&.Mui-checked": {
-                                            color: "#375DFB",
-                                          },
-                                        }}
-                                        checked={checked2}
-                                        onChange={handleChangeChecked2}
-                                        inputProps={{
-                                          "aria-label": "controlled",
-                                        }}
-                                      />
-                                    }
-                                    sx={{
-                                      color: "#0A0D14",
-                                      fontFamily: '"Plus Jakarta Sans"',
-                                      fontSize: "14px",
-                                      fontStyle: "normal",
-                                      fontWeight: "500",
-                                      lineHeight: "20px",
-                                      letterSpacing: "-0.084px",
-                                    }}
-                                    label="Profit and Loss Statement"
-                                  />
-                                </div>
-                                <div className="w-full mt-[-1%] flex justify-start items-center flex-row">
-                                  <FormControlLabel
-                                    control={
-                                      <Checkbox
-                                        sx={{
-                                          color: "#E2E4E9",
-                                          "&.Mui-checked": {
-                                            color: "#375DFB",
-                                          },
-                                        }}
-                                        checked={checked3}
-                                        onChange={handleChangeChecked3}
-                                        inputProps={{
-                                          "aria-label": "controlled",
-                                        }}
-                                      />
-                                    }
-                                    sx={{
-                                      color: "#0A0D14",
-                                      fontFamily: '"Plus Jakarta Sans"',
-                                      fontSize: "14px",
-                                      fontStyle: "normal",
-                                      fontWeight: "500",
-                                      lineHeight: "20px",
-                                      letterSpacing: "-0.084px",
-                                    }}
-                                    label="Balance Sheet"
-                                  />
-                                </div>
-                              </div>
-                            </>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Accordion 4 */}
+                      {/* Accordion 5 */}
                       <div className="p-6 border-[1px] border-[#EAECF0] rounded-2xl bg-[#fff]">
                         <button
                           onClick={() => {
                             setIsOpen1(false);
                             setIsOpen3(false);
                             setIsOpen2(false);
-                            setIsOpen4(!isOpen4);
+                            setIsOpen4(false);
+                            setIsOpen5(!isOpen5);
                           }}
                           className="w-full ob-accordion-heading text-left flex justify-between items-center"
                         >
-                          <span>4. Authorization and Agreement</span>
+                          {checked5 && !checked6 && !checked7 && !checked8 ? (
+                            // Only checked5 is true
+                            <>
+                              <span>4. Authorization and Agreement</span>
+                            </>
+                          ) : !checked5 &&
+                            checked6 &&
+                            !checked7 &&
+                            !checked8 ? (
+                            // Only checked6 is true
+                            <>
+                              <span>4. Authorization and Agreement</span>
+                            </>
+                          ) : !checked5 &&
+                            !checked6 &&
+                            checked7 &&
+                            !checked8 ? (
+                            // Only checked7 is true
+                            <>
+                              <span>4. Authorization and Agreement</span>
+                            </>
+                          ) : !checked5 &&
+                            !checked6 &&
+                            !checked7 &&
+                            checked8 ? (
+                            // Only checked8 is true
+                            <>
+                              <span>4. Authorization and Agreement</span>
+                            </>
+                          ) : checked5 && checked6 && !checked7 && !checked8 ? (
+                            // checked5 and checked6 are true
+                            <>
+                              <span>5. Authorization and Agreement</span>
+                            </>
+                          ) : checked5 && !checked6 && checked7 && !checked8 ? (
+                            // checked5 and checked7 are true
+                            <>
+                              <span>4. Authorization and Agreement</span>
+                            </>
+                          ) : checked5 && !checked6 && !checked7 && checked8 ? (
+                            // checked5 and checked8 are true
+                            <>
+                              <span>5. Authorization and Agreement</span>
+                            </>
+                          ) : !checked5 && checked6 && checked7 && !checked8 ? (
+                            // checked6 and checked7 are true
+                            <>
+                              <span>4. Authorization and Agreement</span>
+                            </>
+                          ) : !checked5 && checked6 && !checked7 && checked8 ? (
+                            // checked6 and checked8 are true
+                            <>
+                              <span>4. Authorization and Agreement</span>
+                            </>
+                          ) : !checked5 && !checked6 && checked7 && checked8 ? (
+                            // checked7 and checked8 are true
+                            <>
+                              <span>4. Authorization and Agreement</span>
+                            </>
+                          ) : checked5 && checked6 && checked7 && !checked8 ? (
+                            // checked5, checked6, and checked7 are true
+                            <>
+                              <span>5. Authorization and Agreement</span>
+                            </>
+                          ) : checked5 && checked6 && !checked7 && checked8 ? (
+                            // checked5, checked6, and checked8 are true
+                            <>
+                              <span>5. Authorization and Agreement</span>
+                            </>
+                          ) : checked5 && !checked6 && checked7 && checked8 ? (
+                            // checked5, checked7, and checked8 are true
+                            <>
+                              <span>5. Authorization and Agreement</span>
+                            </>
+                          ) : !checked5 && checked6 && checked7 && checked8 ? (
+                            // checked6, checked7, and checked8 are true
+                            <>
+                              <span>4. Authorization and Agreement</span>
+                            </>
+                          ) : checked5 && checked6 && checked7 && checked8 ? (
+                            // All checked5, checked6, checked7, and checked8 are true
+                            <>
+                              <span>5. Authorization and Agreement</span>
+                            </>
+                          ) : null}
+
+                          {/* {checked5 && !checked6 && !checked7 && !checked8 ? (
+                            <>
+                              <span>4. Authorization and Agreement</span>
+                            </>
+                          ) : checked5 &&
+                            (checked6 || checked8) &&
+                            !checked7 ? (
+                            <>
+                              <span>5. Authorization and Agreement</span>
+                            </>
+                          ) : (checked6 || checked8) &&
+                            !checked7 &&
+                            !checked5 ? (
+                            <>
+                              <span>4. Authorization and Agreement</span>
+                            </>
+                          ) : null} */}
+
+                          {/* {checked5 && !(checked6 || checked7 || checked8) ? (
+                            <>
+                            </>
+                          ) : (checked6 || checked8) &&
+                            !(checked5 && checked7) ? (
+                            <>
+                              <span>4. Authorization and Agreement</span>
+                            </>
+                          ) : checked5 &&
+                            (checked6 || checked8) &&
+                            !checked7 ? (
+                            <>
+                            </>
+                          ) : checked5 && checked6 && checked7 && checked8 ? (
+                            <>
+                              <span>5. Authorization and Agreement</span>
+                            </>
+                          ) : null} */}
+
                           <span>
-                            {isOpen4 ? (
+                            {isOpen5 ? (
                               <>
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
@@ -2873,7 +3616,7 @@ function Onboarding() {
                         </button>
                         <div
                           className={`transition-all duration-300 ease-in-out ${
-                            isOpen4
+                            isOpen5
                               ? "h-auto pt-5 w-full flex justify-center items-center flex-col"
                               : "h-0 p-0 overflow-hidden"
                           }`}
@@ -3449,269 +4192,338 @@ function Onboarding() {
                       <div className="w-full flex justify-center items-center flex-col">
                         <div className="w-full flex flex-col justify-center items-center gap-3">
                           <div className="w-full flex justify-center items-center flex-col md:flex-row gap-3">
-                            <div
-                              onClick={handleChangeChecked5}
-                              className={` ${
-                                checked5
-                                  ? "border-[1px] border-[#ff007a]"
-                                  : "border-[1px] border-[#eaecf0]"
-                              } cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
-                            >
-                              <div className="w-full flex justify-center items-center flex-row">
-                                <div className="w-full flex justify-start items-center">
-                                  <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
-                                    A
-                                  </div>
-                                </div>
-                                <div className="w-full flex justify-end items-center gap-2">
-                                  <div className="os-services-upper-tag-wrapper-seller">
-                                    Seller
-                                  </div>
-                                  <FormControlLabel
-                                    control={
-                                      <Checkbox
-                                        sx={{
-                                          color: "#E2E4E9",
-                                          "&.Mui-checked": {
-                                            color: "#17B26A",
-                                          },
-                                        }}
-                                        checked={checked5}
-                                        onChange={handleChangeChecked5}
-                                        inputProps={{
-                                          "aria-label": "controlled",
-                                        }}
-                                      />
-                                    }
-                                    sx={{
-                                      marginRight: "-10%",
-                                    }}
+                            <div className="relative w-full flex justify-start items-center flex-col">
+                              <div className="rounded-t-xl label-send-invoices w-full flex justify-start items-center flex-row gap-2 text-black absolute">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="16"
+                                  height="16"
+                                  viewBox="0 0 16 16"
+                                  fill="none"
+                                >
+                                  <path
+                                    d="M4.99998 4.4V2.6C4.99998 2.44087 5.06319 2.28826 5.17571 2.17574C5.28823 2.06321 5.44085 2 5.59998 2H12.8C12.9591 2 13.1117 2.06321 13.2242 2.17574C13.3368 2.28826 13.4 2.44087 13.4 2.6V11C13.4 11.1591 13.3368 11.3117 13.2242 11.4243C13.1117 11.5368 12.9591 11.6 12.8 11.6H11V13.4C11 13.7312 10.73 14 10.3958 14H3.20418C3.12505 14.0005 3.04661 13.9853 2.97337 13.9554C2.90012 13.9254 2.83352 13.8813 2.77737 13.8256C2.72123 13.7698 2.67665 13.7035 2.64621 13.6305C2.61576 13.5575 2.60005 13.4791 2.59998 13.4L2.60178 5C2.60178 4.6688 2.87178 4.4 3.20538 4.4H4.99998ZM3.80118 5.6L3.79998 12.8H9.79998V5.6H3.80118ZM6.19998 4.4H11V10.4H12.2V3.2H6.19998V4.4ZM4.99998 7.4H8.59998V8.6H4.99998V7.4ZM4.99998 9.8H8.59998V11H4.99998V9.8Z"
+                                    fill="white"
                                   />
-                                </div>
+                                </svg>
+                                <div>Send Invoice</div>
                               </div>
-
-                              <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
-                                Offer Card & ACH payment options on your
-                                invoices
-                              </div>
-
-                              <div className="w-full mt-3 flex justify-center md:justify-start items-center">
-                                <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 16 16"
-                                    fill="none"
-                                  >
-                                    <circle
-                                      cx="8"
-                                      cy="8"
-                                      r="3"
-                                      fill="#38C793"
+                              <div
+                                onClick={handleChangeChecked5}
+                                className={` ${
+                                  checked5
+                                    ? "border-[1px] border-[#ff007a]"
+                                    : "border-[1px] border-[#eaecf0]"
+                                } mt-[11%] z-10 cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
+                              >
+                                <div className="w-full flex justify-center items-center flex-row">
+                                  <div className="w-full flex justify-start items-center">
+                                    <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
+                                      A
+                                    </div>
+                                  </div>
+                                  <div className="w-full flex justify-end items-center gap-2">
+                                    <div className="os-services-upper-tag-wrapper-seller">
+                                      Seller
+                                    </div>
+                                    <FormControlLabel
+                                      control={
+                                        <Checkbox
+                                          sx={{
+                                            color: "#E2E4E9",
+                                            "&.Mui-checked": {
+                                              color: "#17B26A",
+                                            },
+                                          }}
+                                          checked={checked5}
+                                          onChange={handleChangeChecked5}
+                                          inputProps={{
+                                            "aria-label": "controlled",
+                                          }}
+                                        />
+                                      }
+                                      sx={{
+                                        marginRight: "-10%",
+                                      }}
                                     />
-                                  </svg>
-                                  <div>Free Package</div>
+                                  </div>
+                                </div>
+
+                                <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
+                                  Offer Card & ACH payment options on your
+                                  invoices
+                                </div>
+
+                                <div className="w-full mt-3 flex justify-center md:justify-start items-center">
+                                  <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="16"
+                                      height="16"
+                                      viewBox="0 0 16 16"
+                                      fill="none"
+                                    >
+                                      <circle
+                                        cx="8"
+                                        cy="8"
+                                        r="3"
+                                        fill="#38C793"
+                                      />
+                                    </svg>
+                                    <div>Free Package</div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
 
-                            <div
-                              onClick={handleChangeChecked6}
-                              className={` ${
-                                checked6
-                                  ? "border-[1px] border-[#ff007a]"
-                                  : "border-[1px] border-[#eaecf0]"
-                              } cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
-                            >
-                              <div className="w-full flex justify-center items-center flex-row">
-                                <div className="w-full flex justify-start items-center">
-                                  <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
-                                    B
-                                  </div>
-                                </div>
-                                <div className="w-full flex justify-end items-center gap-2">
-                                  <div className="os-services-upper-tag-wrapper-seller">
-                                    Seller
-                                  </div>
-                                  <FormControlLabel
-                                    control={
-                                      <Checkbox
-                                        sx={{
-                                          color: "#E2E4E9",
-                                          "&.Mui-checked": {
-                                            color: "#17B26A",
-                                          },
-                                        }}
-                                        checked={checked6}
-                                        onChange={handleChangeChecked6}
-                                        inputProps={{
-                                          "aria-label": "controlled",
-                                        }}
-                                      />
-                                    }
-                                    sx={{
-                                      marginRight: "-10%",
-                                    }}
+                            <div className="relative w-full flex justify-start items-center flex-col">
+                              <div className="rounded-t-xl label-send-invoices w-full flex justify-start items-center flex-row gap-2 text-black absolute">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="16"
+                                  height="16"
+                                  viewBox="0 0 16 16"
+                                  fill="none"
+                                >
+                                  <path
+                                    d="M4.99998 4.4V2.6C4.99998 2.44087 5.06319 2.28826 5.17571 2.17574C5.28823 2.06321 5.44085 2 5.59998 2H12.8C12.9591 2 13.1117 2.06321 13.2242 2.17574C13.3368 2.28826 13.4 2.44087 13.4 2.6V11C13.4 11.1591 13.3368 11.3117 13.2242 11.4243C13.1117 11.5368 12.9591 11.6 12.8 11.6H11V13.4C11 13.7312 10.73 14 10.3958 14H3.20418C3.12505 14.0005 3.04661 13.9853 2.97337 13.9554C2.90012 13.9254 2.83352 13.8813 2.77737 13.8256C2.72123 13.7698 2.67665 13.7035 2.64621 13.6305C2.61576 13.5575 2.60005 13.4791 2.59998 13.4L2.60178 5C2.60178 4.6688 2.87178 4.4 3.20538 4.4H4.99998ZM3.80118 5.6L3.79998 12.8H9.79998V5.6H3.80118ZM6.19998 4.4H11V10.4H12.2V3.2H6.19998V4.4ZM4.99998 7.4H8.59998V8.6H4.99998V7.4ZM4.99998 9.8H8.59998V11H4.99998V9.8Z"
+                                    fill="white"
                                   />
-                                </div>
+                                </svg>
+                                <div>Send Invoice</div>
                               </div>
-
-                              <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
-                                Offer Net Terms (30, 60, 90) on your invoices
-                                for approved buyers
-                              </div>
-
-                              <div className="w-full mt-3 flex justify-center md:justify-start items-center">
-                                <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 16 16"
-                                    fill="none"
-                                  >
-                                    <circle
-                                      cx="8"
-                                      cy="8"
-                                      r="3"
-                                      fill="#38C793"
+                              <div
+                                onClick={handleChangeChecked6}
+                                className={` ${
+                                  checked6
+                                    ? "border-[1px] border-[#ff007a]"
+                                    : "border-[1px] border-[#eaecf0]"
+                                } mt-[11%] z-10 cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
+                              >
+                                <div className="w-full flex justify-center items-center flex-row">
+                                  <div className="w-full flex justify-start items-center">
+                                    <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
+                                      B
+                                    </div>
+                                  </div>
+                                  <div className="w-full flex justify-end items-center gap-2">
+                                    <div className="os-services-upper-tag-wrapper-seller">
+                                      Seller
+                                    </div>
+                                    <FormControlLabel
+                                      control={
+                                        <Checkbox
+                                          sx={{
+                                            color: "#E2E4E9",
+                                            "&.Mui-checked": {
+                                              color: "#17B26A",
+                                            },
+                                          }}
+                                          checked={checked6}
+                                          onChange={handleChangeChecked6}
+                                          inputProps={{
+                                            "aria-label": "controlled",
+                                          }}
+                                        />
+                                      }
+                                      sx={{
+                                        marginRight: "-10%",
+                                      }}
                                     />
-                                  </svg>
-                                  <div>Subscription required</div>
+                                  </div>
+                                </div>
+
+                                <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
+                                  Offer Net Terms (30, 60, 90) on your invoices
+                                  for approved buyers
+                                </div>
+
+                                <div className="w-full mt-3 flex justify-center md:justify-start items-center">
+                                  <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="16"
+                                      height="16"
+                                      viewBox="0 0 16 16"
+                                      fill="none"
+                                    >
+                                      <circle
+                                        cx="8"
+                                        cy="8"
+                                        r="3"
+                                        fill="#38C793"
+                                      />
+                                    </svg>
+                                    <div>Subscription required</div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
                           <div className="w-full flex justify-center items-center flex-col md:flex-row gap-3">
-                            <div
-                              onClick={handleChangeChecked7}
-                              className={` ${
-                                checked7
-                                  ? "border-[1px] border-[#ff007a]"
-                                  : "border-[1px] border-[#eaecf0]"
-                              } cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
-                            >
-                              <div className="w-full flex justify-center items-center flex-row">
-                                <div className="w-full flex justify-start items-center">
-                                  <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
-                                    C
-                                  </div>
-                                </div>
-                                <div className="w-full flex justify-end items-center gap-2">
-                                  <div className="os-services-upper-tag-wrapper-buyer">
-                                    Buyer
-                                  </div>
-                                  <FormControlLabel
-                                    control={
-                                      <Checkbox
-                                        sx={{
-                                          color: "#E2E4E9",
-                                          "&.Mui-checked": {
-                                            color: "#17B26A",
-                                          },
-                                        }}
-                                        checked={checked7}
-                                        onChange={handleChangeChecked7}
-                                        inputProps={{
-                                          "aria-label": "controlled",
-                                        }}
-                                      />
-                                    }
-                                    sx={{
-                                      marginRight: "-10%",
-                                    }}
+                            <div className="relative w-full flex justify-start items-center flex-col">
+                              <div className="rounded-t-xl label-pay-invoices w-full flex justify-start items-center flex-row gap-2 text-black absolute">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="16"
+                                  height="16"
+                                  viewBox="0 0 16 16"
+                                  fill="none"
+                                >
+                                  <path
+                                    d="M4.99998 4.4V2.6C4.99998 2.44087 5.06319 2.28826 5.17571 2.17574C5.28823 2.06321 5.44085 2 5.59998 2H12.8C12.9591 2 13.1117 2.06321 13.2242 2.17574C13.3368 2.28826 13.4 2.44087 13.4 2.6V11C13.4 11.1591 13.3368 11.3117 13.2242 11.4243C13.1117 11.5368 12.9591 11.6 12.8 11.6H11V13.4C11 13.7312 10.73 14 10.3958 14H3.20418C3.12505 14.0005 3.04661 13.9853 2.97337 13.9554C2.90012 13.9254 2.83352 13.8813 2.77737 13.8256C2.72123 13.7698 2.67665 13.7035 2.64621 13.6305C2.61576 13.5575 2.60005 13.4791 2.59998 13.4L2.60178 5C2.60178 4.6688 2.87178 4.4 3.20538 4.4H4.99998ZM3.80118 5.6L3.79998 12.8H9.79998V5.6H3.80118ZM6.19998 4.4H11V10.4H12.2V3.2H6.19998V4.4ZM4.99998 7.4H8.59998V8.6H4.99998V7.4ZM4.99998 9.8H8.59998V11H4.99998V9.8Z"
+                                    fill="white"
                                   />
-                                </div>
+                                </svg>
+                                <div>Pay Invoice</div>
                               </div>
-
-                              <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
-                                Pay invoices using Card & ACH
-                              </div>
-
-                              <div className="w-full mt-3 flex justify-center md:justify-start items-center">
-                                <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 16 16"
-                                    fill="none"
-                                  >
-                                    <circle
-                                      cx="8"
-                                      cy="8"
-                                      r="3"
-                                      fill="#38C793"
+                              <div
+                                onClick={handleChangeChecked7}
+                                className={` ${
+                                  checked7
+                                    ? "border-[1px] border-[#ff007a]"
+                                    : "border-[1px] border-[#eaecf0]"
+                                } mt-[11%] z-10 cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
+                              >
+                                <div className="w-full flex justify-center items-center flex-row">
+                                  <div className="w-full flex justify-start items-center">
+                                    <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
+                                      C
+                                    </div>
+                                  </div>
+                                  <div className="w-full flex justify-end items-center gap-2">
+                                    <div className="os-services-upper-tag-wrapper-buyer">
+                                      Buyer
+                                    </div>
+                                    <FormControlLabel
+                                      control={
+                                        <Checkbox
+                                          sx={{
+                                            color: "#E2E4E9",
+                                            "&.Mui-checked": {
+                                              color: "#17B26A",
+                                            },
+                                          }}
+                                          checked={checked7}
+                                          onChange={handleChangeChecked7}
+                                          inputProps={{
+                                            "aria-label": "controlled",
+                                          }}
+                                        />
+                                      }
+                                      sx={{
+                                        marginRight: "-10%",
+                                      }}
                                     />
-                                  </svg>
-                                  <div>Free Package</div>
+                                  </div>
+                                </div>
+
+                                <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
+                                  Pay invoices using Card & ACH
+                                </div>
+
+                                <div className="w-full mt-3 flex justify-center md:justify-start items-center">
+                                  <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="16"
+                                      height="16"
+                                      viewBox="0 0 16 16"
+                                      fill="none"
+                                    >
+                                      <circle
+                                        cx="8"
+                                        cy="8"
+                                        r="3"
+                                        fill="#38C793"
+                                      />
+                                    </svg>
+                                    <div>Free Package</div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
 
-                            <div
-                              onClick={handleChangeChecked8}
-                              className={` ${
-                                checked8
-                                  ? "border-[1px] border-[#ff007a]"
-                                  : "border-[1px] border-[#eaecf0]"
-                              } cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
-                            >
-                              <div className="w-full flex justify-center items-center flex-row">
-                                <div className="w-full flex justify-start items-center">
-                                  <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
-                                    D
-                                  </div>
-                                </div>
-                                <div className="w-full flex justify-end items-center gap-2">
-                                  <div className="os-services-upper-tag-wrapper-buyer">
-                                    Buyer
-                                  </div>
-                                  <FormControlLabel
-                                    control={
-                                      <Checkbox
-                                        sx={{
-                                          color: "#E2E4E9",
-                                          "&.Mui-checked": {
-                                            color: "#17B26A",
-                                          },
-                                        }}
-                                        checked={checked8}
-                                        onChange={handleChangeChecked8}
-                                        inputProps={{
-                                          "aria-label": "controlled",
-                                        }}
-                                      />
-                                    }
-                                    sx={{
-                                      marginRight: "-10%",
-                                    }}
+                            <div className="relative w-full flex justify-start items-center flex-col">
+                              <div className="rounded-t-xl label-pay-invoices w-full flex justify-start items-center flex-row gap-2 text-black absolute">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="16"
+                                  height="16"
+                                  viewBox="0 0 16 16"
+                                  fill="none"
+                                >
+                                  <path
+                                    d="M4.99998 4.4V2.6C4.99998 2.44087 5.06319 2.28826 5.17571 2.17574C5.28823 2.06321 5.44085 2 5.59998 2H12.8C12.9591 2 13.1117 2.06321 13.2242 2.17574C13.3368 2.28826 13.4 2.44087 13.4 2.6V11C13.4 11.1591 13.3368 11.3117 13.2242 11.4243C13.1117 11.5368 12.9591 11.6 12.8 11.6H11V13.4C11 13.7312 10.73 14 10.3958 14H3.20418C3.12505 14.0005 3.04661 13.9853 2.97337 13.9554C2.90012 13.9254 2.83352 13.8813 2.77737 13.8256C2.72123 13.7698 2.67665 13.7035 2.64621 13.6305C2.61576 13.5575 2.60005 13.4791 2.59998 13.4L2.60178 5C2.60178 4.6688 2.87178 4.4 3.20538 4.4H4.99998ZM3.80118 5.6L3.79998 12.8H9.79998V5.6H3.80118ZM6.19998 4.4H11V10.4H12.2V3.2H6.19998V4.4ZM4.99998 7.4H8.59998V8.6H4.99998V7.4ZM4.99998 9.8H8.59998V11H4.99998V9.8Z"
+                                    fill="white"
                                   />
-                                </div>
+                                </svg>
+                                <div>Pay Invoice</div>
                               </div>
-
-                              <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
-                                Pay invoices using Net Terms to approved sellers
-                              </div>
-
-                              <div className="w-full mt-3 flex justify-center md:justify-start items-center">
-                                <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 16 16"
-                                    fill="none"
-                                  >
-                                    <circle
-                                      cx="8"
-                                      cy="8"
-                                      r="3"
-                                      fill="#38C793"
+                              <div
+                                onClick={handleChangeChecked8}
+                                className={` ${
+                                  checked8
+                                    ? "border-[1px] border-[#ff007a]"
+                                    : "border-[1px] border-[#eaecf0]"
+                                } mt-[11%] z-10 cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
+                              >
+                                <div className="w-full flex justify-center items-center flex-row">
+                                  <div className="w-full flex justify-start items-center">
+                                    <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
+                                      D
+                                    </div>
+                                  </div>
+                                  <div className="w-full flex justify-end items-center gap-2">
+                                    <div className="os-services-upper-tag-wrapper-buyer">
+                                      Buyer
+                                    </div>
+                                    <FormControlLabel
+                                      control={
+                                        <Checkbox
+                                          sx={{
+                                            color: "#E2E4E9",
+                                            "&.Mui-checked": {
+                                              color: "#17B26A",
+                                            },
+                                          }}
+                                          checked={checked8}
+                                          onChange={handleChangeChecked8}
+                                          inputProps={{
+                                            "aria-label": "controlled",
+                                          }}
+                                        />
+                                      }
+                                      sx={{
+                                        marginRight: "-10%",
+                                      }}
                                     />
-                                  </svg>
-                                  <div>Free Package</div>
+                                  </div>
+                                </div>
+
+                                <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
+                                  Pay invoices using Net Terms to approved
+                                  sellers
+                                </div>
+
+                                <div className="w-full mt-3 flex justify-center md:justify-start items-center">
+                                  <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="16"
+                                      height="16"
+                                      viewBox="0 0 16 16"
+                                      fill="none"
+                                    >
+                                      <circle
+                                        cx="8"
+                                        cy="8"
+                                        r="3"
+                                        fill="#38C793"
+                                      />
+                                    </svg>
+                                    <div>Free Package</div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
