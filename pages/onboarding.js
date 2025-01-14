@@ -143,6 +143,144 @@ function Onboarding() {
   ]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [maxOwners, setMaxOwners] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [firstNameFilled, setFirstNameFilled] = useState(false);
+  const [firstNameError, setFirstNameError] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [lastNameFilled, setLastNameFilled] = useState(false);
+  const [lastNameError, setLastNameError] = useState("");
+  const [businessEmail, setBusinessEmail] = useState(email ? email : "");
+  const [businessEmailFilled, setBusinessEmailFilled] = useState(false);
+  const [businessEmailError, setBusinessEmailError] = useState("");
+  const [businessLegalName, setBusinessLegalName] = useState("");
+  const [businessLegalNameFilled, setBusinessLegalNameFilled] = useState(false);
+  const [businessLegalNameError, setBusinessLegalNameError] = useState("");
+
+  // First Name Real-time Validation
+  useEffect(() => {
+    if (firstName !== "") {
+      // Check for numbers
+      if (/\d/.test(firstName)) {
+        setFirstNameError("The name cannot contain numbers.");
+        setFirstNameFilled(false);
+      }
+      // Check for length > 20
+      else if (firstName.length > 20) {
+        setFirstNameError("The name cannot exceed 20 characters.");
+        setFirstNameFilled(false);
+      }
+      // Check for invalid special characters
+      else if (/[^A-Za-z' -]/.test(firstName)) {
+        setFirstNameError("The name cannot include special characters.");
+        setFirstNameFilled(false);
+      }
+      // Check for minimum and maximum length
+      else if (firstName.length < 3) {
+        setFirstNameError("The name must be at least 3 characters long.");
+        setFirstNameFilled(false);
+      }
+      // If all validations pass
+      else {
+        setFirstNameError("");
+        setFirstNameFilled(true);
+      }
+    } else {
+      // If the input is empty
+      setFirstNameError("");
+      setFirstNameFilled(false);
+    }
+  }, [firstName]);
+
+  // Last Name Real-time Validation
+  useEffect(() => {
+    if (lastName !== "") {
+      // Check for numbers
+      if (/\d/.test(lastName)) {
+        setLastNameError("The name cannot contain numbers.");
+        setLastNameFilled(false);
+      }
+      // Check for length > 20
+      else if (lastName.length > 20) {
+        setLastNameError("The name cannot exceed 20 characters.");
+        setLastNameFilled(false);
+      }
+      // Check for invalid special characters
+      else if (/[^A-Za-z' -]/.test(lastName)) {
+        setLastNameError("The name cannot include special characters.");
+        setLastNameFilled(false);
+      }
+      // Check for minimum and maximum length
+      else if (lastName.length < 3) {
+        setLastNameError("The name must be at least 3 characters long.");
+        setLastNameFilled(false);
+      }
+      // If all validations pass
+      else {
+        setLastNameError("");
+        setLastNameFilled(true);
+      }
+    } else {
+      // If the input is empty
+      setLastNameError("");
+      setLastNameFilled(false);
+    }
+  }, [lastName]);
+
+  // Business Email Real-time Validation
+  useEffect(() => {
+    if (businessEmail !== "") {
+      // Check for numbers
+      if (
+        /^(?![a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$).*$/.test(
+          businessEmail
+        )
+      ) {
+        setBusinessEmailError("Please enter a valid email address");
+        setBusinessEmailFilled(false);
+      }
+      // If all validations pass
+      else {
+        setBusinessEmailError("");
+        setBusinessEmailFilled(true);
+      }
+    } else {
+      // If the input is empty
+      setBusinessEmailError("");
+      setBusinessEmailFilled(false);
+    }
+  }, [businessEmail]);
+
+  // Business Legal Name Real-time Validation
+  useEffect(() => {
+    if (businessLegalName !== "") {
+      // Regex for invalid characters
+      const invalidCharactersRegex = /[^A-Za-z0-9'&() -]/;
+
+      if (businessLegalName.length < 2) {
+        setBusinessLegalNameError(
+          "Business name is too short. Please enter at least 2 characters."
+        );
+        setBusinessLegalNameFilled(false);
+      } else if (businessLegalName.length > 20) {
+        setBusinessLegalNameError(
+          "Business name is too long. Maximum limit is 20 characters."
+        );
+        setBusinessLegalNameFilled(false);
+      } else if (invalidCharactersRegex.test(businessLegalName)) {
+        setBusinessLegalNameError("Please enter a valid business name.");
+        setBusinessLegalNameFilled(false);
+      }
+      // If all validations pass
+      else {
+        setBusinessLegalNameError("");
+        setBusinessLegalNameFilled(true);
+      }
+    } else {
+      // If the input is empty
+      setBusinessLegalNameError("");
+      setBusinessLegalNameFilled(false);
+    }
+  }, [businessLegalName]);
 
   useEffect(() => {
     if (owners.length >= 6) {
@@ -1362,7 +1500,6 @@ function Onboarding() {
                       className="h-[88px] w-[88px]"
                     />
                     <div className="w-full flex justify-center items-center flex-col gap-1">
-                      {/* Hereeeeeeeeeeeee */}
                       {checked5 && !checked6 && !checked7 && !checked8 ? (
                         // Only checked5 is true
                         <>
@@ -1590,22 +1727,134 @@ function Onboarding() {
                                 <div className="sb-form-label">First Name</div>
                                 <div className="ob-required-start">*</div>
                               </div>
-                              <input
-                                type="text"
-                                placeholder="Input first name"
-                                className="w-full sb-form-input-field outline-none"
-                              />
+                              <div className="relative w-full flex justify-end items-center flex-row">
+                                <input
+                                  type="text"
+                                  value={firstName}
+                                  onChange={(e) => {
+                                    setFirstName(e.target.value);
+                                  }}
+                                  placeholder="Input first name"
+                                  className={`w-full ${
+                                    firstNameFilled || firstNameError
+                                      ? "sb-form-input-field-filled"
+                                      : "sb-form-input-field"
+                                  } outline-none`}
+                                />
+                                {firstNameFilled ? (
+                                  <>
+                                    <svg
+                                      className="absolute mr-[3%]"
+                                      width="17"
+                                      height="16"
+                                      viewBox="0 0 17 16"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <rect
+                                        x="0.666992"
+                                        width="16"
+                                        height="16"
+                                        rx="8"
+                                        fill="#38C793"
+                                      />
+                                      <path
+                                        d="M7.76712 9.42787L11.9035 5.29102L12.5403 5.92732L7.76712 10.7005L4.90332 7.83667L5.53962 7.20037L7.76712 9.42787Z"
+                                        fill="white"
+                                      />
+                                    </svg>
+                                  </>
+                                ) : firstNameError ? (
+                                  <>
+                                    <Tooltip title={firstNameError} arrow>
+                                      <svg
+                                        className="absolute mr-[3%] cursor-pointer"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="20"
+                                        height="20"
+                                        viewBox="0 0 16 16"
+                                        fill="none"
+                                      >
+                                        <path
+                                          d="M8 14C4.6862 14 2 11.3138 2 8C2 4.6862 4.6862 2 8 2C11.3138 2 14 4.6862 14 8C14 11.3138 11.3138 14 8 14ZM7.4 9.8V11H8.6V9.8H7.4ZM7.4 5V8.6H8.6V5H7.4Z"
+                                          fill="#DF1C41"
+                                        />
+                                      </svg>
+                                    </Tooltip>
+                                  </>
+                                ) : null}
+                              </div>
+
+                              <div className="w-full error-text flex md:hidden text-start">
+                                {firstNameError}
+                              </div>
                             </div>
                             <div className="w-full flex gap-1 justify-start items-center flex-col">
                               <div className="w-full flex justify-start items-start">
                                 <div className="sb-form-label">Last Name</div>
                                 <div className="ob-required-start">*</div>
                               </div>
-                              <input
-                                type="text"
-                                placeholder="Input last name"
-                                className="w-full sb-form-input-field outline-none"
-                              />
+                              <div className="relative w-full flex justify-end items-center flex-row">
+                                <input
+                                  type="text"
+                                  value={lastName}
+                                  onChange={(e) => {
+                                    setLastName(e.target.value);
+                                  }}
+                                  placeholder="Input first name"
+                                  className={`w-full ${
+                                    lastNameFilled || lastNameError
+                                      ? "sb-form-input-field-filled"
+                                      : "sb-form-input-field"
+                                  } outline-none`}
+                                />
+                                {lastNameFilled ? (
+                                  <>
+                                    <svg
+                                      className="absolute mr-[3%]"
+                                      width="17"
+                                      height="16"
+                                      viewBox="0 0 17 16"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <rect
+                                        x="0.666992"
+                                        width="16"
+                                        height="16"
+                                        rx="8"
+                                        fill="#38C793"
+                                      />
+                                      <path
+                                        d="M7.76712 9.42787L11.9035 5.29102L12.5403 5.92732L7.76712 10.7005L4.90332 7.83667L5.53962 7.20037L7.76712 9.42787Z"
+                                        fill="white"
+                                      />
+                                    </svg>
+                                  </>
+                                ) : lastNameError ? (
+                                  <>
+                                    <Tooltip title={lastNameError} arrow>
+                                      <svg
+                                        className="absolute mr-[3%] cursor-pointer"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="20"
+                                        height="20"
+                                        viewBox="0 0 16 16"
+                                        fill="none"
+                                      >
+                                        <path
+                                          d="M8 14C4.6862 14 2 11.3138 2 8C2 4.6862 4.6862 2 8 2C11.3138 2 14 4.6862 14 8C14 11.3138 11.3138 14 8 14ZM7.4 9.8V11H8.6V9.8H7.4ZM7.4 5V8.6H8.6V5H7.4Z"
+                                          fill="#DF1C41"
+                                        />
+                                      </svg>
+                                    </Tooltip>
+                                  </>
+                                ) : null}
+                              </div>
+
+                              <div className="w-full error-text flex md:hidden text-start">
+                                {lastNameError}
+                              </div>
                             </div>
                             <div className="w-full text-black flex gap-1 justify-start items-center flex-col">
                               <div className="w-full flex justify-start items-start">
@@ -1635,30 +1884,81 @@ function Onboarding() {
                                 </div>
                                 <div className="ob-required-start">*</div>
                               </div>
-                              <div className="relative w-full sb-form-input-field">
-                                {/* Icon */}
-                                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="20"
-                                    height="20"
-                                    viewBox="0 0 20 20"
-                                    fill="none"
-                                  >
-                                    <path
-                                      d="M3.25 3.75H16.75C16.9489 3.75 17.1397 3.82902 17.2803 3.96967C17.421 4.11032 17.5 4.30109 17.5 4.5V15.5C17.5 15.6989 17.421 15.8897 17.2803 16.0303C17.1397 16.171 16.9489 16.25 16.75 16.25H3.25C3.05109 16.25 2.86032 16.171 2.71967 16.0303C2.57902 15.8897 2.5 15.6989 2.5 15.5V4.5C2.5 4.30109 2.57902 4.11032 2.71967 3.96967C2.86032 3.82902 3.05109 3.75 3.25 3.75ZM16 6.9285L10.054 12.2535L4 6.912V14.75H16V6.9285ZM4.38325 5.25L10.0457 10.2465L15.6265 5.25H4.38325Z"
-                                      fill="#525866"
-                                    />
-                                  </svg>
-                                </div>
+                              {/* Hereeeeeeeeeeeeeeeeeeeeeee */}
+                              {/* Input Field with Icons */}
+                              <div className="relative w-full">
+                                {/* Email Icon */}
+                                <svg
+                                  className="absolute left-3 top-1/2 transform -translate-y-1/2"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="20"
+                                  height="20"
+                                  viewBox="0 0 20 20"
+                                  fill="none"
+                                >
+                                  <path
+                                    d="M3.25 3.75H16.75C16.9489 3.75 17.1397 3.82902 17.2803 3.96967C17.421 4.11032 17.5 4.30109 17.5 4.5V15.5C17.5 15.6989 17.421 15.8897 17.2803 16.0303C17.1397 16.171 16.9489 16.25 16.75 16.25H3.25C3.05109 16.25 2.86032 16.171 2.71967 16.0303C2.57902 15.8897 2.5 15.6989 2.5 15.5V4.5C2.5 4.30109 2.57902 4.11032 2.71967 3.96967C2.86032 3.82902 3.05109 3.75 3.25 3.75ZM16 6.9285L10.054 12.2535L4 6.912V14.75H16V6.9285ZM4.38325 5.25L10.0457 10.2465L15.6265 5.25H4.38325Z"
+                                    fill="#525866"
+                                  />
+                                </svg>
 
                                 {/* Input Field */}
                                 <input
                                   type="email"
-                                  value={email}
+                                  value={businessEmail}
+                                  onChange={(e) =>
+                                    setBusinessEmail(e.target.value)
+                                  }
                                   placeholder="Input business email"
-                                  className="w-full pl-8 outline-none bg-transparent"
+                                  className={`w-full ${
+                                    businessEmailFilled || businessEmailError
+                                      ? "sb-form-input-field-icon-left-filled"
+                                      : "sb-form-input-field-icon-left"
+                                  } outline-none`}
                                 />
+
+                                {/* Validation Icon */}
+                                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                                  {businessEmailFilled ? (
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="17"
+                                      height="16"
+                                      viewBox="0 0 17 16"
+                                      fill="none"
+                                    >
+                                      <rect
+                                        x="0.666992"
+                                        width="16"
+                                        height="16"
+                                        rx="8"
+                                        fill="#38C793"
+                                      />
+                                      <path
+                                        d="M7.76712 9.42787L11.9035 5.29102L12.5403 5.92732L7.76712 10.7005L4.90332 7.83667L5.53962 7.20037L7.76712 9.42787Z"
+                                        fill="white"
+                                      />
+                                    </svg>
+                                  ) : businessEmailError ? (
+                                    <Tooltip title={businessEmailError} arrow>
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="20"
+                                        height="20"
+                                        viewBox="0 0 16 16"
+                                        fill="none"
+                                      >
+                                        <path
+                                          d="M8 14C4.6862 14 2 11.3138 2 8C2 4.6862 4.6862 2 8 2C11.3138 2 14 4.6862 14 8C14 11.3138 11.3138 14 8 14ZM7.4 9.8V11H8.6V9.8H7.4ZM7.4 5V8.6H8.6V5H7.4Z"
+                                          fill="#DF1C41"
+                                        />
+                                      </svg>
+                                    </Tooltip>
+                                  ) : null}
+                                </div>
+                              </div>
+                              <div className="w-full error-text flex md:hidden text-start">
+                                {businessEmailError}
                               </div>
                             </div>
                           </div>
@@ -1731,12 +2031,71 @@ function Onboarding() {
                                 </div>
                                 <div className="ob-required-start">*</div>
                               </div>
-                              {/* Input Field */}
-                              <input
-                                type="text"
-                                placeholder="Input name your business operation"
-                                className="w-full sb-form-input-field outline-none"
-                              />
+                              <div className="relative w-full flex justify-end items-center flex-row">
+                                <input
+                                  type="text"
+                                  value={businessLegalName}
+                                  onChange={(e) => {
+                                    setBusinessLegalName(e.target.value);
+                                  }}
+                                  placeholder="Enter business's legal name"
+                                  className={`w-full ${
+                                    businessLegalNameFilled ||
+                                    businessLegalNameError
+                                      ? "sb-form-input-field-filled"
+                                      : "sb-form-input-field"
+                                  } outline-none`}
+                                />
+                                {businessLegalNameFilled ? (
+                                  <>
+                                    <svg
+                                      className="absolute mr-[3%]"
+                                      width="17"
+                                      height="16"
+                                      viewBox="0 0 17 16"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <rect
+                                        x="0.666992"
+                                        width="16"
+                                        height="16"
+                                        rx="8"
+                                        fill="#38C793"
+                                      />
+                                      <path
+                                        d="M7.76712 9.42787L11.9035 5.29102L12.5403 5.92732L7.76712 10.7005L4.90332 7.83667L5.53962 7.20037L7.76712 9.42787Z"
+                                        fill="white"
+                                      />
+                                    </svg>
+                                  </>
+                                ) : businessLegalNameError ? (
+                                  <>
+                                    <Tooltip
+                                      title={businessLegalNameError}
+                                      arrow
+                                    >
+                                      <svg
+                                        className="absolute mr-[3%] cursor-pointer"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="20"
+                                        height="20"
+                                        viewBox="0 0 16 16"
+                                        fill="none"
+                                      >
+                                        <path
+                                          d="M8 14C4.6862 14 2 11.3138 2 8C2 4.6862 4.6862 2 8 2C11.3138 2 14 4.6862 14 8C14 11.3138 11.3138 14 8 14ZM7.4 9.8V11H8.6V9.8H7.4ZM7.4 5V8.6H8.6V5H7.4Z"
+                                          fill="#DF1C41"
+                                        />
+                                      </svg>
+                                    </Tooltip>
+                                  </>
+                                ) : null}
+                              </div>
+
+                              <div className="w-full error-text flex md:hidden text-start">
+                                {businessLegalNameError}
+                              </div>
                             </div>
                             <div className="w-full flex gap-1 justify-start items-center flex-col">
                               <div className="w-full flex justify-start items-start">
@@ -2205,8 +2564,6 @@ function Onboarding() {
                               </div>
                             </>
                           ) : null}
-
-                          {/* Hereeeeeee */}
 
                           {(!checked5 && checked6 && !checked7 && !checked8) ||
                           (!checked5 && !checked6 && !checked7 && checked8) ||
