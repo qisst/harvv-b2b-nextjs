@@ -34,7 +34,7 @@ import {
 } from "@headlessui/react";
 import { useSelector } from "react-redux";
 import { SnackbarProvider, enqueueSnackbar } from "notistack";
-import { ThreeDots } from "react-loader-spinner";
+import { ThreeDots, RotatingLines } from "react-loader-spinner";
 
 function Onboarding() {
   const router = useRouter();
@@ -155,6 +155,39 @@ function Onboarding() {
   const [businessLegalName, setBusinessLegalName] = useState("");
   const [businessLegalNameFilled, setBusinessLegalNameFilled] = useState(false);
   const [businessLegalNameError, setBusinessLegalNameError] = useState("");
+  const [dba, setDba] = useState("");
+  const [dbaFilled, setDbaFilled] = useState(false);
+  const [dbaError, setDbaError] = useState("");
+  const [services, setServices] = useState("");
+  const [getServicesLoader, setGetServicesLoader] = useState(true);
+
+  // get services API
+
+  useEffect(() => {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/services/get-services`;
+    const getServicesData = async () => {
+      try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error(`Error fetching data: ${response.statusText}`);
+        }
+
+        const result = await response.json();
+        if (result.status === true) {
+          setServices(result.services || []);
+          setGetServicesLoader(false);
+        } else {
+          setGetServicesLoader(false);
+        }
+      } catch (error) {
+        // console.log("API RESULT ERROR: ", error.message);
+        setGetServicesLoader(false);
+      }
+    };
+
+    getServicesData();
+  }, []);
 
   // First Name Real-time Validation
   useEffect(() => {
@@ -604,6 +637,41 @@ function Onboarding() {
     //   },
     // });
     setShowOnboarding(true);
+  };
+
+  const handleCheckboxChange = (id, event) => {
+    switch (id) {
+      case 1:
+        if (event.target.checked !== undefined) {
+          setChecked5(event.target.checked);
+        } else {
+          setChecked5((prev) => !prev);
+        }
+        break;
+      case 2:
+        if (event.target.checked !== undefined) {
+          setChecked6(event.target.checked);
+        } else {
+          setChecked6((prev) => !prev);
+        }
+        break;
+      case 3:
+        if (event.target.checked !== undefined) {
+          setChecked7(event.target.checked);
+        } else {
+          setChecked7((prev) => !prev);
+        }
+        break;
+      case 4:
+        if (event.target.checked !== undefined) {
+          setChecked8(event.target.checked);
+        } else {
+          setChecked8((prev) => !prev);
+        }
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -1104,312 +1172,177 @@ function Onboarding() {
                   Which services do you intend to use?
                 </div>
                 <div className="w-full mt-3 flex flex-col justify-center items-center gap-3">
-                  <div className="w-full flex justify-center items-center flex-col md:flex-row gap-3">
-                    <div className="relative w-full flex justify-start items-center flex-col">
-                      <div className="rounded-t-xl label-send-invoices w-full flex justify-start items-center flex-row gap-2 text-black absolute">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 16 16"
-                          fill="none"
-                        >
-                          <path
-                            d="M4.99998 4.4V2.6C4.99998 2.44087 5.06319 2.28826 5.17571 2.17574C5.28823 2.06321 5.44085 2 5.59998 2H12.8C12.9591 2 13.1117 2.06321 13.2242 2.17574C13.3368 2.28826 13.4 2.44087 13.4 2.6V11C13.4 11.1591 13.3368 11.3117 13.2242 11.4243C13.1117 11.5368 12.9591 11.6 12.8 11.6H11V13.4C11 13.7312 10.73 14 10.3958 14H3.20418C3.12505 14.0005 3.04661 13.9853 2.97337 13.9554C2.90012 13.9254 2.83352 13.8813 2.77737 13.8256C2.72123 13.7698 2.67665 13.7035 2.64621 13.6305C2.61576 13.5575 2.60005 13.4791 2.59998 13.4L2.60178 5C2.60178 4.6688 2.87178 4.4 3.20538 4.4H4.99998ZM3.80118 5.6L3.79998 12.8H9.79998V5.6H3.80118ZM6.19998 4.4H11V10.4H12.2V3.2H6.19998V4.4ZM4.99998 7.4H8.59998V8.6H4.99998V7.4ZM4.99998 9.8H8.59998V11H4.99998V9.8Z"
-                            fill="white"
-                          />
-                        </svg>
-                        <div>Send Invoice</div>
-                      </div>
-                      <div
-                        onClick={handleChangeChecked5}
-                        className={` ${
-                          checked5
-                            ? "border-[1px] border-[#ff007a]"
-                            : "border-[1px] border-[#eaecf0]"
-                        } mt-[11%] z-10 cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
-                      >
-                        <div className="w-full flex justify-center items-center flex-row">
-                          <div className="w-full flex justify-start items-center">
-                            <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
-                              A
-                            </div>
-                          </div>
-                          <div className="w-full flex justify-end items-center gap-2">
-                            <div className="os-services-upper-tag-wrapper-seller">
-                              Seller
-                            </div>
-                            <FormControlLabel
-                              control={
-                                <Checkbox
-                                  sx={{
-                                    color: "#E2E4E9",
-                                    "&.Mui-checked": {
-                                      color: "#17B26A",
-                                    },
+                  <div className="w-full flex justify-center items-center flex-wrap gap-3">
+                    {!getServicesLoader &&
+                    services &&
+                    services !== "" &&
+                    services.length > 0 ? (
+                      <>
+                        {services.length > 0 &&
+                          services.map((item) => (
+                            <>
+                              <div className="relative w-full md:w-[252px] flex justify-start items-center flex-col">
+                                {item.type === "merchant" ? (
+                                  <>
+                                    <div className="rounded-t-xl label-send-invoices w-full flex justify-start items-center flex-row gap-2 text-black absolute">
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 16 16"
+                                        fill="none"
+                                      >
+                                        <path
+                                          d="M4.99998 4.4V2.6C4.99998 2.44087 5.06319 2.28826 5.17571 2.17574C5.28823 2.06321 5.44085 2 5.59998 2H12.8C12.9591 2 13.1117 2.06321 13.2242 2.17574C13.3368 2.28826 13.4 2.44087 13.4 2.6V11C13.4 11.1591 13.3368 11.3117 13.2242 11.4243C13.1117 11.5368 12.9591 11.6 12.8 11.6H11V13.4C11 13.7312 10.73 14 10.3958 14H3.20418C3.12505 14.0005 3.04661 13.9853 2.97337 13.9554C2.90012 13.9254 2.83352 13.8813 2.77737 13.8256C2.72123 13.7698 2.67665 13.7035 2.64621 13.6305C2.61576 13.5575 2.60005 13.4791 2.59998 13.4L2.60178 5C2.60178 4.6688 2.87178 4.4 3.20538 4.4H4.99998ZM3.80118 5.6L3.79998 12.8H9.79998V5.6H3.80118ZM6.19998 4.4H11V10.4H12.2V3.2H6.19998V4.4ZM4.99998 7.4H8.59998V8.6H4.99998V7.4ZM4.99998 9.8H8.59998V11H4.99998V9.8Z"
+                                          fill="white"
+                                        />
+                                      </svg>
+                                      <div>Send Invoice</div>
+                                    </div>
+                                  </>
+                                ) : (
+                                  <>
+                                    <div className="rounded-t-xl label-pay-invoices w-full flex justify-start items-center flex-row gap-2 text-black absolute">
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 16 16"
+                                        fill="none"
+                                      >
+                                        <path
+                                          d="M4.99998 4.4V2.6C4.99998 2.44087 5.06319 2.28826 5.17571 2.17574C5.28823 2.06321 5.44085 2 5.59998 2H12.8C12.9591 2 13.1117 2.06321 13.2242 2.17574C13.3368 2.28826 13.4 2.44087 13.4 2.6V11C13.4 11.1591 13.3368 11.3117 13.2242 11.4243C13.1117 11.5368 12.9591 11.6 12.8 11.6H11V13.4C11 13.7312 10.73 14 10.3958 14H3.20418C3.12505 14.0005 3.04661 13.9853 2.97337 13.9554C2.90012 13.9254 2.83352 13.8813 2.77737 13.8256C2.72123 13.7698 2.67665 13.7035 2.64621 13.6305C2.61576 13.5575 2.60005 13.4791 2.59998 13.4L2.60178 5C2.60178 4.6688 2.87178 4.4 3.20538 4.4H4.99998ZM3.80118 5.6L3.79998 12.8H9.79998V5.6H3.80118ZM6.19998 4.4H11V10.4H12.2V3.2H6.19998V4.4ZM4.99998 7.4H8.59998V8.6H4.99998V7.4ZM4.99998 9.8H8.59998V11H4.99998V9.8Z"
+                                          fill="white"
+                                        />
+                                      </svg>
+                                      <div>Pay Invoice</div>
+                                    </div>
+                                  </>
+                                )}
+                                {/* Hereeeeee */}
+                                <div
+                                  onClick={(e) => {
+                                    handleCheckboxChange(item.id, e);
                                   }}
-                                  checked={checked5}
-                                  onChange={handleChangeChecked5}
-                                  inputProps={{ "aria-label": "controlled" }}
-                                />
-                              }
-                              sx={{
-                                marginRight: "-10%",
-                              }}
-                            />
-                          </div>
-                        </div>
+                                  className={` ${
+                                    (item.id === 1 && checked5) ||
+                                    (item.id === 2 && checked6) ||
+                                    (item.id === 3 && checked7) ||
+                                    (item.id === 4 && checked8)
+                                      ? "border-[1px] border-[#ff007a]"
+                                      : "border-[1px] border-[#eaecf0]"
+                                  } mt-[11%] z-10 cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
+                                >
+                                  <div className="w-full flex justify-center items-center flex-row">
+                                    <div className="w-full flex justify-start items-center">
+                                      <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
+                                        {item.name.toUpperCase()}
+                                      </div>
+                                    </div>
+                                    <div className="w-full flex justify-end items-center gap-2">
+                                      {item.type === "merchant" ? (
+                                        <>
+                                          <div className="os-services-upper-tag-wrapper-seller">
+                                            Seller
+                                          </div>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <div className="os-services-upper-tag-wrapper-buyer">
+                                            Buyer
+                                          </div>
+                                        </>
+                                      )}
+                                      <FormControlLabel
+                                        control={
+                                          <Checkbox
+                                            sx={{
+                                              color: "#E2E4E9",
+                                              "&.Mui-checked": {
+                                                color: "#17B26A",
+                                              },
+                                            }}
+                                            checked={
+                                              item.id === 1
+                                                ? checked5
+                                                : item.id === 2
+                                                ? checked6
+                                                : item.id === 3
+                                                ? checked7
+                                                : item.id === 4
+                                                ? checked8
+                                                : false
+                                            }
+                                            onChange={(e) => {
+                                              handleCheckboxChange(item.id, e);
+                                            }}
+                                            inputProps={{
+                                              "aria-label": "controlled",
+                                            }}
+                                          />
+                                        }
+                                        sx={{
+                                          marginRight: "-10%",
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
 
-                        <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
-                          Offer Card & ACH payment options on your invoices
-                        </div>
+                                  <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
+                                    {item.description}
+                                  </div>
 
-                        <div className="w-full mt-3 flex justify-center md:justify-start items-center">
-                          <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <circle cx="8" cy="8" r="3" fill="#38C793" />
-                            </svg>
-                            <div>Free Package</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="relative w-full flex justify-start items-center flex-col">
-                      <div className="rounded-t-xl label-send-invoices w-full flex justify-start items-center flex-row gap-2 text-black absolute">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 16 16"
-                          fill="none"
-                        >
-                          <path
-                            d="M4.99998 4.4V2.6C4.99998 2.44087 5.06319 2.28826 5.17571 2.17574C5.28823 2.06321 5.44085 2 5.59998 2H12.8C12.9591 2 13.1117 2.06321 13.2242 2.17574C13.3368 2.28826 13.4 2.44087 13.4 2.6V11C13.4 11.1591 13.3368 11.3117 13.2242 11.4243C13.1117 11.5368 12.9591 11.6 12.8 11.6H11V13.4C11 13.7312 10.73 14 10.3958 14H3.20418C3.12505 14.0005 3.04661 13.9853 2.97337 13.9554C2.90012 13.9254 2.83352 13.8813 2.77737 13.8256C2.72123 13.7698 2.67665 13.7035 2.64621 13.6305C2.61576 13.5575 2.60005 13.4791 2.59998 13.4L2.60178 5C2.60178 4.6688 2.87178 4.4 3.20538 4.4H4.99998ZM3.80118 5.6L3.79998 12.8H9.79998V5.6H3.80118ZM6.19998 4.4H11V10.4H12.2V3.2H6.19998V4.4ZM4.99998 7.4H8.59998V8.6H4.99998V7.4ZM4.99998 9.8H8.59998V11H4.99998V9.8Z"
-                            fill="white"
-                          />
-                        </svg>
-                        <div>Send Invoice</div>
-                      </div>
-                      <div
-                        onClick={handleChangeChecked6}
-                        className={` ${
-                          checked6
-                            ? "border-[1px] border-[#ff007a]"
-                            : "border-[1px] border-[#eaecf0]"
-                        } mt-[11%] z-10 cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
-                      >
-                        <div className="w-full flex justify-center items-center flex-row">
-                          <div className="w-full flex justify-start items-center">
-                            <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
-                              B
-                            </div>
-                          </div>
-                          <div className="w-full flex justify-end items-center gap-2">
-                            <div className="os-services-upper-tag-wrapper-seller">
-                              Seller
-                            </div>
-                            <FormControlLabel
-                              control={
-                                <Checkbox
-                                  sx={{
-                                    color: "#E2E4E9",
-                                    "&.Mui-checked": {
-                                      color: "#17B26A",
-                                    },
-                                  }}
-                                  checked={checked6}
-                                  onChange={handleChangeChecked6}
-                                  inputProps={{ "aria-label": "controlled" }}
-                                />
-                              }
-                              sx={{
-                                marginRight: "-10%",
-                              }}
-                            />
-                          </div>
-                        </div>
-
-                        <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
-                          Offer Net Terms (30, 60, 90) on your invoices for
-                          approved buyers
-                        </div>
-
-                        <div className="w-full mt-3 flex justify-center md:justify-start items-center">
-                          <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <circle cx="8" cy="8" r="3" fill="#38C793" />
-                            </svg>
-                            <div>Subscription required</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="w-full flex justify-center items-center flex-col md:flex-row gap-3">
-                    <div className="relative w-full flex justify-start items-center flex-col">
-                      <div className="rounded-t-xl label-pay-invoices w-full flex justify-start items-center flex-row gap-2 text-black absolute">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 16 16"
-                          fill="none"
-                        >
-                          <path
-                            d="M4.99998 4.4V2.6C4.99998 2.44087 5.06319 2.28826 5.17571 2.17574C5.28823 2.06321 5.44085 2 5.59998 2H12.8C12.9591 2 13.1117 2.06321 13.2242 2.17574C13.3368 2.28826 13.4 2.44087 13.4 2.6V11C13.4 11.1591 13.3368 11.3117 13.2242 11.4243C13.1117 11.5368 12.9591 11.6 12.8 11.6H11V13.4C11 13.7312 10.73 14 10.3958 14H3.20418C3.12505 14.0005 3.04661 13.9853 2.97337 13.9554C2.90012 13.9254 2.83352 13.8813 2.77737 13.8256C2.72123 13.7698 2.67665 13.7035 2.64621 13.6305C2.61576 13.5575 2.60005 13.4791 2.59998 13.4L2.60178 5C2.60178 4.6688 2.87178 4.4 3.20538 4.4H4.99998ZM3.80118 5.6L3.79998 12.8H9.79998V5.6H3.80118ZM6.19998 4.4H11V10.4H12.2V3.2H6.19998V4.4ZM4.99998 7.4H8.59998V8.6H4.99998V7.4ZM4.99998 9.8H8.59998V11H4.99998V9.8Z"
-                            fill="white"
-                          />
-                        </svg>
-                        <div>Pay Invoice</div>
-                      </div>
-                      <div
-                        onClick={handleChangeChecked7}
-                        className={` ${
-                          checked7
-                            ? "border-[1px] border-[#ff007a]"
-                            : "border-[1px] border-[#eaecf0]"
-                        } mt-[11%] z-10 cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
-                      >
-                        <div className="w-full flex justify-center items-center flex-row">
-                          <div className="w-full flex justify-start items-center">
-                            <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
-                              C
-                            </div>
-                          </div>
-                          <div className="w-full flex justify-end items-center gap-2">
-                            <div className="os-services-upper-tag-wrapper-buyer">
-                              Buyer
-                            </div>
-                            <FormControlLabel
-                              control={
-                                <Checkbox
-                                  sx={{
-                                    color: "#E2E4E9",
-                                    "&.Mui-checked": {
-                                      color: "#17B26A",
-                                    },
-                                  }}
-                                  checked={checked7}
-                                  onChange={handleChangeChecked7}
-                                  inputProps={{ "aria-label": "controlled" }}
-                                />
-                              }
-                              sx={{
-                                marginRight: "-10%",
-                              }}
-                            />
-                          </div>
-                        </div>
-
-                        <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
-                          Pay invoices using Card & ACH
-                        </div>
-
-                        <div className="w-full mt-3 flex justify-center md:justify-start items-center">
-                          <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <circle cx="8" cy="8" r="3" fill="#38C793" />
-                            </svg>
-                            <div>Free Package</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="relative w-full flex justify-start items-center flex-col">
-                      <div className="rounded-t-xl label-pay-invoices w-full flex justify-start items-center flex-row gap-2 text-black absolute">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 16 16"
-                          fill="none"
-                        >
-                          <path
-                            d="M4.99998 4.4V2.6C4.99998 2.44087 5.06319 2.28826 5.17571 2.17574C5.28823 2.06321 5.44085 2 5.59998 2H12.8C12.9591 2 13.1117 2.06321 13.2242 2.17574C13.3368 2.28826 13.4 2.44087 13.4 2.6V11C13.4 11.1591 13.3368 11.3117 13.2242 11.4243C13.1117 11.5368 12.9591 11.6 12.8 11.6H11V13.4C11 13.7312 10.73 14 10.3958 14H3.20418C3.12505 14.0005 3.04661 13.9853 2.97337 13.9554C2.90012 13.9254 2.83352 13.8813 2.77737 13.8256C2.72123 13.7698 2.67665 13.7035 2.64621 13.6305C2.61576 13.5575 2.60005 13.4791 2.59998 13.4L2.60178 5C2.60178 4.6688 2.87178 4.4 3.20538 4.4H4.99998ZM3.80118 5.6L3.79998 12.8H9.79998V5.6H3.80118ZM6.19998 4.4H11V10.4H12.2V3.2H6.19998V4.4ZM4.99998 7.4H8.59998V8.6H4.99998V7.4ZM4.99998 9.8H8.59998V11H4.99998V9.8Z"
-                            fill="white"
-                          />
-                        </svg>
-                        <div>Pay Invoice</div>
-                      </div>
-                      <div
-                        onClick={handleChangeChecked8}
-                        className={` ${
-                          checked8
-                            ? "border-[1px] border-[#ff007a]"
-                            : "border-[1px] border-[#eaecf0]"
-                        } mt-[11%] z-10 cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
-                      >
-                        <div className="w-full flex justify-center items-center flex-row">
-                          <div className="w-full flex justify-start items-center">
-                            <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
-                              D
-                            </div>
-                          </div>
-                          <div className="w-full flex justify-end items-center gap-2">
-                            <div className="os-services-upper-tag-wrapper-buyer">
-                              Buyer
-                            </div>
-                            <FormControlLabel
-                              control={
-                                <Checkbox
-                                  sx={{
-                                    color: "#E2E4E9",
-                                    "&.Mui-checked": {
-                                      color: "#17B26A",
-                                    },
-                                  }}
-                                  checked={checked8}
-                                  onChange={handleChangeChecked8}
-                                  inputProps={{ "aria-label": "controlled" }}
-                                />
-                              }
-                              sx={{
-                                marginRight: "-10%",
-                              }}
-                            />
-                          </div>
-                        </div>
-
-                        <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
-                          Pay invoices using Net Terms to approved sellers
-                        </div>
-
-                        <div className="w-full mt-3 flex justify-center md:justify-start items-center">
-                          <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <circle cx="8" cy="8" r="3" fill="#38C793" />
-                            </svg>
-                            <div>Free Package</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                                  <div className="w-full mt-3 flex justify-center md:justify-start items-center">
+                                    <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 16 16"
+                                        fill="none"
+                                      >
+                                        <circle
+                                          cx="8"
+                                          cy="8"
+                                          r="3"
+                                          fill="#38C793"
+                                        />
+                                      </svg>
+                                      {item.price === "0.00" ? (
+                                        <>
+                                          <div>Free Package</div>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <div>Subscription required</div>
+                                        </>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          ))}
+                      </>
+                    ) : getServicesLoader ? (
+                      <>
+                        <RotatingLines
+                          visible={true}
+                          height="30"
+                          width="30"
+                          strokeColor="#ff007a"
+                          strokeWidth="5"
+                          animationDuration="0.75"
+                          ariaLabel="rotating-lines-loading"
+                          wrapperStyle={{}}
+                          wrapperClass=""
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <div>No Services Found!</div>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>

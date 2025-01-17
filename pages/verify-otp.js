@@ -14,17 +14,58 @@ function VerifyOTP() {
   const [countdown, setCountdown] = useState(30);
   const [showResendButton, setShowResendButton] = useState(false);
   const email = useSelector((state) => state.user.email);
+  const uuid = useSelector((state) => state.user.uuid);
+  const otpEmailSendTime = "1737151856";
+  // const otpEmailSendTime = useSelector((state) => state.user.resendOTPTimer);
   const [disableButton, setDisableButton] = useState(true);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (countdown > 0) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-      return () => clearTimeout(timer); // Cleanup on unmount
-    } else {
-      setShowResendButton(true);
+    if (!otpEmailSendTime) return;
+
+    // Ensure the backend time is in a compatible format
+    const emailSendTime = new Date(otpEmailSendTime * 1000);
+    const currentTime = new Date();
+
+    if (isNaN(emailSendTime)) {
+      console.error("Invalid otpResendTime:", otpEmailSendTime);
+      return;
     }
-  }, [countdown]);
+
+    // Calculate elapsed time
+    const elapsedSeconds = Math.floor((currentTime - emailSendTime) / 1000);
+
+    // Calculate remaining time from 30 seconds
+    const updatedRemainingTime = Math.max(30 - elapsedSeconds, 0);
+
+    setCountdown(updatedRemainingTime);
+
+    // Set interval to update countdown
+    const timer = setInterval(() => {
+      const now = new Date();
+      const elapsed = Math.floor((now - emailSendTime) / 1000);
+      const remaining = Math.max(30 - elapsed, 0);
+
+      setCountdown(remaining);
+
+      if (remaining <= 0) {
+        clearInterval(timer);
+        setShowResendButton(true);
+      }
+    }, 1000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(timer);
+  }, [otpEmailSendTime]);
+
+  // useEffect(() => {
+  //   if (countdown > 0) {
+  //     const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+  //     return () => clearTimeout(timer); // Cleanup on unmount
+  //   } else {
+  //     setShowResendButton(true);
+  //   }
+  // }, [countdown]);
 
   const handleResend = () => {
     enqueueSnackbar("OTP Resent Successfully!", {

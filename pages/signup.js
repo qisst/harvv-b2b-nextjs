@@ -8,7 +8,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import Tooltip from "@mui/material/Tooltip";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
-import { setEmail } from "../redux/userSlice";
+import { setEmail, setUserID, setResendOTPTimer } from "../redux/userSlice";
 import { SnackbarProvider, enqueueSnackbar } from "notistack";
 import { ThreeDots } from "react-loader-spinner";
 
@@ -175,9 +175,74 @@ function SignUp() {
       });
       setLoading(false);
     } else {
-      setLoading(false);
-      dispatch(setEmail(email));
-      router.push("verify-otp");
+      try {
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        const raw = JSON.stringify({
+          email: email,
+          password: password,
+        });
+
+        const requestOptions = {
+          method: "POST",
+          headers: myHeaders,
+          body: raw,
+          redirect: "follow",
+        };
+
+        fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/signup/create-account/email-password`,
+          requestOptions
+        )
+          .then((response) => response.json())
+          .then((result) => {
+            if (result.status === true) {
+              dispatch(setUserID(result.uuid));
+              dispatch(setEmail(email));
+              dispatch(setResendOTPTimer(result.data.email_send_at));
+              setLoading(false);
+              enqueueSnackbar("OTP Sent Successfully!", {
+                dense: true,
+                autoHideDuration: 5000,
+                variant: "success",
+                preventDuplicate: true,
+                anchorOrigin: {
+                  horizontal: "center",
+                  vertical: "bottom",
+                },
+              });
+              // setTimeout(() => {
+              router.push("verify-otp");
+              // }, 2000);
+            }
+          })
+          .catch((error) => {
+            setLoading(false);
+            enqueueSnackbar(error.message, {
+              dense: true,
+              autoHideDuration: 5000,
+              variant: "error",
+              preventDuplicate: true,
+              anchorOrigin: {
+                horizontal: "center",
+                vertical: "bottom",
+              },
+            });
+          });
+      } catch (error) {
+        setLoading(false);
+        enqueueSnackbar(error.message, {
+          dense: true,
+          autoHideDuration: 5000,
+          variant: "error",
+          preventDuplicate: true,
+          anchorOrigin: {
+            horizontal: "center",
+            vertical: "bottom",
+          },
+        });
+      }
     }
   };
 
