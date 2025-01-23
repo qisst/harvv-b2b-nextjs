@@ -118,6 +118,9 @@ function Onboarding() {
   const [checked6, setChecked6] = useState(false);
   const [checked7, setChecked7] = useState(false);
   const [checked8, setChecked8] = useState(false);
+  const selectedCheckBoxCount = [checked5, checked6, checked7, checked8].filter(
+    Boolean
+  ).length;
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [ownerTab, setOwnerTab] = useState("yes");
   const [open2, setOpen2] = useState(false);
@@ -160,6 +163,291 @@ function Onboarding() {
   const [dbaError, setDbaError] = useState("");
   const [services, setServices] = useState("");
   const [getServicesLoader, setGetServicesLoader] = useState(true);
+  const uuid = useSelector((state) => state.user.uuid);
+  const [onboardingData, setOnboardingData] = useState("");
+  const [selectedFileBankStatement, setSelectedFileBankStatement] =
+    useState(null);
+  const [selectedFileBalanceSheet, setSelectedFileBalanceSheet] =
+    useState(null);
+  const [selectedFileProfitLossStatement, setSelectedFileProfitLossStatement] =
+    useState(null);
+
+  // handle select and upload Bank Statement - File validation and selection
+
+  const handleFileChangeBankStatement = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const validFormats = [
+        "image/jpeg",
+        "image/png",
+        "image/jpg",
+        "application/pdf",
+      ];
+      const maxSize = 50 * 1024 * 1024; // 50 MB
+
+      if (!validFormats.includes(file.type)) {
+        enqueueSnackbar(
+          "Invalid file format. Only PDF, JPEG, and PNG are allowed.",
+          {
+            dense: true,
+            autoHideDuration: 5000,
+            variant: "error",
+            preventDuplicate: true,
+            anchorOrigin: {
+              horizontal: "center",
+              vertical: "bottom",
+            },
+          }
+        );
+        setSelectedFileBankStatement(null);
+        return;
+      }
+
+      if (file.size > maxSize) {
+        enqueueSnackbar("File size exceeds 50 MB.", {
+          dense: true,
+          autoHideDuration: 5000,
+          variant: "error",
+          preventDuplicate: true,
+          anchorOrigin: {
+            horizontal: "center",
+            vertical: "bottom",
+          },
+        });
+        setSelectedFileBankStatement(null);
+        return;
+      }
+      console.log("Bank Statement File: ", file);
+      setSelectedFileBankStatement(file);
+      enqueueSnackbar("File uploaded successfully!", {
+        dense: true,
+        autoHideDuration: 5000,
+        variant: "success",
+        preventDuplicate: true,
+        anchorOrigin: {
+          horizontal: "center",
+          vertical: "bottom",
+        },
+      });
+
+      // Upload File to Backend
+      // const formData = new FormData();
+      // formData.append('file', selectedFile);
+
+      // try {
+      //   const response = await fetch('http://localhost:3000', {
+      //     method: 'POST',
+      //     body: formData,
+      //     headers: {
+      //     },
+      //   });
+
+      //   if (!response.ok) {
+      //     throw new Error(`HTTP error! status: ${response.status}`);
+      //   }
+
+      //   const data = await response.json();
+      //   console.log('Upload success:', data);
+      //   setSelectedFileBankStatement(null);
+      // } catch (error) {
+      //   console.error('Upload failed:', error);
+      //   setSelectedFileBankStatement(null)
+      // }
+    }
+  };
+
+  // handle select and upload Bank Statement - File validation and selection
+
+  const handleFileChangeBalanceSheet = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const validFormats = [
+        "image/jpeg",
+        "image/png",
+        "image/jpg",
+        "application/pdf",
+      ];
+      const maxSize = 50 * 1024 * 1024; // 50 MB
+
+      if (!validFormats.includes(file.type)) {
+        enqueueSnackbar(
+          "Invalid file format. Only PDF, JPEG, and PNG are allowed.",
+          {
+            dense: true,
+            autoHideDuration: 5000,
+            variant: "error",
+            preventDuplicate: true,
+            anchorOrigin: {
+              horizontal: "center",
+              vertical: "bottom",
+            },
+          }
+        );
+        setSelectedFileBalanceSheet(null);
+        return;
+      }
+
+      if (file.size > maxSize) {
+        enqueueSnackbar("File size exceeds 50 MB.", {
+          dense: true,
+          autoHideDuration: 5000,
+          variant: "error",
+          preventDuplicate: true,
+          anchorOrigin: {
+            horizontal: "center",
+            vertical: "bottom",
+          },
+        });
+        setSelectedFileBalanceSheet(null);
+        return;
+      }
+      console.log("Balance Sheet File: ", file);
+      setSelectedFileBalanceSheet(file);
+      enqueueSnackbar("File uploaded successfully!", {
+        dense: true,
+        autoHideDuration: 5000,
+        variant: "success",
+        preventDuplicate: true,
+        anchorOrigin: {
+          horizontal: "center",
+          vertical: "bottom",
+        },
+      });
+
+      // Upload File to Backend
+      // const formData = new FormData();
+      // formData.append('file', selectedFile);
+
+      // try {
+      //   const response = await fetch('http://localhost:3000', {
+      //     method: 'POST',
+      //     body: formData,
+      //     headers: {
+      //     },
+      //   });
+
+      //   if (!response.ok) {
+      //     throw new Error(`HTTP error! status: ${response.status}`);
+      //   }
+
+      //   const data = await response.json();
+      //   console.log('Upload success:', data);
+      //   setSelectedFileBankStatement(null);
+      // } catch (error) {
+      //   console.error('Upload failed:', error);
+      //   setSelectedFileBankStatement(null)
+      // }
+    }
+  };
+
+  // handle select and upload Bank Statement - File validation and selection
+
+  const handleFileChangeProfitLossStatement = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const validFormats = [
+        "image/jpeg",
+        "image/png",
+        "image/jpg",
+        "application/pdf",
+      ];
+      const maxSize = 50 * 1024 * 1024; // 50 MB
+
+      if (!validFormats.includes(file.type)) {
+        enqueueSnackbar(
+          "Invalid file format. Only PDF, JPEG, and PNG are allowed.",
+          {
+            dense: true,
+            autoHideDuration: 5000,
+            variant: "error",
+            preventDuplicate: true,
+            anchorOrigin: {
+              horizontal: "center",
+              vertical: "bottom",
+            },
+          }
+        );
+        setSelectedFileProfitLossStatement(null);
+        return;
+      }
+
+      if (file.size > maxSize) {
+        enqueueSnackbar("File size exceeds 50 MB.", {
+          dense: true,
+          autoHideDuration: 5000,
+          variant: "error",
+          preventDuplicate: true,
+          anchorOrigin: {
+            horizontal: "center",
+            vertical: "bottom",
+          },
+        });
+        setSelectedFileProfitLossStatement(null);
+        return;
+      }
+      console.log("Profit Loss Statement File: ", file);
+      setSelectedFileProfitLossStatement(file);
+      enqueueSnackbar("File uploaded successfully!", {
+        dense: true,
+        autoHideDuration: 5000,
+        variant: "success",
+        preventDuplicate: true,
+        anchorOrigin: {
+          horizontal: "center",
+          vertical: "bottom",
+        },
+      });
+
+      // Upload File to Backend
+      // const formData = new FormData();
+      // formData.append('file', selectedFile);
+
+      // try {
+      //   const response = await fetch('http://localhost:3000', {
+      //     method: 'POST',
+      //     body: formData,
+      //     headers: {
+      //     },
+      //   });
+
+      //   if (!response.ok) {
+      //     throw new Error(`HTTP error! status: ${response.status}`);
+      //   }
+
+      //   const data = await response.json();
+      //   console.log('Upload success:', data);
+      //   setSelectedFileBankStatement(null);
+      // } catch (error) {
+      //   console.error('Upload failed:', error);
+      //   setSelectedFileBankStatement(null)
+      // }
+    }
+  };
+
+  // get onboarding details API
+
+  useEffect(() => {
+    try {
+      const requestOptions = {
+        method: "GET",
+        redirect: "follow",
+      };
+
+      fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/signup/create-account/get-onboarding/${uuid}`,
+        requestOptions
+      )
+        .then((response) => response.json())
+        .then((result) => {
+          if (result.status === true) {
+            setOnboardingData(result);
+          }
+        })
+        .catch((error) => console.error(error));
+    } catch (error) {
+      console.error(error);
+    }
+  }, [uuid]);
 
   // get services API
 
@@ -674,6 +962,53 @@ function Onboarding() {
     }
   };
 
+  const handleSubmitForm = () => {
+    const data = {
+      contact_information: {
+        first_name: "hello",
+        last_name: "hello",
+        phone_number: "hello",
+        business_email: "hello",
+      },
+      business_information: {
+        business_legal_name: "hello",
+        business_dba: "hello",
+        tax_id: "hello",
+        organization_type: "hello",
+        mcc: "hello",
+        website: "hello",
+        business_registration_date: "hello",
+        business_address: "hello",
+        country: "hello",
+        city: "hello",
+        state: "hello",
+        zip: "hello",
+        average_payment_amount: "hello",
+        maximum_payment_amount: "hello",
+        total_monthly_payments_amount: "hello",
+        monthly_spend: "hello",
+        annual_revenue: "hello",
+        owners: owners,
+      },
+      bank_account: {
+        account_number: "hello",
+        routing_number: "hello",
+        is_plaid_connected: "false",
+      },
+      required_document: {
+        method_selected: "upload",
+        bank_statement_uploaded: "false",
+        is_plaid_connected: "false",
+        balance_sheet_uploaded: "false",
+        profit_loss_statement_uploaded: "false",
+        is_quickBooks_connected: "false",
+      },
+      services_selected: ["Service A", "Service B"],
+    };
+
+    console.log(data);
+  };
+
   return (
     <>
       <SnackbarProvider />
@@ -714,239 +1049,82 @@ function Onboarding() {
                     Services Selection
                   </div>
                   <div className="w-full left-steps-services-selected text-end">
-                    2 out of 4 selected
+                    {selectedCheckBoxCount} out of {services.length} selected
                   </div>
                 </div>
 
                 <div className="w-full gap-4 flex mt-4 justify-center items-start flex-col">
-                  <div className="w-full gap-3 flex justify-center items-start flex-row">
-                    <div className="flex mt-[0.5px] justify-center items-center flex-col">
-                      <div>
-                        {checked5 ? (
+                  {!getServicesLoader &&
+                  services &&
+                  services !== "" &&
+                  services.length > 0 ? (
+                    <>
+                      {services.length > 0 &&
+                        services.map((item, index) => (
                           <>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <path
-                                d="M0.75 8C0.75 3.99594 3.99594 0.75 8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 12.0041 12.0041 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8Z"
-                                fill="#17B26A"
-                              />
-                              <path
-                                d="M0.75 8C0.75 3.99594 3.99594 0.75 8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 12.0041 12.0041 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8Z"
-                                stroke="#17B26A"
-                                stroke-width="1.5"
-                              />
-                              <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M11.3975 4.9271L6.62421 9.53377L5.35755 8.18043C5.12421 7.96043 4.75755 7.9471 4.49088 8.13377C4.23088 8.3271 4.15755 8.6671 4.31755 8.94043L5.81755 11.3804C5.96421 11.6071 6.21755 11.7471 6.50421 11.7471C6.77755 11.7471 7.03755 11.6071 7.18421 11.3804C7.42421 11.0671 12.0042 5.6071 12.0042 5.6071C12.6042 4.99376 11.8775 4.45377 11.3975 4.92043V4.9271Z"
-                                fill="white"
-                              />
-                            </svg>
+                            <div className="w-full gap-3 flex justify-center items-start flex-row">
+                              <div className="flex mt-[0.5px] justify-center items-center flex-col">
+                                <div>
+                                  {(index === 0 && checked5) ||
+                                  (index === 1 && checked6) ||
+                                  (index === 2 && checked7) ||
+                                  (index === 3 && checked8) ? (
+                                    <>
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="20"
+                                        height="20"
+                                        viewBox="0 0 16 16"
+                                        fill="none"
+                                      >
+                                        <path
+                                          d="M0.75 8C0.75 3.99594 3.99594 0.75 8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 12.0041 12.0041 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8Z"
+                                          fill="#17B26A"
+                                        />
+                                        <path
+                                          d="M0.75 8C0.75 3.99594 3.99594 0.75 8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 12.0041 12.0041 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8Z"
+                                          stroke="#17B26A"
+                                          stroke-width="1.5"
+                                        />
+                                        <path
+                                          fill-rule="evenodd"
+                                          clip-rule="evenodd"
+                                          d="M11.3975 4.9271L6.62421 9.53377L5.35755 8.18043C5.12421 7.96043 4.75755 7.9471 4.49088 8.13377C4.23088 8.3271 4.15755 8.6671 4.31755 8.94043L5.81755 11.3804C5.96421 11.6071 6.21755 11.7471 6.50421 11.7471C6.77755 11.7471 7.03755 11.6071 7.18421 11.3804C7.42421 11.0671 12.0042 5.6071 12.0042 5.6071C12.6042 4.99376 11.8775 4.45377 11.3975 4.92043V4.9271Z"
+                                          fill="white"
+                                        />
+                                      </svg>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="20"
+                                        height="20"
+                                        viewBox="0 0 16 16"
+                                        fill="none"
+                                      >
+                                        <path
+                                          d="M8 16C3.5816 16 0 12.4184 0 8C0 3.5816 3.5816 0 8 0C12.4184 0 16 3.5816 16 8C16 12.4184 12.4184 16 8 16ZM4 7.2V8.8H12V7.2H4Z"
+                                          fill="#D0D5DD"
+                                        />
+                                      </svg>
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="w-full flex justify-center items-start flex-col">
+                                <div className="w-full text-start steps-heading">
+                                  Service {item.name}
+                                </div>
+                                <div className="w-full text-start steps-sub-heading">
+                                  {item.description}
+                                </div>
+                              </div>
+                            </div>
                           </>
-                        ) : (
-                          <>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <path
-                                d="M8 16C3.5816 16 0 12.4184 0 8C0 3.5816 3.5816 0 8 0C12.4184 0 16 3.5816 16 8C16 12.4184 12.4184 16 8 16ZM4 7.2V8.8H12V7.2H4Z"
-                                fill="#D0D5DD"
-                              />
-                            </svg>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    <div className="w-full flex justify-center items-start flex-col">
-                      <div className="w-full text-start steps-heading">
-                        Service A
-                      </div>
-                      <div className="w-full text-start steps-sub-heading">
-                        Offer Card & ACH payment options on your invoices
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="w-full gap-3 flex justify-center items-start flex-row">
-                    <div className="flex mt-[0.5px] justify-center items-center flex-col">
-                      <div>
-                        {checked6 ? (
-                          <>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <path
-                                d="M0.75 8C0.75 3.99594 3.99594 0.75 8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 12.0041 12.0041 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8Z"
-                                fill="#17B26A"
-                              />
-                              <path
-                                d="M0.75 8C0.75 3.99594 3.99594 0.75 8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 12.0041 12.0041 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8Z"
-                                stroke="#17B26A"
-                                stroke-width="1.5"
-                              />
-                              <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M11.3975 4.9271L6.62421 9.53377L5.35755 8.18043C5.12421 7.96043 4.75755 7.9471 4.49088 8.13377C4.23088 8.3271 4.15755 8.6671 4.31755 8.94043L5.81755 11.3804C5.96421 11.6071 6.21755 11.7471 6.50421 11.7471C6.77755 11.7471 7.03755 11.6071 7.18421 11.3804C7.42421 11.0671 12.0042 5.6071 12.0042 5.6071C12.6042 4.99376 11.8775 4.45377 11.3975 4.92043V4.9271Z"
-                                fill="white"
-                              />
-                            </svg>
-                          </>
-                        ) : (
-                          <>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <path
-                                d="M8 16C3.5816 16 0 12.4184 0 8C0 3.5816 3.5816 0 8 0C12.4184 0 16 3.5816 16 8C16 12.4184 12.4184 16 8 16ZM4 7.2V8.8H12V7.2H4Z"
-                                fill="#D0D5DD"
-                              />
-                            </svg>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    <div className="w-full flex justify-center items-center flex-col">
-                      <div className="w-full text-start steps-heading">
-                        Service B
-                      </div>
-                      <div className="w-full text-start steps-sub-heading">
-                        Offer Net Terms (30, 60, 90) on your invoices for
-                        approved buyers
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="w-full gap-3 flex justify-center items-start flex-row">
-                    <div className="flex mt-[0.5px] justify-center items-center flex-col">
-                      <div>
-                        {checked7 ? (
-                          <>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <path
-                                d="M0.75 8C0.75 3.99594 3.99594 0.75 8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 12.0041 12.0041 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8Z"
-                                fill="#17B26A"
-                              />
-                              <path
-                                d="M0.75 8C0.75 3.99594 3.99594 0.75 8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 12.0041 12.0041 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8Z"
-                                stroke="#17B26A"
-                                stroke-width="1.5"
-                              />
-                              <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M11.3975 4.9271L6.62421 9.53377L5.35755 8.18043C5.12421 7.96043 4.75755 7.9471 4.49088 8.13377C4.23088 8.3271 4.15755 8.6671 4.31755 8.94043L5.81755 11.3804C5.96421 11.6071 6.21755 11.7471 6.50421 11.7471C6.77755 11.7471 7.03755 11.6071 7.18421 11.3804C7.42421 11.0671 12.0042 5.6071 12.0042 5.6071C12.6042 4.99376 11.8775 4.45377 11.3975 4.92043V4.9271Z"
-                                fill="white"
-                              />
-                            </svg>
-                          </>
-                        ) : (
-                          <>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <path
-                                d="M8 16C3.5816 16 0 12.4184 0 8C0 3.5816 3.5816 0 8 0C12.4184 0 16 3.5816 16 8C16 12.4184 12.4184 16 8 16ZM4 7.2V8.8H12V7.2H4Z"
-                                fill="#D0D5DD"
-                              />
-                            </svg>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    <div className="w-full flex justify-center items-center flex-col">
-                      <div className="w-full text-start steps-heading">
-                        Service C
-                      </div>
-                      <div className="w-full text-start steps-sub-heading">
-                        Pay invoices using Card & ACH
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="w-full gap-3 flex justify-center items-start flex-row">
-                    <div className="flex mt-[0.5px] justify-center items-center flex-col">
-                      <div>
-                        {checked8 ? (
-                          <>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <path
-                                d="M0.75 8C0.75 3.99594 3.99594 0.75 8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 12.0041 12.0041 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8Z"
-                                fill="#17B26A"
-                              />
-                              <path
-                                d="M0.75 8C0.75 3.99594 3.99594 0.75 8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 12.0041 12.0041 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8Z"
-                                stroke="#17B26A"
-                                stroke-width="1.5"
-                              />
-                              <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M11.3975 4.9271L6.62421 9.53377L5.35755 8.18043C5.12421 7.96043 4.75755 7.9471 4.49088 8.13377C4.23088 8.3271 4.15755 8.6671 4.31755 8.94043L5.81755 11.3804C5.96421 11.6071 6.21755 11.7471 6.50421 11.7471C6.77755 11.7471 7.03755 11.6071 7.18421 11.3804C7.42421 11.0671 12.0042 5.6071 12.0042 5.6071C12.6042 4.99376 11.8775 4.45377 11.3975 4.92043V4.9271Z"
-                                fill="white"
-                              />
-                            </svg>
-                          </>
-                        ) : (
-                          <>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <path
-                                d="M8 16C3.5816 16 0 12.4184 0 8C0 3.5816 3.5816 0 8 0C12.4184 0 16 3.5816 16 8C16 12.4184 12.4184 16 8 16ZM4 7.2V8.8H12V7.2H4Z"
-                                fill="#D0D5DD"
-                              />
-                            </svg>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    <div className="w-full flex justify-center items-center flex-col">
-                      <div className="w-full text-start steps-heading">
-                        Service D
-                      </div>
-                      <div className="w-full text-start steps-sub-heading">
-                        Pay invoices using Net Terms to approved sellers
-                      </div>
-                    </div>
-                  </div>
+                        ))}
+                    </>
+                  ) : null}
                 </div>
 
                 <button
@@ -3448,7 +3626,7 @@ function Onboarding() {
                               </div>
                               {activeTab === "upload" && (
                                 <>
-                                  <div className="w-full p-3 rounded-2xl border-[1px] border-[#EAECF0] md:p-6 h-full flex justify-center items-center mt-4">
+                                  <div className="w-full p-3 rounded-2xl border-[1px] border-[#EAECF0] md:p-6 h-full flex justify-start items-center mt-4">
                                     <div className="w-full flex gap-1 justify-start items-center flex-col">
                                       <div className="w-full flex justify-start items-start">
                                         <div className="sb-form-label">
@@ -3479,9 +3657,71 @@ function Onboarding() {
                                             PDF, JPEG, PNG, and JPG formats, up
                                             to 50 MB.
                                           </div>
-                                          <button className="documents-button w-full md:w-auto mt-4 text-center">
-                                            Browse
-                                          </button>
+                                          {!selectedFileBankStatement && (
+                                            <>
+                                              <input
+                                                type="file"
+                                                accept=".pdf,.jpeg,.jpg,.png"
+                                                onChange={
+                                                  handleFileChangeBankStatement
+                                                }
+                                                className="hidden"
+                                                id="file-upload"
+                                              />
+                                              <label
+                                                htmlFor="file-upload"
+                                                className="cursor-pointer documents-button w-full md:w-auto mt-4 text-center"
+                                              >
+                                                Upload
+                                              </label>
+                                            </>
+                                          )}
+
+                                          {selectedFileBankStatement && (
+                                            <>
+                                              <div className="w-full mt-3 flex justify-center items-center flex-col gap-2">
+                                                <div className="w-full documents-sub-heading text-center">
+                                                  {
+                                                    selectedFileBankStatement.name
+                                                  }
+                                                </div>
+                                                <div
+                                                  onClick={() => {
+                                                    setSelectedFileBankStatement(
+                                                      null
+                                                    );
+                                                    enqueueSnackbar(
+                                                      "File removed successfully!",
+                                                      {
+                                                        dense: true,
+                                                        autoHideDuration: 5000,
+                                                        variant: "success",
+                                                        preventDuplicate: true,
+                                                        anchorOrigin: {
+                                                          horizontal: "center",
+                                                          vertical: "bottom",
+                                                        },
+                                                      }
+                                                    );
+                                                  }}
+                                                  className="cursor-pointer w-full md:w-auto"
+                                                >
+                                                  <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    width="25"
+                                                    height="24"
+                                                    viewBox="0 0 25 24"
+                                                    fill="none"
+                                                  >
+                                                    <path
+                                                      d="M17 6.6H21.5V8.4H19.7V20.1C19.7 20.3387 19.6052 20.5676 19.4364 20.7364C19.2676 20.9052 19.0387 21 18.8 21H6.2C5.96131 21 5.73239 20.9052 5.5636 20.7364C5.39482 20.5676 5.3 20.3387 5.3 20.1V8.4H3.5V6.6H8V3.9C8 3.66131 8.09482 3.43239 8.2636 3.2636C8.43239 3.09482 8.6613 3 8.9 3H16.1C16.3387 3 16.5676 3.09482 16.7364 3.2636C16.9052 3.43239 17 3.66131 17 3.9V6.6ZM17.9 8.4H7.1V19.2H17.9V8.4ZM9.8 11.1H11.6V16.5H9.8V11.1ZM13.4 11.1H15.2V16.5H13.4V11.1ZM9.8 4.8V6.6H15.2V4.8H9.8Z"
+                                                      fill="#ff007a"
+                                                    />
+                                                  </svg>
+                                                </div>
+                                              </div>
+                                            </>
+                                          )}
                                         </div>
                                         <div className="h-full w-full md:w-auto flex justify-around items-center flex-row md:flex-col gap-3">
                                           <div className="md:h-16 md:w-[1px] h-[1px] w-full bg-[#E2E4E9]"></div>
@@ -3550,9 +3790,72 @@ function Onboarding() {
                                               PDF, JPEG, PNG, and JPG formats,
                                               up to 50 MB.
                                             </div>
-                                            <button className="documents-button w-full md:w-auto mt-4 text-center">
-                                              Browse
-                                            </button>
+                                            {!selectedFileBalanceSheet && (
+                                              <>
+                                                <input
+                                                  type="file"
+                                                  accept=".pdf,.jpeg,.jpg,.png"
+                                                  onChange={
+                                                    handleFileChangeBalanceSheet
+                                                  }
+                                                  className="hidden"
+                                                  id="file-upload-2"
+                                                />
+                                                <label
+                                                  htmlFor="file-upload-2"
+                                                  className="cursor-pointer documents-button w-full md:w-auto mt-4 text-center"
+                                                >
+                                                  Upload
+                                                </label>
+                                              </>
+                                            )}
+
+                                            {selectedFileBalanceSheet && (
+                                              <>
+                                                <div className="w-full mt-3 flex justify-center items-center flex-col gap-2">
+                                                  <div className="w-full documents-sub-heading text-center">
+                                                    {
+                                                      selectedFileBalanceSheet.name
+                                                    }
+                                                  </div>
+                                                  <div
+                                                    onClick={() => {
+                                                      setSelectedFileBalanceSheet(
+                                                        null
+                                                      );
+                                                      enqueueSnackbar(
+                                                        "File removed successfully!",
+                                                        {
+                                                          dense: true,
+                                                          autoHideDuration: 5000,
+                                                          variant: "success",
+                                                          preventDuplicate: true,
+                                                          anchorOrigin: {
+                                                            horizontal:
+                                                              "center",
+                                                            vertical: "bottom",
+                                                          },
+                                                        }
+                                                      );
+                                                    }}
+                                                    className="cursor-pointer w-full md:w-auto"
+                                                  >
+                                                    <svg
+                                                      xmlns="http://www.w3.org/2000/svg"
+                                                      width="25"
+                                                      height="24"
+                                                      viewBox="0 0 25 24"
+                                                      fill="none"
+                                                    >
+                                                      <path
+                                                        d="M17 6.6H21.5V8.4H19.7V20.1C19.7 20.3387 19.6052 20.5676 19.4364 20.7364C19.2676 20.9052 19.0387 21 18.8 21H6.2C5.96131 21 5.73239 20.9052 5.5636 20.7364C5.39482 20.5676 5.3 20.3387 5.3 20.1V8.4H3.5V6.6H8V3.9C8 3.66131 8.09482 3.43239 8.2636 3.2636C8.43239 3.09482 8.6613 3 8.9 3H16.1C16.3387 3 16.5676 3.09482 16.7364 3.2636C16.9052 3.43239 17 3.66131 17 3.9V6.6ZM17.9 8.4H7.1V19.2H17.9V8.4ZM9.8 11.1H11.6V16.5H9.8V11.1ZM13.4 11.1H15.2V16.5H13.4V11.1ZM9.8 4.8V6.6H15.2V4.8H9.8Z"
+                                                        fill="#ff007a"
+                                                      />
+                                                    </svg>
+                                                  </div>
+                                                </div>
+                                              </>
+                                            )}
                                           </div>
                                         </div>
                                       </div>
@@ -3586,9 +3889,72 @@ function Onboarding() {
                                               PDF, JPEG, PNG, and JPG formats,
                                               up to 50 MB.
                                             </div>
-                                            <button className="documents-button w-full md:w-auto mt-4 text-center">
-                                              Browse
-                                            </button>
+                                            {!selectedFileProfitLossStatement && (
+                                              <>
+                                                <input
+                                                  type="file"
+                                                  accept=".pdf,.jpeg,.jpg,.png"
+                                                  onChange={
+                                                    handleFileChangeProfitLossStatement
+                                                  }
+                                                  className="hidden"
+                                                  id="file-upload-3"
+                                                />
+                                                <label
+                                                  htmlFor="file-upload-3"
+                                                  className="cursor-pointer documents-button w-full md:w-auto mt-4 text-center"
+                                                >
+                                                  Upload
+                                                </label>
+                                              </>
+                                            )}
+
+                                            {selectedFileProfitLossStatement && (
+                                              <>
+                                                <div className="w-full mt-3 flex justify-center items-center flex-col gap-2">
+                                                  <div className="w-full documents-sub-heading text-center">
+                                                    {
+                                                      selectedFileProfitLossStatement.name
+                                                    }
+                                                  </div>
+                                                  <div
+                                                    onClick={() => {
+                                                      setSelectedFileProfitLossStatement(
+                                                        null
+                                                      );
+                                                      enqueueSnackbar(
+                                                        "File removed successfully!",
+                                                        {
+                                                          dense: true,
+                                                          autoHideDuration: 5000,
+                                                          variant: "success",
+                                                          preventDuplicate: true,
+                                                          anchorOrigin: {
+                                                            horizontal:
+                                                              "center",
+                                                            vertical: "bottom",
+                                                          },
+                                                        }
+                                                      );
+                                                    }}
+                                                    className="cursor-pointer w-full md:w-auto"
+                                                  >
+                                                    <svg
+                                                      xmlns="http://www.w3.org/2000/svg"
+                                                      width="25"
+                                                      height="24"
+                                                      viewBox="0 0 25 24"
+                                                      fill="none"
+                                                    >
+                                                      <path
+                                                        d="M17 6.6H21.5V8.4H19.7V20.1C19.7 20.3387 19.6052 20.5676 19.4364 20.7364C19.2676 20.9052 19.0387 21 18.8 21H6.2C5.96131 21 5.73239 20.9052 5.5636 20.7364C5.39482 20.5676 5.3 20.3387 5.3 20.1V8.4H3.5V6.6H8V3.9C8 3.66131 8.09482 3.43239 8.2636 3.2636C8.43239 3.09482 8.6613 3 8.9 3H16.1C16.3387 3 16.5676 3.09482 16.7364 3.2636C16.9052 3.43239 17 3.66131 17 3.9V6.6ZM17.9 8.4H7.1V19.2H17.9V8.4ZM9.8 11.1H11.6V16.5H9.8V11.1ZM13.4 11.1H15.2V16.5H13.4V11.1ZM9.8 4.8V6.6H15.2V4.8H9.8Z"
+                                                        fill="#ff007a"
+                                                      />
+                                                    </svg>
+                                                  </div>
+                                                </div>
+                                              </>
+                                            )}
                                           </div>
                                         </div>
                                       </div>
@@ -4004,7 +4370,8 @@ function Onboarding() {
                     </button>
                     <button
                       onClick={() => {
-                        router.push("/signup");
+                        handleSubmitForm();
+                        // router.push("/signup");
                       }}
                       className="sb-form-submit-button w-full md:w-36"
                     >
@@ -4019,239 +4386,82 @@ function Onboarding() {
                     Services Selection
                   </div>
                   <div className="w-full left-steps-services-selected text-center md:text-end">
-                    2 out of 4 selected
+                    {selectedCheckBoxCount} out of {services.length} selected
                   </div>
                 </div>
 
                 <div className="w-full gap-4 flex mt-4 justify-center items-start flex-col">
-                  <div className="w-full gap-3 flex justify-center items-start flex-row">
-                    <div className="flex mt-[0.5px] justify-center items-center flex-col">
-                      <div>
-                        {checked5 ? (
+                  {!getServicesLoader &&
+                  services &&
+                  services !== "" &&
+                  services.length > 0 ? (
+                    <>
+                      {services.length > 0 &&
+                        services.map((item, index) => (
                           <>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <path
-                                d="M0.75 8C0.75 3.99594 3.99594 0.75 8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 12.0041 12.0041 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8Z"
-                                fill="#17B26A"
-                              />
-                              <path
-                                d="M0.75 8C0.75 3.99594 3.99594 0.75 8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 12.0041 12.0041 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8Z"
-                                stroke="#17B26A"
-                                stroke-width="1.5"
-                              />
-                              <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M11.3975 4.9271L6.62421 9.53377L5.35755 8.18043C5.12421 7.96043 4.75755 7.9471 4.49088 8.13377C4.23088 8.3271 4.15755 8.6671 4.31755 8.94043L5.81755 11.3804C5.96421 11.6071 6.21755 11.7471 6.50421 11.7471C6.77755 11.7471 7.03755 11.6071 7.18421 11.3804C7.42421 11.0671 12.0042 5.6071 12.0042 5.6071C12.6042 4.99376 11.8775 4.45377 11.3975 4.92043V4.9271Z"
-                                fill="white"
-                              />
-                            </svg>
+                            <div className="w-full gap-3 flex justify-center items-start flex-row">
+                              <div className="flex mt-[0.5px] justify-center items-center flex-col">
+                                <div>
+                                  {(index === 0 && checked5) ||
+                                  (index === 1 && checked6) ||
+                                  (index === 2 && checked7) ||
+                                  (index === 3 && checked8) ? (
+                                    <>
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="20"
+                                        height="20"
+                                        viewBox="0 0 16 16"
+                                        fill="none"
+                                      >
+                                        <path
+                                          d="M0.75 8C0.75 3.99594 3.99594 0.75 8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 12.0041 12.0041 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8Z"
+                                          fill="#17B26A"
+                                        />
+                                        <path
+                                          d="M0.75 8C0.75 3.99594 3.99594 0.75 8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 12.0041 12.0041 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8Z"
+                                          stroke="#17B26A"
+                                          stroke-width="1.5"
+                                        />
+                                        <path
+                                          fill-rule="evenodd"
+                                          clip-rule="evenodd"
+                                          d="M11.3975 4.9271L6.62421 9.53377L5.35755 8.18043C5.12421 7.96043 4.75755 7.9471 4.49088 8.13377C4.23088 8.3271 4.15755 8.6671 4.31755 8.94043L5.81755 11.3804C5.96421 11.6071 6.21755 11.7471 6.50421 11.7471C6.77755 11.7471 7.03755 11.6071 7.18421 11.3804C7.42421 11.0671 12.0042 5.6071 12.0042 5.6071C12.6042 4.99376 11.8775 4.45377 11.3975 4.92043V4.9271Z"
+                                          fill="white"
+                                        />
+                                      </svg>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="20"
+                                        height="20"
+                                        viewBox="0 0 16 16"
+                                        fill="none"
+                                      >
+                                        <path
+                                          d="M8 16C3.5816 16 0 12.4184 0 8C0 3.5816 3.5816 0 8 0C12.4184 0 16 3.5816 16 8C16 12.4184 12.4184 16 8 16ZM4 7.2V8.8H12V7.2H4Z"
+                                          fill="#D0D5DD"
+                                        />
+                                      </svg>
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="w-full flex justify-center items-start flex-col">
+                                <div className="w-full text-start steps-heading">
+                                  Service {item.name}
+                                </div>
+                                <div className="w-full text-start steps-sub-heading">
+                                  {item.description}
+                                </div>
+                              </div>
+                            </div>
                           </>
-                        ) : (
-                          <>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <path
-                                d="M8 16C3.5816 16 0 12.4184 0 8C0 3.5816 3.5816 0 8 0C12.4184 0 16 3.5816 16 8C16 12.4184 12.4184 16 8 16ZM4 7.2V8.8H12V7.2H4Z"
-                                fill="#D0D5DD"
-                              />
-                            </svg>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    <div className="w-full flex justify-center items-start flex-col">
-                      <div className="w-full text-start steps-heading">
-                        Service A
-                      </div>
-                      <div className="w-full text-start steps-sub-heading">
-                        Offer Card & ACH payment options on your invoices
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="w-full gap-3 flex justify-center items-start flex-row">
-                    <div className="flex mt-[0.5px] justify-center items-center flex-col">
-                      <div>
-                        {checked6 ? (
-                          <>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <path
-                                d="M0.75 8C0.75 3.99594 3.99594 0.75 8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 12.0041 12.0041 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8Z"
-                                fill="#17B26A"
-                              />
-                              <path
-                                d="M0.75 8C0.75 3.99594 3.99594 0.75 8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 12.0041 12.0041 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8Z"
-                                stroke="#17B26A"
-                                stroke-width="1.5"
-                              />
-                              <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M11.3975 4.9271L6.62421 9.53377L5.35755 8.18043C5.12421 7.96043 4.75755 7.9471 4.49088 8.13377C4.23088 8.3271 4.15755 8.6671 4.31755 8.94043L5.81755 11.3804C5.96421 11.6071 6.21755 11.7471 6.50421 11.7471C6.77755 11.7471 7.03755 11.6071 7.18421 11.3804C7.42421 11.0671 12.0042 5.6071 12.0042 5.6071C12.6042 4.99376 11.8775 4.45377 11.3975 4.92043V4.9271Z"
-                                fill="white"
-                              />
-                            </svg>
-                          </>
-                        ) : (
-                          <>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <path
-                                d="M8 16C3.5816 16 0 12.4184 0 8C0 3.5816 3.5816 0 8 0C12.4184 0 16 3.5816 16 8C16 12.4184 12.4184 16 8 16ZM4 7.2V8.8H12V7.2H4Z"
-                                fill="#D0D5DD"
-                              />
-                            </svg>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    <div className="w-full flex justify-center items-center flex-col">
-                      <div className="w-full text-start steps-heading">
-                        Service B
-                      </div>
-                      <div className="w-full text-start steps-sub-heading">
-                        Offer Net Terms (30, 60, 90) on your invoices for
-                        approved buyers
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="w-full gap-3 flex justify-center items-start flex-row">
-                    <div className="flex mt-[0.5px] justify-center items-center flex-col">
-                      <div>
-                        {checked7 ? (
-                          <>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <path
-                                d="M0.75 8C0.75 3.99594 3.99594 0.75 8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 12.0041 12.0041 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8Z"
-                                fill="#17B26A"
-                              />
-                              <path
-                                d="M0.75 8C0.75 3.99594 3.99594 0.75 8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 12.0041 12.0041 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8Z"
-                                stroke="#17B26A"
-                                stroke-width="1.5"
-                              />
-                              <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M11.3975 4.9271L6.62421 9.53377L5.35755 8.18043C5.12421 7.96043 4.75755 7.9471 4.49088 8.13377C4.23088 8.3271 4.15755 8.6671 4.31755 8.94043L5.81755 11.3804C5.96421 11.6071 6.21755 11.7471 6.50421 11.7471C6.77755 11.7471 7.03755 11.6071 7.18421 11.3804C7.42421 11.0671 12.0042 5.6071 12.0042 5.6071C12.6042 4.99376 11.8775 4.45377 11.3975 4.92043V4.9271Z"
-                                fill="white"
-                              />
-                            </svg>
-                          </>
-                        ) : (
-                          <>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <path
-                                d="M8 16C3.5816 16 0 12.4184 0 8C0 3.5816 3.5816 0 8 0C12.4184 0 16 3.5816 16 8C16 12.4184 12.4184 16 8 16ZM4 7.2V8.8H12V7.2H4Z"
-                                fill="#D0D5DD"
-                              />
-                            </svg>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    <div className="w-full flex justify-center items-center flex-col">
-                      <div className="w-full text-start steps-heading">
-                        Service C
-                      </div>
-                      <div className="w-full text-start steps-sub-heading">
-                        Pay invoices using Card & ACH
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="w-full gap-3 flex justify-center items-start flex-row">
-                    <div className="flex mt-[0.5px] justify-center items-center flex-col">
-                      <div>
-                        {checked8 ? (
-                          <>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <path
-                                d="M0.75 8C0.75 3.99594 3.99594 0.75 8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 12.0041 12.0041 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8Z"
-                                fill="#17B26A"
-                              />
-                              <path
-                                d="M0.75 8C0.75 3.99594 3.99594 0.75 8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 12.0041 12.0041 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8Z"
-                                stroke="#17B26A"
-                                stroke-width="1.5"
-                              />
-                              <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M11.3975 4.9271L6.62421 9.53377L5.35755 8.18043C5.12421 7.96043 4.75755 7.9471 4.49088 8.13377C4.23088 8.3271 4.15755 8.6671 4.31755 8.94043L5.81755 11.3804C5.96421 11.6071 6.21755 11.7471 6.50421 11.7471C6.77755 11.7471 7.03755 11.6071 7.18421 11.3804C7.42421 11.0671 12.0042 5.6071 12.0042 5.6071C12.6042 4.99376 11.8775 4.45377 11.3975 4.92043V4.9271Z"
-                                fill="white"
-                              />
-                            </svg>
-                          </>
-                        ) : (
-                          <>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <path
-                                d="M8 16C3.5816 16 0 12.4184 0 8C0 3.5816 3.5816 0 8 0C12.4184 0 16 3.5816 16 8C16 12.4184 12.4184 16 8 16ZM4 7.2V8.8H12V7.2H4Z"
-                                fill="#D0D5DD"
-                              />
-                            </svg>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    <div className="w-full flex justify-center items-center flex-col">
-                      <div className="w-full text-start steps-heading">
-                        Service D
-                      </div>
-                      <div className="w-full text-start steps-sub-heading">
-                        Pay invoices using Net Terms to approved sellers
-                      </div>
-                    </div>
-                  </div>
+                        ))}
+                    </>
+                  ) : null}
                 </div>
 
                 <button
@@ -4281,7 +4491,7 @@ function Onboarding() {
                   <div className="w-full gap-3 flex justify-center items-start flex-row">
                     <div className="flex justify-center items-center flex-col">
                       <div>
-                        <svg
+                        {/* <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="24"
                           height="24"
@@ -4303,15 +4513,27 @@ function Onboarding() {
                             d="M17.0964 7.38967L9.93638 14.2997L8.03638 12.2697C7.68638 11.9397 7.13638 11.9197 6.73638 12.1997C6.34638 12.4897 6.23638 12.9997 6.47638 13.4097L8.72638 17.0697C8.94638 17.4097 9.32638 17.6197 9.75638 17.6197C10.1664 17.6197 10.5564 17.4097 10.7764 17.0697C11.1364 16.5997 18.0064 8.40967 18.0064 8.40967C18.9064 7.48967 17.8164 6.67967 17.0964 7.37967V7.38967Z"
                             fill="white"
                           />
+                        </svg> */}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                        >
+                          <path
+                            d="M12 22.5C6.20085 22.5 1.5 17.7991 1.5 12C1.5 6.20085 6.20085 1.5 12 1.5C17.7991 1.5 22.5 6.20085 22.5 12C22.5 17.7991 17.7991 22.5 12 22.5ZM12 20.4C14.2278 20.4 16.3644 19.515 17.9397 17.9397C19.515 16.3644 20.4 14.2278 20.4 12C20.4 9.77218 19.515 7.63561 17.9397 6.0603C16.3644 4.485 14.2278 3.6 12 3.6C9.77218 3.6 7.63561 4.485 6.0603 6.0603C4.485 7.63561 3.6 9.77218 3.6 12C3.6 14.2278 4.485 16.3644 6.0603 17.9397C7.63561 19.515 9.77218 20.4 12 20.4ZM10.95 6.75H13.05V8.85H10.95V6.75ZM10.95 10.95H13.05V17.25H10.95V10.95Z"
+                            fill="#F27B2C"
+                          />
                         </svg>
                       </div>
-                      <div className="w-[2px] bg-[#17B26A] h-[34px]"></div>
+                      <div className="w-[2px] bg-[#F17B2C] h-[34px]"></div>
                     </div>
                     <div className="w-full flex justify-center items-center flex-col">
-                      <div className="w-full text-start steps-heading">
+                      <div className="w-full text-start steps-heading-incomplete">
                         Contact Information
                       </div>
-                      <div className="w-full text-start steps-sub-heading">
+                      <div className="w-full text-start steps-sub-heading-incomplete">
                         Enter your personal contact details.
                       </div>
                     </div>
@@ -4478,7 +4700,184 @@ function Onboarding() {
                     <div className="w-full text-center modal-heading-custom">
                       Select Services
                     </div>
-                    <div className="w-full flex justify-center items-center flex-col mt-3">
+                    <div className="w-full mt-3 flex flex-col justify-center items-center gap-3">
+                      <div className="w-full flex justify-center items-center flex-wrap gap-3">
+                        {!getServicesLoader &&
+                        services &&
+                        services !== "" &&
+                        services.length > 0 ? (
+                          <>
+                            {services.length > 0 &&
+                              services.map((item) => (
+                                <>
+                                  <div className="relative w-full md:w-[230px] flex justify-start items-center flex-col">
+                                    {item.type === "merchant" ? (
+                                      <>
+                                        <div className="rounded-t-xl label-send-invoices w-full flex justify-start items-center flex-row gap-2 text-black absolute">
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="16"
+                                            height="16"
+                                            viewBox="0 0 16 16"
+                                            fill="none"
+                                          >
+                                            <path
+                                              d="M4.99998 4.4V2.6C4.99998 2.44087 5.06319 2.28826 5.17571 2.17574C5.28823 2.06321 5.44085 2 5.59998 2H12.8C12.9591 2 13.1117 2.06321 13.2242 2.17574C13.3368 2.28826 13.4 2.44087 13.4 2.6V11C13.4 11.1591 13.3368 11.3117 13.2242 11.4243C13.1117 11.5368 12.9591 11.6 12.8 11.6H11V13.4C11 13.7312 10.73 14 10.3958 14H3.20418C3.12505 14.0005 3.04661 13.9853 2.97337 13.9554C2.90012 13.9254 2.83352 13.8813 2.77737 13.8256C2.72123 13.7698 2.67665 13.7035 2.64621 13.6305C2.61576 13.5575 2.60005 13.4791 2.59998 13.4L2.60178 5C2.60178 4.6688 2.87178 4.4 3.20538 4.4H4.99998ZM3.80118 5.6L3.79998 12.8H9.79998V5.6H3.80118ZM6.19998 4.4H11V10.4H12.2V3.2H6.19998V4.4ZM4.99998 7.4H8.59998V8.6H4.99998V7.4ZM4.99998 9.8H8.59998V11H4.99998V9.8Z"
+                                              fill="white"
+                                            />
+                                          </svg>
+                                          <div>Send Invoice</div>
+                                        </div>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <div className="rounded-t-xl label-pay-invoices w-full flex justify-start items-center flex-row gap-2 text-black absolute">
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="16"
+                                            height="16"
+                                            viewBox="0 0 16 16"
+                                            fill="none"
+                                          >
+                                            <path
+                                              d="M4.99998 4.4V2.6C4.99998 2.44087 5.06319 2.28826 5.17571 2.17574C5.28823 2.06321 5.44085 2 5.59998 2H12.8C12.9591 2 13.1117 2.06321 13.2242 2.17574C13.3368 2.28826 13.4 2.44087 13.4 2.6V11C13.4 11.1591 13.3368 11.3117 13.2242 11.4243C13.1117 11.5368 12.9591 11.6 12.8 11.6H11V13.4C11 13.7312 10.73 14 10.3958 14H3.20418C3.12505 14.0005 3.04661 13.9853 2.97337 13.9554C2.90012 13.9254 2.83352 13.8813 2.77737 13.8256C2.72123 13.7698 2.67665 13.7035 2.64621 13.6305C2.61576 13.5575 2.60005 13.4791 2.59998 13.4L2.60178 5C2.60178 4.6688 2.87178 4.4 3.20538 4.4H4.99998ZM3.80118 5.6L3.79998 12.8H9.79998V5.6H3.80118ZM6.19998 4.4H11V10.4H12.2V3.2H6.19998V4.4ZM4.99998 7.4H8.59998V8.6H4.99998V7.4ZM4.99998 9.8H8.59998V11H4.99998V9.8Z"
+                                              fill="white"
+                                            />
+                                          </svg>
+                                          <div>Pay Invoice</div>
+                                        </div>
+                                      </>
+                                    )}
+                                    {/* Hereeeeee */}
+                                    <div
+                                      onClick={(e) => {
+                                        handleCheckboxChange(item.id, e);
+                                      }}
+                                      className={` ${
+                                        (item.id === 1 && checked5) ||
+                                        (item.id === 2 && checked6) ||
+                                        (item.id === 3 && checked7) ||
+                                        (item.id === 4 && checked8)
+                                          ? "border-[1px] border-[#ff007a]"
+                                          : "border-[1px] border-[#eaecf0]"
+                                      } mt-[11%] z-10 cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
+                                    >
+                                      <div className="w-full flex justify-center items-center flex-row">
+                                        <div className="w-full flex justify-start items-center">
+                                          <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
+                                            {item.name.toUpperCase()}
+                                          </div>
+                                        </div>
+                                        <div className="w-full flex justify-end items-center gap-2">
+                                          {item.type === "merchant" ? (
+                                            <>
+                                              <div className="os-services-upper-tag-wrapper-seller">
+                                                Seller
+                                              </div>
+                                            </>
+                                          ) : (
+                                            <>
+                                              <div className="os-services-upper-tag-wrapper-buyer">
+                                                Buyer
+                                              </div>
+                                            </>
+                                          )}
+                                          <FormControlLabel
+                                            control={
+                                              <Checkbox
+                                                sx={{
+                                                  color: "#E2E4E9",
+                                                  "&.Mui-checked": {
+                                                    color: "#17B26A",
+                                                  },
+                                                }}
+                                                checked={
+                                                  item.id === 1
+                                                    ? checked5
+                                                    : item.id === 2
+                                                    ? checked6
+                                                    : item.id === 3
+                                                    ? checked7
+                                                    : item.id === 4
+                                                    ? checked8
+                                                    : false
+                                                }
+                                                onChange={(e) => {
+                                                  handleCheckboxChange(
+                                                    item.id,
+                                                    e
+                                                  );
+                                                }}
+                                                inputProps={{
+                                                  "aria-label": "controlled",
+                                                }}
+                                              />
+                                            }
+                                            sx={{
+                                              marginRight: "-10%",
+                                            }}
+                                          />
+                                        </div>
+                                      </div>
+
+                                      <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
+                                        {item.description}
+                                      </div>
+
+                                      <div className="w-full mt-3 flex justify-center md:justify-start items-center">
+                                        <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="16"
+                                            height="16"
+                                            viewBox="0 0 16 16"
+                                            fill="none"
+                                          >
+                                            <circle
+                                              cx="8"
+                                              cy="8"
+                                              r="3"
+                                              fill="#38C793"
+                                            />
+                                          </svg>
+                                          {item.price === "0.00" ? (
+                                            <>
+                                              <div>Free Package</div>
+                                            </>
+                                          ) : (
+                                            <>
+                                              <div>Subscription required</div>
+                                            </>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </>
+                              ))}
+                          </>
+                        ) : getServicesLoader ? (
+                          <>
+                            <RotatingLines
+                              visible={true}
+                              height="30"
+                              width="30"
+                              strokeColor="#ff007a"
+                              strokeWidth="5"
+                              animationDuration="0.75"
+                              ariaLabel="rotating-lines-loading"
+                              wrapperStyle={{}}
+                              wrapperClass=""
+                            />
+                          </>
+                        ) : (
+                          <>
+                            <div>No Services Found!</div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                    {/* <div className="w-full flex justify-center items-center flex-col mt-3">
                       <div className="w-full flex justify-center items-center flex-col">
                         <div className="w-full flex flex-col justify-center items-center gap-3">
                           <div className="w-full flex justify-center items-center flex-col md:flex-row gap-3">
@@ -4820,7 +5219,7 @@ function Onboarding() {
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
 
                   <div className="w-full border-[1px] gap-3 border-[#E2E4E9] px-5 py-4 flex justify-center items-center flex-col md:flex-row">

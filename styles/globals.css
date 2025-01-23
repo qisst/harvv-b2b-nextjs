@@ -35,6 +35,7 @@ html {
   line-height: 20px;
   letter-spacing: -0.084px;
 }
+
 .nav-switch-button {
   border-radius: 8px;
   border: 1px solid #e2e4e9;
@@ -60,6 +61,7 @@ html {
   font-weight: 500;
   line-height: 32px;
 }
+
 .create-account-sub-text {
   color: #525866;
   font-family: "Plus Jakarta Sans";
@@ -135,6 +137,7 @@ html {
   line-height: 20px;
   letter-spacing: -0.084px;
 }
+
 .sb-form-input-field-icon-left {
   padding: 8px 8px 8px 37px;
   border-radius: 8px;
@@ -149,6 +152,7 @@ html {
   line-height: 20px;
   letter-spacing: -0.084px;
 }
+
 .sb-form-input-field-icon-left-filled {
   padding: 8px 37px 8px 37px;
   border-radius: 8px;
@@ -163,6 +167,7 @@ html {
   line-height: 20px;
   letter-spacing: -0.084px;
 }
+
 .sb-form-input-field-filled {
   padding: 8px 37px 8px 10px;
   border-radius: 8px;
@@ -177,6 +182,7 @@ html {
   line-height: 20px;
   letter-spacing: -0.084px;
 }
+
 .sb-form-input-field-filled:focus,
 .sb-form-input-field-icon-left:focus,
 .sb-form-input-field:focus,
@@ -228,13 +234,16 @@ html {
   line-height: 20px !important;
   letter-spacing: -0.084px !important;
 }
+
 .react-tel-input .form-control:focus {
   border: none !important;
 }
+
 .react-tel-input:has(.form-control:focus) {
   border: 1px solid #ff007a !important;
   border-radius: 8px !important;
 }
+
 /* .form-control:focus ~ .react-tel-input {
   border: 1px solid #ff007a !important;
 } */
@@ -275,6 +284,7 @@ html {
   line-height: 20px;
   letter-spacing: -0.084px;
 }
+
 .sb-form-submit-button-active {
   padding: 10px 8px;
   border-radius: 8px;
@@ -312,6 +322,7 @@ html {
   font-weight: 600;
   line-height: 20px;
 }
+
 .sb-form-or-button2 {
   padding: 10px 16px;
   border-radius: 8px;
@@ -324,6 +335,7 @@ html {
   font-weight: 600;
   line-height: 20px;
 }
+
 .sb-form-or-button3 {
   padding: 10px 16px;
   border-radius: 8px;
@@ -336,6 +348,7 @@ html {
   font-weight: 600;
   line-height: 20px;
 }
+
 .sb-form-right-text {
   color: #101828;
   font-family: "Plus Jakarta Sans";
@@ -345,6 +358,7 @@ html {
   line-height: 32px;
   letter-spacing: -0.36px;
 }
+
 .sb-form-right-sub-text {
   color: #344054;
   font-family: "Plus Jakarta Sans";
@@ -354,6 +368,7 @@ html {
   line-height: 24px;
   letter-spacing: -0.176px;
 }
+
 /* Password Validation CSS */
 
 .password-status-text {
@@ -384,6 +399,7 @@ html {
   font-weight: 500;
   line-height: 32px;
 }
+
 .otp-top-sub-text {
   color: #525866;
   font-family: "Plus Jakarta Sans";
@@ -393,6 +409,7 @@ html {
   line-height: 24px;
   letter-spacing: -0.176px;
 }
+
 .otp-top-email-text {
   color: #0a0d14;
   font-family: "Plus Jakarta Sans";
@@ -403,6 +420,7 @@ html {
   letter-spacing: -0.176px;
   text-decoration-line: underline;
 }
+
 .MuiOtpInput-Box .MuiInputBase-input {
   padding: 16px 8px !important;
   border-radius: 10px !important;
@@ -422,28 +440,35 @@ html {
 
 /* Hover state */
 .MuiOtpInput-Box .MuiInputBase-input:hover {
-  border-color: #ff007a !important; /* Change border color on hover */
-  background-color: #fff !important; /* Optional background color */
+  border-color: #ff007a !important;
+  /* Change border color on hover */
+  background-color: #fff !important;
+  /* Optional background color */
   border-radius: 10px !important;
 }
 
 /* Focus state */
 .MuiOtpInput-Box .MuiInputBase-input:focus {
-  border-color: #e9307d !important; /* Highlight border color on focus */
-  outline: none !important; /* Remove default focus outline */
+  border-color: #e9307d !important;
+  /* Highlight border color on focus */
+  outline: none !important;
+  /* Remove default focus outline */
   border-radius: 10px !important;
 }
 
 /* Typing state (input with a value) */
 .MuiOtpInput-Box .MuiInputBase-input:not(:placeholder-shown) {
-  border: 1px solid #e2e4e9 !important; /* Change border color when input has a value */
-  background-color: #fff !important; /* Optional background color when typing */
+  border: 1px solid #e2e4e9 !important;
+  /* Change border color when input has a value */
+  background-color: #fff !important;
+  /* Optional background color when typing */
   border-radius: 10px !important;
 }
 
 /* Fieldset styles (optional for visual refinement) */
 .MuiOtpInput-Box .MuiOutlinedInput-notchedOutline {
-  border-color: transparent !important; /* Hide original fieldset border */
+  border-color: transparent !important;
+  /* Hide original fieldset border */
   border-radius: 10px !important;
 }
 
@@ -452,12 +477,11 @@ html {
   border-radius: 10px !important;
 }
 
-.MuiOtpInput-Box
-  .MuiInputBase-root.Mui-focused
-  .MuiOutlinedInput-notchedOutline {
+.MuiOtpInput-Box .MuiInputBase-root.Mui-focused .MuiOutlinedInput-notchedOutline {
   border-color: #ff007a !important;
   border-radius: 10px !important;
 }
+
 .otp-resend-text {
   color: #667085;
   font-family: "Plus Jakarta Sans";
@@ -467,6 +491,7 @@ html {
   line-height: 20px;
   letter-spacing: -0.084px;
 }
+
 .otp-resend-timer-text {
   color: #667085;
   font-family: "Plus Jakarta Sans";
@@ -476,6 +501,7 @@ html {
   line-height: 20px;
   letter-spacing: -0.084px;
 }
+
 .otp-change-email-text {
   color: #0a0d14;
   font-family: "Plus Jakarta Sans";
@@ -516,6 +542,7 @@ html {
   line-height: 20px;
   letter-spacing: -0.084px;
 }
+
 .ob-instruction-sub-text {
   color: #525866;
   font-family: "Plus Jakarta Sans";
@@ -671,6 +698,7 @@ html {
   line-height: 16px;
   letter-spacing: -0.072px;
 }
+
 .documents-sub-heading {
   color: #525866;
   font-family: "Plus Jakarta Sans";
@@ -679,6 +707,7 @@ html {
   font-weight: 400;
   line-height: 16px;
 }
+
 .documents-button {
   padding: 6px;
   border-radius: 8px;
@@ -693,6 +722,7 @@ html {
   line-height: 20px;
   letter-spacing: -0.084px;
 }
+
 .documents-wrapper-normal {
   padding: 20px 20px 16px 20px;
   border-radius: 16px;
@@ -705,6 +735,7 @@ html {
   border-radius: 8px;
   background: #ebf1ff;
 }
+
 .tab-send-email-text {
   color: #525866;
   font-family: "Plus Jakarta Sans";
@@ -714,6 +745,7 @@ html {
   line-height: 20px;
   letter-spacing: -0.084px;
 }
+
 .tab-send-email-button {
   color: #0a0d14;
   font-family: "Plus Jakarta Sans";
@@ -759,6 +791,7 @@ html {
   line-height: 20px;
   letter-spacing: -0.084px;
 }
+
 .sb-form-submit-button {
   padding: 8px;
   border-radius: 8px;
@@ -787,6 +820,7 @@ html {
   letter-spacing: 0.48px;
   text-transform: uppercase;
 }
+
 .left-steps-services-selected {
   color: #525866;
   font-family: "Plus Jakarta Sans";
@@ -795,6 +829,7 @@ html {
   font-weight: 400;
   line-height: 16px;
 }
+
 .left-steps-services-list-heading-selected {
   color: #101828;
   font-family: "Plus Jakarta Sans";
@@ -803,6 +838,7 @@ html {
   font-weight: 500;
   line-height: 20px;
 }
+
 .left-steps-services-list-heading-not-selected {
   color: #475467;
   font-family: "Plus Jakarta Sans";
@@ -811,6 +847,7 @@ html {
   font-weight: 400;
   line-height: 20px;
 }
+
 .left-steps-services-change-button {
   padding: 6px;
   border-radius: 8px;
@@ -835,8 +872,26 @@ html {
   line-height: 20px;
 }
 
+.steps-heading-incomplete {
+  color: #DC6803;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 20px;
+}
+
 .steps-sub-heading {
   color: #475467;
+  font-family: "Plus Jakarta Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.steps-sub-heading-incomplete {
+  color: #DC6803;
   font-family: "Plus Jakarta Sans";
   font-size: 14px;
   font-style: normal;
@@ -847,11 +902,9 @@ html {
 .steps-visit-sandbox-button {
   padding: 8px;
   border-radius: 8px;
-  background: linear-gradient(
-      180deg,
+  background: linear-gradient(180deg,
       rgba(255, 255, 255, 0.12) 0%,
-      rgba(255, 255, 255, 0) 100%
-    ),
+      rgba(255, 255, 255, 0) 100%),
     #375dfb;
   box-shadow: 0px 1px 2px 0px rgba(37, 62, 167, 0.48), 0px 0px 0px 1px #375dfb;
   color: #fff;
@@ -874,6 +927,7 @@ html {
   font-weight: 500;
   line-height: 32px;
 }
+
 .os-sub-heading {
   color: #525866;
   font-family: "Plus Jakarta Sans";
@@ -898,6 +952,7 @@ html {
   border-radius: 16px;
   background: #fff;
 }
+
 .os-services-list-heading {
   color: #ff007a;
   font-family: "Plus Jakarta Sans";
@@ -921,6 +976,7 @@ html {
   letter-spacing: 0.22px;
   text-transform: uppercase;
 }
+
 .os-services-upper-tag-wrapper-buyer {
   padding: 2px 8px;
   border-radius: 999px;
@@ -1028,6 +1084,7 @@ html {
   letter-spacing: 0.22px;
   text-transform: uppercase;
 }
+
 .label-pay-invoices {
   padding: 6px 12px 32px 12px;
   background: linear-gradient(90deg, #ff6884 0%, #cb082d 100%);
