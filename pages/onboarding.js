@@ -35,6 +35,7 @@ import {
 import { useSelector } from "react-redux";
 import { SnackbarProvider, enqueueSnackbar } from "notistack";
 import { ThreeDots, RotatingLines } from "react-loader-spinner";
+import { PlaidLink } from "react-plaid-link";
 
 function Onboarding() {
   const router = useRouter();
@@ -171,6 +172,51 @@ function Onboarding() {
     useState(null);
   const [selectedFileProfitLossStatement, setSelectedFileProfitLossStatement] =
     useState(null);
+  const [uploadLoadingBalanceSheet, setBalanceSheetUploadLoading] =
+    useState(false);
+  const [uploadLoadingBankStatement, setBankStatementUploadLoading] =
+    useState(false);
+  const [uploadLoadingProfitLoss, setProfitLossUploadLoading] = useState(false);
+  const [plaidLinkToken, setPlaidLinkToken] = useState(null);
+  const [plaidPublicToken, setPlaidPublic] = useState(null);
+  const [plaidMetaData, setPlaidMetaData] = useState("");
+  const [selectedServices, setSelectedServices] = useState([]);
+
+  // Plaid Integration
+
+  // Fetch link token from the backend
+  useEffect(() => {
+    const fetchLinkToken = async () => {
+      try {
+        const requestOptions = {
+          method: "GET",
+          redirect: "follow",
+        };
+
+        fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/third-party/plaid/generate-link-token/${uuid}`,
+          requestOptions
+        )
+          .then((response) => response.json())
+          .then((result) => {
+            if (result.status === true) {
+              setPlaidLinkToken(result.data.link_token);
+            }
+          })
+          .catch((error) => console.error(error));
+      } catch (error) {}
+    };
+    fetchLinkToken();
+  }, []);
+
+  // Handle success callback
+  const onSuccess = (public_token, metadata) => {
+    console.log("Public Token:", public_token);
+    console.log("Metadata:", metadata);
+
+    // Send public token to your backend for exchange
+    // axios.post('http://localhost:3001/exchange_public_token', { public_token });
+  };
 
   // handle select and upload Bank Statement - File validation and selection
 
@@ -217,42 +263,80 @@ function Onboarding() {
         setSelectedFileBankStatement(null);
         return;
       }
-      console.log("Bank Statement File: ", file);
-      setSelectedFileBankStatement(file);
-      enqueueSnackbar("File uploaded successfully!", {
-        dense: true,
-        autoHideDuration: 5000,
-        variant: "success",
-        preventDuplicate: true,
-        anchorOrigin: {
-          horizontal: "center",
-          vertical: "bottom",
-        },
-      });
 
-      // Upload File to Backend
-      // const formData = new FormData();
-      // formData.append('file', selectedFile);
+      try {
+        setBankStatementUploadLoading(true);
+        const formdata = new FormData();
+        formdata.append("type", "bank_statement");
+        formdata.append("file", file);
 
-      // try {
-      //   const response = await fetch('http://localhost:3000', {
-      //     method: 'POST',
-      //     body: formData,
-      //     headers: {
-      //     },
-      //   });
+        const requestOptions = {
+          method: "POST",
+          body: formdata,
+          redirect: "follow",
+        };
 
-      //   if (!response.ok) {
-      //     throw new Error(`HTTP error! status: ${response.status}`);
-      //   }
-
-      //   const data = await response.json();
-      //   console.log('Upload success:', data);
-      //   setSelectedFileBankStatement(null);
-      // } catch (error) {
-      //   console.error('Upload failed:', error);
-      //   setSelectedFileBankStatement(null)
-      // }
+        fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/signup/create-account/docs-upload/${uuid}`,
+          requestOptions
+        )
+          .then((response) => response.json())
+          .then((result) => {
+            if (result.status === true) {
+              setSelectedFileBankStatement(file);
+              enqueueSnackbar("File uploaded successfully!", {
+                dense: true,
+                autoHideDuration: 5000,
+                variant: "success",
+                preventDuplicate: true,
+                anchorOrigin: {
+                  horizontal: "center",
+                  vertical: "bottom",
+                },
+              });
+            } else {
+              setSelectedFileBankStatement(null);
+              enqueueSnackbar(result.message, {
+                dense: true,
+                autoHideDuration: 5000,
+                variant: "error",
+                preventDuplicate: true,
+                anchorOrigin: {
+                  horizontal: "center",
+                  vertical: "bottom",
+                },
+              });
+            }
+            setBankStatementUploadLoading(false);
+          })
+          .catch((error) => {
+            setSelectedFileBankStatement(null);
+            enqueueSnackbar(error.message, {
+              dense: true,
+              autoHideDuration: 5000,
+              variant: "error",
+              preventDuplicate: true,
+              anchorOrigin: {
+                horizontal: "center",
+                vertical: "bottom",
+              },
+            });
+            setBankStatementUploadLoading(false);
+          });
+      } catch (error) {
+        setSelectedFileBankStatement(null);
+        enqueueSnackbar(error.message, {
+          dense: true,
+          autoHideDuration: 5000,
+          variant: "error",
+          preventDuplicate: true,
+          anchorOrigin: {
+            horizontal: "center",
+            vertical: "bottom",
+          },
+        });
+        setBankStatementUploadLoading(false);
+      }
     }
   };
 
@@ -301,42 +385,80 @@ function Onboarding() {
         setSelectedFileBalanceSheet(null);
         return;
       }
-      console.log("Balance Sheet File: ", file);
-      setSelectedFileBalanceSheet(file);
-      enqueueSnackbar("File uploaded successfully!", {
-        dense: true,
-        autoHideDuration: 5000,
-        variant: "success",
-        preventDuplicate: true,
-        anchorOrigin: {
-          horizontal: "center",
-          vertical: "bottom",
-        },
-      });
 
-      // Upload File to Backend
-      // const formData = new FormData();
-      // formData.append('file', selectedFile);
+      try {
+        setBalanceSheetUploadLoading(true);
+        const formdata = new FormData();
+        formdata.append("type", "balance_sheet");
+        formdata.append("file", file);
 
-      // try {
-      //   const response = await fetch('http://localhost:3000', {
-      //     method: 'POST',
-      //     body: formData,
-      //     headers: {
-      //     },
-      //   });
+        const requestOptions = {
+          method: "POST",
+          body: formdata,
+          redirect: "follow",
+        };
 
-      //   if (!response.ok) {
-      //     throw new Error(`HTTP error! status: ${response.status}`);
-      //   }
-
-      //   const data = await response.json();
-      //   console.log('Upload success:', data);
-      //   setSelectedFileBankStatement(null);
-      // } catch (error) {
-      //   console.error('Upload failed:', error);
-      //   setSelectedFileBankStatement(null)
-      // }
+        fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/signup/create-account/docs-upload/${uuid}`,
+          requestOptions
+        )
+          .then((response) => response.json())
+          .then((result) => {
+            if (result.status === true) {
+              setSelectedFileBalanceSheet(file);
+              enqueueSnackbar("File uploaded successfully!", {
+                dense: true,
+                autoHideDuration: 5000,
+                variant: "success",
+                preventDuplicate: true,
+                anchorOrigin: {
+                  horizontal: "center",
+                  vertical: "bottom",
+                },
+              });
+            } else {
+              setSelectedFileBalanceSheet(null);
+              enqueueSnackbar(result.message, {
+                dense: true,
+                autoHideDuration: 5000,
+                variant: "error",
+                preventDuplicate: true,
+                anchorOrigin: {
+                  horizontal: "center",
+                  vertical: "bottom",
+                },
+              });
+            }
+            setBalanceSheetUploadLoading(false);
+          })
+          .catch((error) => {
+            setSelectedFileBalanceSheet(null);
+            enqueueSnackbar(error.message, {
+              dense: true,
+              autoHideDuration: 5000,
+              variant: "error",
+              preventDuplicate: true,
+              anchorOrigin: {
+                horizontal: "center",
+                vertical: "bottom",
+              },
+            });
+            setBalanceSheetUploadLoading(false);
+          });
+      } catch (error) {
+        setSelectedFileBalanceSheet(null);
+        enqueueSnackbar(error.message, {
+          dense: true,
+          autoHideDuration: 5000,
+          variant: "error",
+          preventDuplicate: true,
+          anchorOrigin: {
+            horizontal: "center",
+            vertical: "bottom",
+          },
+        });
+        setBalanceSheetUploadLoading(false);
+      }
     }
   };
 
@@ -385,42 +507,80 @@ function Onboarding() {
         setSelectedFileProfitLossStatement(null);
         return;
       }
-      console.log("Profit Loss Statement File: ", file);
-      setSelectedFileProfitLossStatement(file);
-      enqueueSnackbar("File uploaded successfully!", {
-        dense: true,
-        autoHideDuration: 5000,
-        variant: "success",
-        preventDuplicate: true,
-        anchorOrigin: {
-          horizontal: "center",
-          vertical: "bottom",
-        },
-      });
 
-      // Upload File to Backend
-      // const formData = new FormData();
-      // formData.append('file', selectedFile);
+      try {
+        setProfitLossUploadLoading(true);
+        const formdata = new FormData();
+        formdata.append("type", "profit_loss");
+        formdata.append("file", file);
 
-      // try {
-      //   const response = await fetch('http://localhost:3000', {
-      //     method: 'POST',
-      //     body: formData,
-      //     headers: {
-      //     },
-      //   });
+        const requestOptions = {
+          method: "POST",
+          body: formdata,
+          redirect: "follow",
+        };
 
-      //   if (!response.ok) {
-      //     throw new Error(`HTTP error! status: ${response.status}`);
-      //   }
-
-      //   const data = await response.json();
-      //   console.log('Upload success:', data);
-      //   setSelectedFileBankStatement(null);
-      // } catch (error) {
-      //   console.error('Upload failed:', error);
-      //   setSelectedFileBankStatement(null)
-      // }
+        fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/signup/create-account/docs-upload/${uuid}`,
+          requestOptions
+        )
+          .then((response) => response.json())
+          .then((result) => {
+            if (result.status === true) {
+              setSelectedFileProfitLossStatement(file);
+              enqueueSnackbar("File uploaded successfully!", {
+                dense: true,
+                autoHideDuration: 5000,
+                variant: "success",
+                preventDuplicate: true,
+                anchorOrigin: {
+                  horizontal: "center",
+                  vertical: "bottom",
+                },
+              });
+            } else {
+              setSelectedFileProfitLossStatement(null);
+              enqueueSnackbar(result.message, {
+                dense: true,
+                autoHideDuration: 5000,
+                variant: "error",
+                preventDuplicate: true,
+                anchorOrigin: {
+                  horizontal: "center",
+                  vertical: "bottom",
+                },
+              });
+            }
+            setProfitLossUploadLoading(false);
+          })
+          .catch((error) => {
+            setSelectedFileProfitLossStatement(null);
+            enqueueSnackbar(error.message, {
+              dense: true,
+              autoHideDuration: 5000,
+              variant: "error",
+              preventDuplicate: true,
+              anchorOrigin: {
+                horizontal: "center",
+                vertical: "bottom",
+              },
+            });
+            setProfitLossUploadLoading(false);
+          });
+      } catch (error) {
+        setSelectedFileProfitLossStatement(null);
+        enqueueSnackbar(error.message, {
+          dense: true,
+          autoHideDuration: 5000,
+          variant: "error",
+          preventDuplicate: true,
+          anchorOrigin: {
+            horizontal: "center",
+            vertical: "bottom",
+          },
+        });
+        setProfitLossUploadLoading(false);
+      }
     }
   };
 
@@ -903,31 +1063,101 @@ function Onboarding() {
   };
 
   useEffect(() => {
-    if (
-      activeTab === "" ||
-      (!checked5 && !checked6 && !checked7 && !checked8)
-    ) {
+    if (!checked5 && !checked6 && !checked7 && !checked8) {
       setDisableButtonContinue(true);
     } else {
       setDisableButtonContinue(false);
     }
-  }, [activeTab, checked5, checked6, checked7, checked8]);
+  }, [checked5, checked6, checked7, checked8]);
 
   const handleContinue = () => {
-    // enqueueSnackbar("OTP Resent Successfully!", {
-    //   dense: true,
-    //   autoHideDuration: 5000,
-    //   variant: "success",
-    //   preventDuplicate: true,
-    //   anchorOrigin: {
-    //     horizontal: "center",
-    //     vertical: "bottom",
-    //   },
-    // });
-    setShowOnboarding(true);
+    setLoadingContinue(true);
+    try {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      const raw = JSON.stringify({
+        service_ids: selectedServices,
+      });
+
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+
+      fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/signup/create-account/save-selected-service/${uuid}`,
+        requestOptions
+      )
+        .then((response) => response.json())
+        .then((result) => {
+          if (result.status === true) {
+            setShowOnboarding(true);
+            setLoadingContinue(false);
+            enqueueSnackbar("Services Selected Successfully!", {
+              dense: true,
+              autoHideDuration: 5000,
+              variant: "success",
+              preventDuplicate: true,
+              anchorOrigin: {
+                horizontal: "center",
+                vertical: "bottom",
+              },
+            });
+          } else {
+            setShowOnboarding(false);
+            setLoadingContinue(false);
+            enqueueSnackbar(result.message, {
+              dense: true,
+              autoHideDuration: 5000,
+              variant: "error",
+              preventDuplicate: true,
+              anchorOrigin: {
+                horizontal: "center",
+                vertical: "bottom",
+              },
+            });
+          }
+        })
+        .catch((error) => {
+          setShowOnboarding(false);
+          setLoadingContinue(false);
+          enqueueSnackbar(error.message, {
+            dense: true,
+            autoHideDuration: 5000,
+            variant: "error",
+            preventDuplicate: true,
+            anchorOrigin: {
+              horizontal: "center",
+              vertical: "bottom",
+            },
+          });
+        });
+    } catch (error) {
+      setShowOnboarding(false);
+      setLoadingContinue(false);
+      enqueueSnackbar(error.message, {
+        dense: true,
+        autoHideDuration: 5000,
+        variant: "error",
+        preventDuplicate: true,
+        anchorOrigin: {
+          horizontal: "center",
+          vertical: "bottom",
+        },
+      });
+    }
   };
 
   const handleCheckboxChange = (id, event) => {
+    setSelectedServices(
+      (prev) =>
+        prev.includes(id)
+          ? prev.filter((checkboxId) => checkboxId !== id) // Remove ID
+          : [...prev, id] // Add ID
+    );
     switch (id) {
       case 1:
         if (event.target.checked !== undefined) {
@@ -1346,7 +1576,12 @@ function Onboarding() {
               </div>
 
               <div className="w-full mb-6 md:w-[516px] flex justify-center items-center flex-col">
-                <div className="w-full text-start os-section-heading">
+                <div
+                  onClick={() => {
+                    console.log(selectedServices);
+                  }}
+                  className="w-full text-start os-section-heading"
+                >
                   Which services do you intend to use?
                 </div>
                 <div className="w-full mt-3 flex flex-col justify-center items-center gap-3">
@@ -1451,9 +1686,9 @@ function Onboarding() {
                                                 ? checked8
                                                 : false
                                             }
-                                            onChange={(e) => {
-                                              handleCheckboxChange(item.id, e);
-                                            }}
+                                            // onChange={(e) => {
+                                            //   handleCheckboxChange(item.id, e);
+                                            // }}
                                             inputProps={{
                                               "aria-label": "controlled",
                                             }}
@@ -3478,9 +3713,27 @@ function Onboarding() {
                                     payment processing.
                                   </div>
                                 </div>
-                                <button className="documents-button w-full md:w-auto text-center">
+                                {/* <div className="documents-button w-full md:w-auto text-center"> */}
+                                <PlaidLink
+                                  className="documents-button w-full md:w-auto"
+                                  style={{
+                                    border: "0 !important",
+                                    padding: "0px 0px 0px 0px !important",
+                                    width: "100% !important",
+                                    borderRadius: "0px !important",
+                                  }}
+                                  token={plaidLinkToken}
+                                  onSuccess={onSuccess}
+                                  onExit={(error, metadata) => {
+                                    if (error) {
+                                      console.error("Error:", error);
+                                    }
+                                    console.log("Exit Metadata:", metadata);
+                                  }}
+                                >
                                   Connect
-                                </button>
+                                </PlaidLink>
+                                {/* </div> */}
                               </div>
                             </div>
                           </div>
@@ -3672,7 +3925,22 @@ function Onboarding() {
                                                 htmlFor="file-upload"
                                                 className="cursor-pointer documents-button w-full md:w-auto mt-4 text-center"
                                               >
-                                                Upload
+                                                {uploadLoadingBankStatement ? (
+                                                  <>
+                                                    <div className="w-full flex justify-center items-center">
+                                                      <ThreeDots
+                                                        visible={true}
+                                                        height="15"
+                                                        color="#000"
+                                                        ariaLabel="three-dots-loading"
+                                                        wrapperStyle={{}}
+                                                        wrapperClass=""
+                                                      />
+                                                    </div>
+                                                  </>
+                                                ) : (
+                                                  "Upload"
+                                                )}
                                               </label>
                                             </>
                                           )}
@@ -3746,9 +4014,31 @@ function Onboarding() {
                                             Securely link your bank for payouts
                                             and payment processing.
                                           </div>
-                                          <button className="documents-button w-full md:w-auto mt-4 text-center">
+                                          {/* <button className="documents-button w-full md:w-auto mt-4 text-center"> */}
+                                          <PlaidLink
+                                            className="documents-button w-full md:w-auto mt-4"
+                                            style={{
+                                              border: "0 !important",
+                                              padding:
+                                                "0px 0px 0px 0px !important",
+                                              width: "100% !important",
+                                              borderRadius: "0px !important",
+                                            }}
+                                            token={plaidLinkToken}
+                                            onSuccess={onSuccess}
+                                            onExit={(error, metadata) => {
+                                              if (error) {
+                                                console.error("Error:", error);
+                                              }
+                                              console.log(
+                                                "Exit Metadata:",
+                                                metadata
+                                              );
+                                            }}
+                                          >
                                             Connect
-                                          </button>
+                                          </PlaidLink>
+                                          {/* </button> */}
                                         </div>
                                       </div>
                                     </div>
@@ -3805,7 +4095,22 @@ function Onboarding() {
                                                   htmlFor="file-upload-2"
                                                   className="cursor-pointer documents-button w-full md:w-auto mt-4 text-center"
                                                 >
-                                                  Upload
+                                                  {uploadLoadingBalanceSheet ? (
+                                                    <>
+                                                      <div className="w-full flex justify-center items-center">
+                                                        <ThreeDots
+                                                          visible={true}
+                                                          height="15"
+                                                          color="#000"
+                                                          ariaLabel="three-dots-loading"
+                                                          wrapperStyle={{}}
+                                                          wrapperClass=""
+                                                        />
+                                                      </div>
+                                                    </>
+                                                  ) : (
+                                                    "Upload"
+                                                  )}
                                                 </label>
                                               </>
                                             )}
@@ -3904,7 +4209,22 @@ function Onboarding() {
                                                   htmlFor="file-upload-3"
                                                   className="cursor-pointer documents-button w-full md:w-auto mt-4 text-center"
                                                 >
-                                                  Upload
+                                                  {uploadLoadingProfitLoss ? (
+                                                    <>
+                                                      <div className="w-full flex justify-center items-center">
+                                                        <ThreeDots
+                                                          visible={true}
+                                                          height="15"
+                                                          color="#000"
+                                                          ariaLabel="three-dots-loading"
+                                                          wrapperStyle={{}}
+                                                          wrapperClass=""
+                                                        />
+                                                      </div>
+                                                    </>
+                                                  ) : (
+                                                    "Upload"
+                                                  )}
                                                 </label>
                                               </>
                                             )}
@@ -4490,50 +4810,154 @@ function Onboarding() {
                 <div className="w-full flex mt-4 justify-center items-start flex-col">
                   <div className="w-full gap-3 flex justify-center items-start flex-row">
                     <div className="flex justify-center items-center flex-col">
-                      <div>
-                        {/* <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                        >
-                          <path
-                            d="M0.75 12C0.75 5.7868 5.7868 0.75 12 0.75C18.2132 0.75 23.25 5.7868 23.25 12C23.25 18.2132 18.2132 23.25 12 23.25C5.7868 23.25 0.75 18.2132 0.75 12Z"
-                            fill="#17B26A"
-                          />
-                          <path
-                            d="M0.75 12C0.75 5.7868 5.7868 0.75 12 0.75C18.2132 0.75 23.25 5.7868 23.25 12C23.25 18.2132 18.2132 23.25 12 23.25C5.7868 23.25 0.75 18.2132 0.75 12Z"
-                            stroke="#17B26A"
-                            stroke-width="1.5"
-                          />
-                          <path
-                            fill-rule="evenodd"
-                            clip-rule="evenodd"
-                            d="M17.0964 7.38967L9.93638 14.2997L8.03638 12.2697C7.68638 11.9397 7.13638 11.9197 6.73638 12.1997C6.34638 12.4897 6.23638 12.9997 6.47638 13.4097L8.72638 17.0697C8.94638 17.4097 9.32638 17.6197 9.75638 17.6197C10.1664 17.6197 10.5564 17.4097 10.7764 17.0697C11.1364 16.5997 18.0064 8.40967 18.0064 8.40967C18.9064 7.48967 17.8164 6.67967 17.0964 7.37967V7.38967Z"
-                            fill="white"
-                          />
-                        </svg> */}
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                        >
-                          <path
-                            d="M12 22.5C6.20085 22.5 1.5 17.7991 1.5 12C1.5 6.20085 6.20085 1.5 12 1.5C17.7991 1.5 22.5 6.20085 22.5 12C22.5 17.7991 17.7991 22.5 12 22.5ZM12 20.4C14.2278 20.4 16.3644 19.515 17.9397 17.9397C19.515 16.3644 20.4 14.2278 20.4 12C20.4 9.77218 19.515 7.63561 17.9397 6.0603C16.3644 4.485 14.2278 3.6 12 3.6C9.77218 3.6 7.63561 4.485 6.0603 6.0603C4.485 7.63561 3.6 9.77218 3.6 12C3.6 14.2278 4.485 16.3644 6.0603 17.9397C7.63561 19.515 9.77218 20.4 12 20.4ZM10.95 6.75H13.05V8.85H10.95V6.75ZM10.95 10.95H13.05V17.25H10.95V10.95Z"
-                            fill="#F27B2C"
-                          />
-                        </svg>
+                      <div
+                        className={`${
+                          isOpen1 &&
+                          (firstName === "" ||
+                            lastName === "" ||
+                            phone === "" ||
+                            businessEmail === "") &&
+                          "z-50 rounded-full bg-[#F9F5FF]"
+                        }`}
+                        style={{
+                          boxShadow:
+                            isOpen1 &&
+                            (firstName === "" ||
+                              lastName === "" ||
+                              phone === "" ||
+                              businessEmail === "") &&
+                            "0px 0px 0px 4px rgba(23, 178, 106, 0.24)",
+                        }}
+                      >
+                        {isOpen1 &&
+                          (firstName === "" ||
+                            lastName === "" ||
+                            phone === "" ||
+                            businessEmail === "") && (
+                            <>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                              >
+                                <path
+                                  d="M0.75 12C0.75 5.7868 5.7868 0.75 12 0.75C18.2132 0.75 23.25 5.7868 23.25 12C23.25 18.2132 18.2132 23.25 12 23.25C5.7868 23.25 0.75 18.2132 0.75 12Z"
+                                  fill="#17B26A"
+                                />
+                                <path
+                                  d="M0.75 12C0.75 5.7868 5.7868 0.75 12 0.75C18.2132 0.75 23.25 5.7868 23.25 12C23.25 18.2132 18.2132 23.25 12 23.25C5.7868 23.25 0.75 18.2132 0.75 12Z"
+                                  stroke="#17B26A"
+                                  stroke-width="1.5"
+                                />
+                                <circle cx="12" cy="12" r="4" fill="white" />
+                              </svg>
+                            </>
+                          )}
+
+                        {isOpen1 &&
+                          firstName !== "" &&
+                          lastName !== "" &&
+                          phone !== "" &&
+                          businessEmail !== "" && (
+                            <>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                              >
+                                <path
+                                  d="M0.75 12C0.75 5.7868 5.7868 0.75 12 0.75C18.2132 0.75 23.25 5.7868 23.25 12C23.25 18.2132 18.2132 23.25 12 23.25C5.7868 23.25 0.75 18.2132 0.75 12Z"
+                                  fill="#17B26A"
+                                />
+                                <path
+                                  d="M0.75 12C0.75 5.7868 5.7868 0.75 12 0.75C18.2132 0.75 23.25 5.7868 23.25 12C23.25 18.2132 18.2132 23.25 12 23.25C5.7868 23.25 0.75 18.2132 0.75 12Z"
+                                  stroke="#17B26A"
+                                  stroke-width="1.5"
+                                />
+                                <path
+                                  fill-rule="evenodd"
+                                  clip-rule="evenodd"
+                                  d="M17.0964 7.38967L9.93638 14.2997L8.03638 12.2697C7.68638 11.9397 7.13638 11.9197 6.73638 12.1997C6.34638 12.4897 6.23638 12.9997 6.47638 13.4097L8.72638 17.0697C8.94638 17.4097 9.32638 17.6197 9.75638 17.6197C10.1664 17.6197 10.5564 17.4097 10.7764 17.0697C11.1364 16.5997 18.0064 8.40967 18.0064 8.40967C18.9064 7.48967 17.8164 6.67967 17.0964 7.37967V7.38967Z"
+                                  fill="white"
+                                />
+                              </svg>
+                            </>
+                          )}
+
+                        {!isOpen1 &&
+                          (firstName === "" ||
+                            lastName === "" ||
+                            phone === "" ||
+                            businessEmail === "") && (
+                            <>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                              >
+                                <path
+                                  d="M12 22.5C6.20085 22.5 1.5 17.7991 1.5 12C1.5 6.20085 6.20085 1.5 12 1.5C17.7991 1.5 22.5 6.20085 22.5 12C22.5 17.7991 17.7991 22.5 12 22.5ZM12 20.4C14.2278 20.4 16.3644 19.515 17.9397 17.9397C19.515 16.3644 20.4 14.2278 20.4 12C20.4 9.77218 19.515 7.63561 17.9397 6.0603C16.3644 4.485 14.2278 3.6 12 3.6C9.77218 3.6 7.63561 4.485 6.0603 6.0603C4.485 7.63561 3.6 9.77218 3.6 12C3.6 14.2278 4.485 16.3644 6.0603 17.9397C7.63561 19.515 9.77218 20.4 12 20.4ZM10.95 6.75H13.05V8.85H10.95V6.75ZM10.95 10.95H13.05V17.25H10.95V10.95Z"
+                                  fill="#F27B2C"
+                                />
+                              </svg>
+                            </>
+                          )}
                       </div>
-                      <div className="w-[2px] bg-[#F17B2C] h-[34px]"></div>
+                      {/* // Hereeeeeee */}
+                      <div
+                        className={`w-[2px] ${
+                          !isOpen1 &&
+                          (firstName === "" ||
+                            lastName === "" ||
+                            phone === "" ||
+                            businessEmail === "")
+                            ? "bg-[#F17B2C]"
+                            : isOpen1 &&
+                              (firstName === "" ||
+                                lastName === "" ||
+                                phone === "" ||
+                                businessEmail === "")
+                            ? "bg-[#EAECF0]"
+                            : isOpen1 &&
+                              firstName !== "" &&
+                              lastName !== "" &&
+                              phone !== "" &&
+                              businessEmail !== "" &&
+                              "bg-[#17B26A]"
+                        } h-[34px]`}
+                      ></div>
                     </div>
                     <div className="w-full flex justify-center items-center flex-col">
-                      <div className="w-full text-start steps-heading-incomplete">
+                      <div
+                        className={`w-full text-start ${
+                          !isOpen1 &&
+                          (firstName === "" ||
+                            lastName === "" ||
+                            phone === "" ||
+                            businessEmail === "")
+                            ? "steps-heading-incomplete"
+                            : "steps-heading"
+                        }`}
+                      >
                         Contact Information
                       </div>
-                      <div className="w-full text-start steps-sub-heading-incomplete">
+                      <div
+                        className={`w-full text-start ${
+                          !isOpen1 &&
+                          (firstName === "" ||
+                            lastName === "" ||
+                            phone === "" ||
+                            businessEmail === "")
+                            ? "steps-sub-heading-incomplete"
+                            : "steps-sub-heading"
+                        }`}
+                      >
                         Enter your personal contact details.
                       </div>
                     </div>
@@ -4708,153 +5132,155 @@ function Onboarding() {
                         services.length > 0 ? (
                           <>
                             {services.length > 0 &&
-                              services.map((item) => (
-                                <>
-                                  <div className="relative w-full md:w-[230px] flex justify-start items-center flex-col">
-                                    {item.type === "merchant" ? (
-                                      <>
-                                        <div className="rounded-t-xl label-send-invoices w-full flex justify-start items-center flex-row gap-2 text-black absolute">
-                                          <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="16"
-                                            height="16"
-                                            viewBox="0 0 16 16"
-                                            fill="none"
-                                          >
-                                            <path
-                                              d="M4.99998 4.4V2.6C4.99998 2.44087 5.06319 2.28826 5.17571 2.17574C5.28823 2.06321 5.44085 2 5.59998 2H12.8C12.9591 2 13.1117 2.06321 13.2242 2.17574C13.3368 2.28826 13.4 2.44087 13.4 2.6V11C13.4 11.1591 13.3368 11.3117 13.2242 11.4243C13.1117 11.5368 12.9591 11.6 12.8 11.6H11V13.4C11 13.7312 10.73 14 10.3958 14H3.20418C3.12505 14.0005 3.04661 13.9853 2.97337 13.9554C2.90012 13.9254 2.83352 13.8813 2.77737 13.8256C2.72123 13.7698 2.67665 13.7035 2.64621 13.6305C2.61576 13.5575 2.60005 13.4791 2.59998 13.4L2.60178 5C2.60178 4.6688 2.87178 4.4 3.20538 4.4H4.99998ZM3.80118 5.6L3.79998 12.8H9.79998V5.6H3.80118ZM6.19998 4.4H11V10.4H12.2V3.2H6.19998V4.4ZM4.99998 7.4H8.59998V8.6H4.99998V7.4ZM4.99998 9.8H8.59998V11H4.99998V9.8Z"
-                                              fill="white"
+                              services.map((item) => {
+                                return (
+                                  <>
+                                    <div className="relative w-full md:w-[230px] flex justify-start items-center flex-col">
+                                      {item.type === "merchant" ? (
+                                        <>
+                                          <div className="rounded-t-xl label-send-invoices w-full flex justify-start items-center flex-row gap-2 text-black absolute">
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              width="16"
+                                              height="16"
+                                              viewBox="0 0 16 16"
+                                              fill="none"
+                                            >
+                                              <path
+                                                d="M4.99998 4.4V2.6C4.99998 2.44087 5.06319 2.28826 5.17571 2.17574C5.28823 2.06321 5.44085 2 5.59998 2H12.8C12.9591 2 13.1117 2.06321 13.2242 2.17574C13.3368 2.28826 13.4 2.44087 13.4 2.6V11C13.4 11.1591 13.3368 11.3117 13.2242 11.4243C13.1117 11.5368 12.9591 11.6 12.8 11.6H11V13.4C11 13.7312 10.73 14 10.3958 14H3.20418C3.12505 14.0005 3.04661 13.9853 2.97337 13.9554C2.90012 13.9254 2.83352 13.8813 2.77737 13.8256C2.72123 13.7698 2.67665 13.7035 2.64621 13.6305C2.61576 13.5575 2.60005 13.4791 2.59998 13.4L2.60178 5C2.60178 4.6688 2.87178 4.4 3.20538 4.4H4.99998ZM3.80118 5.6L3.79998 12.8H9.79998V5.6H3.80118ZM6.19998 4.4H11V10.4H12.2V3.2H6.19998V4.4ZM4.99998 7.4H8.59998V8.6H4.99998V7.4ZM4.99998 9.8H8.59998V11H4.99998V9.8Z"
+                                                fill="white"
+                                              />
+                                            </svg>
+                                            <div>Send Invoice</div>
+                                          </div>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <div className="rounded-t-xl label-pay-invoices w-full flex justify-start items-center flex-row gap-2 text-black absolute">
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              width="16"
+                                              height="16"
+                                              viewBox="0 0 16 16"
+                                              fill="none"
+                                            >
+                                              <path
+                                                d="M4.99998 4.4V2.6C4.99998 2.44087 5.06319 2.28826 5.17571 2.17574C5.28823 2.06321 5.44085 2 5.59998 2H12.8C12.9591 2 13.1117 2.06321 13.2242 2.17574C13.3368 2.28826 13.4 2.44087 13.4 2.6V11C13.4 11.1591 13.3368 11.3117 13.2242 11.4243C13.1117 11.5368 12.9591 11.6 12.8 11.6H11V13.4C11 13.7312 10.73 14 10.3958 14H3.20418C3.12505 14.0005 3.04661 13.9853 2.97337 13.9554C2.90012 13.9254 2.83352 13.8813 2.77737 13.8256C2.72123 13.7698 2.67665 13.7035 2.64621 13.6305C2.61576 13.5575 2.60005 13.4791 2.59998 13.4L2.60178 5C2.60178 4.6688 2.87178 4.4 3.20538 4.4H4.99998ZM3.80118 5.6L3.79998 12.8H9.79998V5.6H3.80118ZM6.19998 4.4H11V10.4H12.2V3.2H6.19998V4.4ZM4.99998 7.4H8.59998V8.6H4.99998V7.4ZM4.99998 9.8H8.59998V11H4.99998V9.8Z"
+                                                fill="white"
+                                              />
+                                            </svg>
+                                            <div>Pay Invoice</div>
+                                          </div>
+                                        </>
+                                      )}
+                                      {/* Hereeeeee */}
+                                      <div
+                                        onClick={(e) => {
+                                          handleCheckboxChange(item.id, e);
+                                        }}
+                                        className={` ${
+                                          (item.id === 1 && checked5) ||
+                                          (item.id === 2 && checked6) ||
+                                          (item.id === 3 && checked7) ||
+                                          (item.id === 4 && checked8)
+                                            ? "border-[1px] border-[#ff007a]"
+                                            : "border-[1px] border-[#eaecf0]"
+                                        } mt-[11%] z-10 cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
+                                      >
+                                        <div className="w-full flex justify-center items-center flex-row">
+                                          <div className="w-full flex justify-start items-center">
+                                            <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
+                                              {item.name.toUpperCase()}
+                                            </div>
+                                          </div>
+                                          <div className="w-full flex justify-end items-center gap-2">
+                                            {item.type === "merchant" ? (
+                                              <>
+                                                <div className="os-services-upper-tag-wrapper-seller">
+                                                  Seller
+                                                </div>
+                                              </>
+                                            ) : (
+                                              <>
+                                                <div className="os-services-upper-tag-wrapper-buyer">
+                                                  Buyer
+                                                </div>
+                                              </>
+                                            )}
+                                            <FormControlLabel
+                                              control={
+                                                <Checkbox
+                                                  sx={{
+                                                    color: "#E2E4E9",
+                                                    "&.Mui-checked": {
+                                                      color: "#17B26A",
+                                                    },
+                                                  }}
+                                                  checked={
+                                                    item.id === 1
+                                                      ? checked5
+                                                      : item.id === 2
+                                                      ? checked6
+                                                      : item.id === 3
+                                                      ? checked7
+                                                      : item.id === 4
+                                                      ? checked8
+                                                      : false
+                                                  }
+                                                  // onChange={(e) => {
+                                                  //   handleCheckboxChange(
+                                                  //     item.id,
+                                                  //     e
+                                                  //   );
+                                                  // } }
+                                                  inputProps={{
+                                                    "aria-label": "controlled",
+                                                  }}
+                                                />
+                                              }
+                                              sx={{
+                                                marginRight: "-10%",
+                                              }}
                                             />
-                                          </svg>
-                                          <div>Send Invoice</div>
-                                        </div>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <div className="rounded-t-xl label-pay-invoices w-full flex justify-start items-center flex-row gap-2 text-black absolute">
-                                          <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="16"
-                                            height="16"
-                                            viewBox="0 0 16 16"
-                                            fill="none"
-                                          >
-                                            <path
-                                              d="M4.99998 4.4V2.6C4.99998 2.44087 5.06319 2.28826 5.17571 2.17574C5.28823 2.06321 5.44085 2 5.59998 2H12.8C12.9591 2 13.1117 2.06321 13.2242 2.17574C13.3368 2.28826 13.4 2.44087 13.4 2.6V11C13.4 11.1591 13.3368 11.3117 13.2242 11.4243C13.1117 11.5368 12.9591 11.6 12.8 11.6H11V13.4C11 13.7312 10.73 14 10.3958 14H3.20418C3.12505 14.0005 3.04661 13.9853 2.97337 13.9554C2.90012 13.9254 2.83352 13.8813 2.77737 13.8256C2.72123 13.7698 2.67665 13.7035 2.64621 13.6305C2.61576 13.5575 2.60005 13.4791 2.59998 13.4L2.60178 5C2.60178 4.6688 2.87178 4.4 3.20538 4.4H4.99998ZM3.80118 5.6L3.79998 12.8H9.79998V5.6H3.80118ZM6.19998 4.4H11V10.4H12.2V3.2H6.19998V4.4ZM4.99998 7.4H8.59998V8.6H4.99998V7.4ZM4.99998 9.8H8.59998V11H4.99998V9.8Z"
-                                              fill="white"
-                                            />
-                                          </svg>
-                                          <div>Pay Invoice</div>
-                                        </div>
-                                      </>
-                                    )}
-                                    {/* Hereeeeee */}
-                                    <div
-                                      onClick={(e) => {
-                                        handleCheckboxChange(item.id, e);
-                                      }}
-                                      className={` ${
-                                        (item.id === 1 && checked5) ||
-                                        (item.id === 2 && checked6) ||
-                                        (item.id === 3 && checked7) ||
-                                        (item.id === 4 && checked8)
-                                          ? "border-[1px] border-[#ff007a]"
-                                          : "border-[1px] border-[#eaecf0]"
-                                      } mt-[11%] z-10 cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
-                                    >
-                                      <div className="w-full flex justify-center items-center flex-row">
-                                        <div className="w-full flex justify-start items-center">
-                                          <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
-                                            {item.name.toUpperCase()}
                                           </div>
                                         </div>
-                                        <div className="w-full flex justify-end items-center gap-2">
-                                          {item.type === "merchant" ? (
-                                            <>
-                                              <div className="os-services-upper-tag-wrapper-seller">
-                                                Seller
-                                              </div>
-                                            </>
-                                          ) : (
-                                            <>
-                                              <div className="os-services-upper-tag-wrapper-buyer">
-                                                Buyer
-                                              </div>
-                                            </>
-                                          )}
-                                          <FormControlLabel
-                                            control={
-                                              <Checkbox
-                                                sx={{
-                                                  color: "#E2E4E9",
-                                                  "&.Mui-checked": {
-                                                    color: "#17B26A",
-                                                  },
-                                                }}
-                                                checked={
-                                                  item.id === 1
-                                                    ? checked5
-                                                    : item.id === 2
-                                                    ? checked6
-                                                    : item.id === 3
-                                                    ? checked7
-                                                    : item.id === 4
-                                                    ? checked8
-                                                    : false
-                                                }
-                                                onChange={(e) => {
-                                                  handleCheckboxChange(
-                                                    item.id,
-                                                    e
-                                                  );
-                                                }}
-                                                inputProps={{
-                                                  "aria-label": "controlled",
-                                                }}
-                                              />
-                                            }
-                                            sx={{
-                                              marginRight: "-10%",
-                                            }}
-                                          />
+
+                                        <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
+                                          {item.description}
                                         </div>
-                                      </div>
 
-                                      <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
-                                        {item.description}
-                                      </div>
-
-                                      <div className="w-full mt-3 flex justify-center md:justify-start items-center">
-                                        <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
-                                          <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="16"
-                                            height="16"
-                                            viewBox="0 0 16 16"
-                                            fill="none"
-                                          >
-                                            <circle
-                                              cx="8"
-                                              cy="8"
-                                              r="3"
-                                              fill="#38C793"
-                                            />
-                                          </svg>
-                                          {item.price === "0.00" ? (
-                                            <>
-                                              <div>Free Package</div>
-                                            </>
-                                          ) : (
-                                            <>
-                                              <div>Subscription required</div>
-                                            </>
-                                          )}
+                                        <div className="w-full mt-3 flex justify-center md:justify-start items-center">
+                                          <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              width="16"
+                                              height="16"
+                                              viewBox="0 0 16 16"
+                                              fill="none"
+                                            >
+                                              <circle
+                                                cx="8"
+                                                cy="8"
+                                                r="3"
+                                                fill="#38C793"
+                                              />
+                                            </svg>
+                                            {item.price === "0.00" ? (
+                                              <>
+                                                <div>Free Package</div>
+                                              </>
+                                            ) : (
+                                              <>
+                                                <div>Subscription required</div>
+                                              </>
+                                            )}
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
-                                  </div>
-                                </>
-                              ))}
+                                  </>
+                                );
+                              })}
                           </>
                         ) : getServicesLoader ? (
                           <>
@@ -4877,349 +5303,6 @@ function Onboarding() {
                         )}
                       </div>
                     </div>
-                    {/* <div className="w-full flex justify-center items-center flex-col mt-3">
-                      <div className="w-full flex justify-center items-center flex-col">
-                        <div className="w-full flex flex-col justify-center items-center gap-3">
-                          <div className="w-full flex justify-center items-center flex-col md:flex-row gap-3">
-                            <div className="relative w-full flex justify-start items-center flex-col">
-                              <div className="rounded-t-xl label-send-invoices w-full flex justify-start items-center flex-row gap-2 text-black absolute">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="16"
-                                  height="16"
-                                  viewBox="0 0 16 16"
-                                  fill="none"
-                                >
-                                  <path
-                                    d="M4.99998 4.4V2.6C4.99998 2.44087 5.06319 2.28826 5.17571 2.17574C5.28823 2.06321 5.44085 2 5.59998 2H12.8C12.9591 2 13.1117 2.06321 13.2242 2.17574C13.3368 2.28826 13.4 2.44087 13.4 2.6V11C13.4 11.1591 13.3368 11.3117 13.2242 11.4243C13.1117 11.5368 12.9591 11.6 12.8 11.6H11V13.4C11 13.7312 10.73 14 10.3958 14H3.20418C3.12505 14.0005 3.04661 13.9853 2.97337 13.9554C2.90012 13.9254 2.83352 13.8813 2.77737 13.8256C2.72123 13.7698 2.67665 13.7035 2.64621 13.6305C2.61576 13.5575 2.60005 13.4791 2.59998 13.4L2.60178 5C2.60178 4.6688 2.87178 4.4 3.20538 4.4H4.99998ZM3.80118 5.6L3.79998 12.8H9.79998V5.6H3.80118ZM6.19998 4.4H11V10.4H12.2V3.2H6.19998V4.4ZM4.99998 7.4H8.59998V8.6H4.99998V7.4ZM4.99998 9.8H8.59998V11H4.99998V9.8Z"
-                                    fill="white"
-                                  />
-                                </svg>
-                                <div>Send Invoice</div>
-                              </div>
-                              <div
-                                onClick={handleChangeChecked5}
-                                className={` ${
-                                  checked5
-                                    ? "border-[1px] border-[#ff007a]"
-                                    : "border-[1px] border-[#eaecf0]"
-                                } mt-[11%] z-10 cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
-                              >
-                                <div className="w-full flex justify-center items-center flex-row">
-                                  <div className="w-full flex justify-start items-center">
-                                    <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
-                                      A
-                                    </div>
-                                  </div>
-                                  <div className="w-full flex justify-end items-center gap-2">
-                                    <div className="os-services-upper-tag-wrapper-seller">
-                                      Seller
-                                    </div>
-                                    <FormControlLabel
-                                      control={
-                                        <Checkbox
-                                          sx={{
-                                            color: "#E2E4E9",
-                                            "&.Mui-checked": {
-                                              color: "#17B26A",
-                                            },
-                                          }}
-                                          checked={checked5}
-                                          onChange={handleChangeChecked5}
-                                          inputProps={{
-                                            "aria-label": "controlled",
-                                          }}
-                                        />
-                                      }
-                                      sx={{
-                                        marginRight: "-10%",
-                                      }}
-                                    />
-                                  </div>
-                                </div>
-
-                                <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
-                                  Offer Card & ACH payment options on your
-                                  invoices
-                                </div>
-
-                                <div className="w-full mt-3 flex justify-center md:justify-start items-center">
-                                  <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      width="16"
-                                      height="16"
-                                      viewBox="0 0 16 16"
-                                      fill="none"
-                                    >
-                                      <circle
-                                        cx="8"
-                                        cy="8"
-                                        r="3"
-                                        fill="#38C793"
-                                      />
-                                    </svg>
-                                    <div>Free Package</div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="relative w-full flex justify-start items-center flex-col">
-                              <div className="rounded-t-xl label-send-invoices w-full flex justify-start items-center flex-row gap-2 text-black absolute">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="16"
-                                  height="16"
-                                  viewBox="0 0 16 16"
-                                  fill="none"
-                                >
-                                  <path
-                                    d="M4.99998 4.4V2.6C4.99998 2.44087 5.06319 2.28826 5.17571 2.17574C5.28823 2.06321 5.44085 2 5.59998 2H12.8C12.9591 2 13.1117 2.06321 13.2242 2.17574C13.3368 2.28826 13.4 2.44087 13.4 2.6V11C13.4 11.1591 13.3368 11.3117 13.2242 11.4243C13.1117 11.5368 12.9591 11.6 12.8 11.6H11V13.4C11 13.7312 10.73 14 10.3958 14H3.20418C3.12505 14.0005 3.04661 13.9853 2.97337 13.9554C2.90012 13.9254 2.83352 13.8813 2.77737 13.8256C2.72123 13.7698 2.67665 13.7035 2.64621 13.6305C2.61576 13.5575 2.60005 13.4791 2.59998 13.4L2.60178 5C2.60178 4.6688 2.87178 4.4 3.20538 4.4H4.99998ZM3.80118 5.6L3.79998 12.8H9.79998V5.6H3.80118ZM6.19998 4.4H11V10.4H12.2V3.2H6.19998V4.4ZM4.99998 7.4H8.59998V8.6H4.99998V7.4ZM4.99998 9.8H8.59998V11H4.99998V9.8Z"
-                                    fill="white"
-                                  />
-                                </svg>
-                                <div>Send Invoice</div>
-                              </div>
-                              <div
-                                onClick={handleChangeChecked6}
-                                className={` ${
-                                  checked6
-                                    ? "border-[1px] border-[#ff007a]"
-                                    : "border-[1px] border-[#eaecf0]"
-                                } mt-[11%] z-10 cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
-                              >
-                                <div className="w-full flex justify-center items-center flex-row">
-                                  <div className="w-full flex justify-start items-center">
-                                    <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
-                                      B
-                                    </div>
-                                  </div>
-                                  <div className="w-full flex justify-end items-center gap-2">
-                                    <div className="os-services-upper-tag-wrapper-seller">
-                                      Seller
-                                    </div>
-                                    <FormControlLabel
-                                      control={
-                                        <Checkbox
-                                          sx={{
-                                            color: "#E2E4E9",
-                                            "&.Mui-checked": {
-                                              color: "#17B26A",
-                                            },
-                                          }}
-                                          checked={checked6}
-                                          onChange={handleChangeChecked6}
-                                          inputProps={{
-                                            "aria-label": "controlled",
-                                          }}
-                                        />
-                                      }
-                                      sx={{
-                                        marginRight: "-10%",
-                                      }}
-                                    />
-                                  </div>
-                                </div>
-
-                                <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
-                                  Offer Net Terms (30, 60, 90) on your invoices
-                                  for approved buyers
-                                </div>
-
-                                <div className="w-full mt-3 flex justify-center md:justify-start items-center">
-                                  <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      width="16"
-                                      height="16"
-                                      viewBox="0 0 16 16"
-                                      fill="none"
-                                    >
-                                      <circle
-                                        cx="8"
-                                        cy="8"
-                                        r="3"
-                                        fill="#38C793"
-                                      />
-                                    </svg>
-                                    <div>Subscription required</div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="w-full flex justify-center items-center flex-col md:flex-row gap-3">
-                            <div className="relative w-full flex justify-start items-center flex-col">
-                              <div className="rounded-t-xl label-pay-invoices w-full flex justify-start items-center flex-row gap-2 text-black absolute">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="16"
-                                  height="16"
-                                  viewBox="0 0 16 16"
-                                  fill="none"
-                                >
-                                  <path
-                                    d="M4.99998 4.4V2.6C4.99998 2.44087 5.06319 2.28826 5.17571 2.17574C5.28823 2.06321 5.44085 2 5.59998 2H12.8C12.9591 2 13.1117 2.06321 13.2242 2.17574C13.3368 2.28826 13.4 2.44087 13.4 2.6V11C13.4 11.1591 13.3368 11.3117 13.2242 11.4243C13.1117 11.5368 12.9591 11.6 12.8 11.6H11V13.4C11 13.7312 10.73 14 10.3958 14H3.20418C3.12505 14.0005 3.04661 13.9853 2.97337 13.9554C2.90012 13.9254 2.83352 13.8813 2.77737 13.8256C2.72123 13.7698 2.67665 13.7035 2.64621 13.6305C2.61576 13.5575 2.60005 13.4791 2.59998 13.4L2.60178 5C2.60178 4.6688 2.87178 4.4 3.20538 4.4H4.99998ZM3.80118 5.6L3.79998 12.8H9.79998V5.6H3.80118ZM6.19998 4.4H11V10.4H12.2V3.2H6.19998V4.4ZM4.99998 7.4H8.59998V8.6H4.99998V7.4ZM4.99998 9.8H8.59998V11H4.99998V9.8Z"
-                                    fill="white"
-                                  />
-                                </svg>
-                                <div>Pay Invoice</div>
-                              </div>
-                              <div
-                                onClick={handleChangeChecked7}
-                                className={` ${
-                                  checked7
-                                    ? "border-[1px] border-[#ff007a]"
-                                    : "border-[1px] border-[#eaecf0]"
-                                } mt-[11%] z-10 cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
-                              >
-                                <div className="w-full flex justify-center items-center flex-row">
-                                  <div className="w-full flex justify-start items-center">
-                                    <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
-                                      C
-                                    </div>
-                                  </div>
-                                  <div className="w-full flex justify-end items-center gap-2">
-                                    <div className="os-services-upper-tag-wrapper-buyer">
-                                      Buyer
-                                    </div>
-                                    <FormControlLabel
-                                      control={
-                                        <Checkbox
-                                          sx={{
-                                            color: "#E2E4E9",
-                                            "&.Mui-checked": {
-                                              color: "#17B26A",
-                                            },
-                                          }}
-                                          checked={checked7}
-                                          onChange={handleChangeChecked7}
-                                          inputProps={{
-                                            "aria-label": "controlled",
-                                          }}
-                                        />
-                                      }
-                                      sx={{
-                                        marginRight: "-10%",
-                                      }}
-                                    />
-                                  </div>
-                                </div>
-
-                                <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
-                                  Pay invoices using Card & ACH
-                                </div>
-
-                                <div className="w-full mt-3 flex justify-center md:justify-start items-center">
-                                  <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      width="16"
-                                      height="16"
-                                      viewBox="0 0 16 16"
-                                      fill="none"
-                                    >
-                                      <circle
-                                        cx="8"
-                                        cy="8"
-                                        r="3"
-                                        fill="#38C793"
-                                      />
-                                    </svg>
-                                    <div>Free Package</div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="relative w-full flex justify-start items-center flex-col">
-                              <div className="rounded-t-xl label-pay-invoices w-full flex justify-start items-center flex-row gap-2 text-black absolute">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="16"
-                                  height="16"
-                                  viewBox="0 0 16 16"
-                                  fill="none"
-                                >
-                                  <path
-                                    d="M4.99998 4.4V2.6C4.99998 2.44087 5.06319 2.28826 5.17571 2.17574C5.28823 2.06321 5.44085 2 5.59998 2H12.8C12.9591 2 13.1117 2.06321 13.2242 2.17574C13.3368 2.28826 13.4 2.44087 13.4 2.6V11C13.4 11.1591 13.3368 11.3117 13.2242 11.4243C13.1117 11.5368 12.9591 11.6 12.8 11.6H11V13.4C11 13.7312 10.73 14 10.3958 14H3.20418C3.12505 14.0005 3.04661 13.9853 2.97337 13.9554C2.90012 13.9254 2.83352 13.8813 2.77737 13.8256C2.72123 13.7698 2.67665 13.7035 2.64621 13.6305C2.61576 13.5575 2.60005 13.4791 2.59998 13.4L2.60178 5C2.60178 4.6688 2.87178 4.4 3.20538 4.4H4.99998ZM3.80118 5.6L3.79998 12.8H9.79998V5.6H3.80118ZM6.19998 4.4H11V10.4H12.2V3.2H6.19998V4.4ZM4.99998 7.4H8.59998V8.6H4.99998V7.4ZM4.99998 9.8H8.59998V11H4.99998V9.8Z"
-                                    fill="white"
-                                  />
-                                </svg>
-                                <div>Pay Invoice</div>
-                              </div>
-                              <div
-                                onClick={handleChangeChecked8}
-                                className={` ${
-                                  checked8
-                                    ? "border-[1px] border-[#ff007a]"
-                                    : "border-[1px] border-[#eaecf0]"
-                                } mt-[11%] z-10 cursor-pointer h-auto md:h-44 w-full flex justify-around items-center flex-col os-services-wrapper`}
-                              >
-                                <div className="w-full flex justify-center items-center flex-row">
-                                  <div className="w-full flex justify-start items-center">
-                                    <div className="w-8 h-8 text-center os-services-list-heading flex items-center justify-center rounded-full bg-[#FCE7F1]">
-                                      D
-                                    </div>
-                                  </div>
-                                  <div className="w-full flex justify-end items-center gap-2">
-                                    <div className="os-services-upper-tag-wrapper-buyer">
-                                      Buyer
-                                    </div>
-                                    <FormControlLabel
-                                      control={
-                                        <Checkbox
-                                          sx={{
-                                            color: "#E2E4E9",
-                                            "&.Mui-checked": {
-                                              color: "#17B26A",
-                                            },
-                                          }}
-                                          checked={checked8}
-                                          onChange={handleChangeChecked8}
-                                          inputProps={{
-                                            "aria-label": "controlled",
-                                          }}
-                                        />
-                                      }
-                                      sx={{
-                                        marginRight: "-10%",
-                                      }}
-                                    />
-                                  </div>
-                                </div>
-
-                                <div className="w-full text-center md:text-start mt-3 os-services-sub-heading">
-                                  Pay invoices using Net Terms to approved
-                                  sellers
-                                </div>
-
-                                <div className="w-full mt-3 flex justify-center md:justify-start items-center">
-                                  <div className="w-full md:w-auto ob-services-free-package-tag flex gap-1 justify-center items-center">
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      width="16"
-                                      height="16"
-                                      viewBox="0 0 16 16"
-                                      fill="none"
-                                    >
-                                      <circle
-                                        cx="8"
-                                        cy="8"
-                                        r="3"
-                                        fill="#38C793"
-                                      />
-                                    </svg>
-                                    <div>Free Package</div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div> */}
                   </div>
 
                   <div className="w-full border-[1px] gap-3 border-[#E2E4E9] px-5 py-4 flex justify-center items-center flex-col md:flex-row">
@@ -5232,12 +5315,33 @@ function Onboarding() {
                       Cancel
                     </button>
                     <button
+                      disabled={disableButtonContinue || loadingContinue}
                       onClick={() => {
+                        handleContinue();
                         setOpen2(false);
                       }}
-                      className="sb-form-submit-button w-full"
+                      className={`w-full ${
+                        disableButtonContinue
+                          ? "sb-form-submit-button-non-active"
+                          : "sb-form-submit-button-active"
+                      }`}
                     >
-                      Confirm
+                      {loadingContinue ? (
+                        <>
+                          <div className="w-full flex justify-center items-center">
+                            <ThreeDots
+                              visible={true}
+                              height="20"
+                              color="#fff"
+                              ariaLabel="three-dots-loading"
+                              wrapperStyle={{}}
+                              wrapperClass=""
+                            />
+                          </div>
+                        </>
+                      ) : (
+                        "Confirm"
+                      )}
                     </button>
                   </div>
                 </div>
